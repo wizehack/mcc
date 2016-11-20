@@ -14,7 +14,12 @@ add_executable(
     ${ROOT_DIR}/src/connectionInfo.cpp
     ${ROOT_DIR}/src/contract.cpp
     ${ROOT_DIR}/src/messageHandler.cpp
+    ${ROOT_DIR}/src/channelStatusMediator.cpp
+    ${ROOT_DIR}/src/registerClientHandler.cpp
     ${ROOT_DIR}/src/message.cpp
+    ${ROOT_DIR}/src/clientManager.cpp
+    ${ROOT_DIR}/src/channelManager.cpp
+    ${ROOT_DIR}/src/taskSet.cpp
 )
 
 # -ljson-c -lglib-2.0

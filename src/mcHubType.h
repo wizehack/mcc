@@ -24,6 +24,10 @@
 #include <chrono>
 #include <thread>
 
+/* shared memory */
+#include <sys/ipc.h>
+#include <sys/shm.h>
+
 /* log */
 #include <iostream>
 
