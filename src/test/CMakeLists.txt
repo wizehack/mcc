@@ -8,13 +8,18 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin/")
 set(ROOT_DIR ./)
 
 add_executable(
-    mchubd
+    test
     ${ROOT_DIR}/tester.cpp
     ${ROOT_DIR}/testOption.cpp
     ${ROOT_DIR}/baseFrameworkTester.cpp
     ${ROOT_DIR}/testManager.cpp
     ${ROOT_DIR}/testmain.cpp
+
+    ${ROOT_DIR}/../../src/manager.cpp
+    ${ROOT_DIR}/../../src/mediator.cpp
+    ${ROOT_DIR}/../../src/connectionInfo.cpp
+
 )
 
 # -ljson-c -lglib-2.0
-target_link_libraries(mchubd json-c glib-2.0)
+target_link_libraries(test json-c glib-2.0)

@@ -17,7 +17,7 @@ class Tester {
     protected:
         virtual void registerTestCase() = 0;
         bool exec(int tcId);
-        void add(FuncPtr func_cb);
+        void add(int tcId, FuncPtr func_cb);
 
     protected:
         Tester* m_next;

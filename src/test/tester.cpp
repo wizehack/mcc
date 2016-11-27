@@ -27,8 +27,10 @@ bool Tester::exec(int tcId)
     return false;
 }
 
-void Tester::add(FuncPtr func_cb)
+void Tester::add(int tcId, FuncPtr func_cb)
 {
     if(func_cb)
-        this->m_cbFuncMap.insert(std::pair<int, FuncPtr>(1, func_cb));
+        this->m_cbFuncMap.insert(std::pair<int, FuncPtr>(tcId, func_cb));
+    else
+        std::cout << "INVALID TEST CASE" << std::endl;
 }
