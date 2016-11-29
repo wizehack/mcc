@@ -1,36 +1,19 @@
-#include "tester.h"
 #include <iostream>
 
-Tester::Tester():
-    m_next(NULL){}
+#include "tester.h"
+#include "testSuite.h"
+#include "baseFrameworkTestSuite.h"
+
+Tester::Tester(){}
 Tester::~Tester(){}
 
-void Tester::setNext(Tester* tester)
+bool Tester::execute(TestOption* opt)
 {
-    this->m_next = tester;
-}
+    std::cout << "test category: " << opt->getCategory() << std::endl;
+    std::cout << "test case ID: " << opt->getTestCaseID() << std::endl;
+    std::cout << "test data path: " << opt->getTestDataPath() << std::endl;
 
-bool Tester::exec(int tcId)
-{
-    std::map<int, FuncPtr>::iterator itor;
+    TestSuite* frameworkTestSuite = new BaseFrameworkTestSuite();
 
-    if(tcId <= 0)
-        return false;
-
-    if(tcId > 0)
-        this->m_testFunc_cb = m_cbFuncMap[tcId];
-
-    if(this->m_testFunc_cb)
-        return this->m_testFunc_cb();
-
-    std::cout << "NOT FOUND TEST CASE" << std::endl;
-    return false;
-}
-
-void Tester::add(int tcId, FuncPtr func_cb)
-{
-    if(func_cb)
-        this->m_cbFuncMap.insert(std::pair<int, FuncPtr>(tcId, func_cb));
-    else
-        std::cout << "INVALID TEST CASE" << std::endl;
+    return frameworkTestSuite->request(opt);
 }

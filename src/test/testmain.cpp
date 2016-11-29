@@ -1,12 +1,12 @@
 #include <iostream>
 #include "tester.h"
 #include "testOption.h"
-#include "testManager.h"
+#include "tester.h"
 
 int main(int argc, char **argv)
 {
     TestOption* opt = NULL;
-    TestManager* tMgr = NULL;
+    Tester* tester = NULL;
     std::string category;
     std::string dataPath;
     bool isSuccess = false;
@@ -17,15 +17,15 @@ int main(int argc, char **argv)
     {
         std::cout << "######### START TEST #########" << std::endl;
 
-        tMgr = new TestManager();
-        isSuccess = tMgr->execute(opt);
+        tester = new Tester();
+        isSuccess = tester->execute(opt);
 
         if(isSuccess)
             std::cout << "Result: Success" << std::endl;
         else
             std::cout << "Result: Failure" << std::endl;
 
-        delete tMgr;
+        delete tester;
         delete opt;
 
         std::cout << "########## END TEST ##########" << std::endl;

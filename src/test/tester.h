@@ -1,28 +1,12 @@
-#ifndef TESTER_H_
-#define TESTER_H_
+#ifndef TEST_MANAGER_H_
+#define TEST_MANAGER_H_
 
-#include <string>
-#include <map>
-#include "testOption.h"
-
-typedef bool (*FuncPtr)(void);
-
+class TestOption;
 class Tester {
     public:
         Tester();
-        virtual ~Tester();
-        void setNext(Tester* tester);
-        virtual bool request(TestOption* opt) = 0;
-
-    protected:
-        virtual void registerTestCase() = 0;
-        bool exec(int tcId);
-        void add(int tcId, FuncPtr func_cb);
-
-    protected:
-        Tester* m_next;
-        FuncPtr m_testFunc_cb;
-        std::map<int, FuncPtr> m_cbFuncMap;
+        ~Tester();
+        bool execute(TestOption* opt);
 };
 
-#endif /*TESTER_H_*/
+#endif /* TEST_MANAGER_H_ */

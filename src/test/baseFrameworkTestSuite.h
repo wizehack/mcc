@@ -1,7 +1,7 @@
 #ifndef BASE_FRAMEWORK_TESTER_H_
 #define BASE_FRAMEWORK_TESTER_H_
 
-#include "tester.h"
+#include "testSuite.h"
 #include "../manager.h"
 #include "../mediator.h"
 
@@ -31,10 +31,10 @@ class DummyMediator : public mcHubd::Mediator {
         void notify(mcHubd::Contract* contract, mcHubd::CONTRACTREASON reason){};
 };
 
-class BaseFrameworkTester : public Tester{
+class BaseFrameworkTestSuite : public TestSuite{
     public:
-        BaseFrameworkTester();
-        ~BaseFrameworkTester();
+        BaseFrameworkTestSuite();
+        ~BaseFrameworkTestSuite();
         bool request(TestOption* opt);
 
         static bool testSetupAcceptedList();

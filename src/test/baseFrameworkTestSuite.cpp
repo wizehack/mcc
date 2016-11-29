@@ -1,12 +1,12 @@
 #include <iostream>
-#include "baseFrameworkTester.h"
+#include "baseFrameworkTestSuite.h"
 
-std::string BaseFrameworkTester::_testDataPath("");
+std::string BaseFrameworkTestSuite::_testDataPath("");
 
-BaseFrameworkTester::BaseFrameworkTester() : Tester(){}
-BaseFrameworkTester::~BaseFrameworkTester(){}
+BaseFrameworkTestSuite::BaseFrameworkTestSuite() : TestSuite(){}
+BaseFrameworkTestSuite::~BaseFrameworkTestSuite(){}
 
-bool BaseFrameworkTester::request(TestOption* opt)
+bool BaseFrameworkTestSuite::request(TestOption* opt)
 {
     if(opt == NULL)
         return false;
@@ -14,7 +14,7 @@ bool BaseFrameworkTester::request(TestOption* opt)
     if(opt->getCategory().compare("BaseFramework") == 0)
     {
         this->registerTestCase();
-        BaseFrameworkTester::_testDataPath = opt->getTestDataPath();
+        BaseFrameworkTestSuite::_testDataPath = opt->getTestDataPath();
         return this->exec(opt->getTestCaseID());
     }
 
@@ -26,25 +26,25 @@ bool BaseFrameworkTester::request(TestOption* opt)
     return false;
 }
 
-void BaseFrameworkTester::registerTestCase()
+void BaseFrameworkTestSuite::registerTestCase()
 {
-    this->add(1, BaseFrameworkTester::testSetupAcceptedList);
-    this->add(2, BaseFrameworkTester::testCheckAcceptedClientKey);
+    this->add(1, BaseFrameworkTestSuite::testSetupAcceptedList);
+    this->add(2, BaseFrameworkTestSuite::testCheckAcceptedClientKey);
 }
 
-bool BaseFrameworkTester::testSetupAcceptedList()
+bool BaseFrameworkTestSuite::testSetupAcceptedList()
 {
     mcHubd::Mediator* mediator = new DummyMediator();
     mcHubd::Manager* manager = new DummyManager(mediator, "Manager");
 
-    manager->setUpAcceptedList(BaseFrameworkTester::_testDataPath);
+    manager->setUpAcceptedList(BaseFrameworkTestSuite::_testDataPath);
     return manager->hasAcceptedList();
 
     delete mediator;
     delete manager;
 }
 
-bool BaseFrameworkTester::testCheckAcceptedClientKey()
+bool BaseFrameworkTestSuite::testCheckAcceptedClientKey()
 {
     bool bResult = true;
     mcHubd::Mediator* mediator = new DummyMediator();
@@ -56,7 +56,7 @@ bool BaseFrameworkTester::testCheckAcceptedClientKey()
     std::string t4("com.mchannel.test.t4");
     std::string unAccepted("com.mchannel.test.u1");
 
-    manager->setUpAcceptedList(BaseFrameworkTester::_testDataPath);
+    manager->setUpAcceptedList(BaseFrameworkTestSuite::_testDataPath);
 
     if(manager->isAccepted(t1) == false)
         bResult = false;
