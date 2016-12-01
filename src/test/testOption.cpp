@@ -50,7 +50,8 @@ int TestOption::getTestCaseID()
 
 void TestOption::parse(int argc, char **argv)
 {
-    const int OPT_NUMBER = 6;
+    const int OPT_NUMBER = 4;
+    const int MAX_OPT_NUMBER = 6;
     int i = 1;
 
     if(argc < OPT_NUMBER)
@@ -59,25 +60,30 @@ void TestOption::parse(int argc, char **argv)
         return;
     }
 
-    while(i < OPT_NUMBER)
+    while(i < MAX_OPT_NUMBER)
     {
-        if(strcmp(argv[i], "-c") == 0)
+        if(argv[i])
         {
-            this->m_category.assign(argv[i+1]);
-        }
-        else if (strcmp(argv[i], "-t") == 0)
-        {
-            this->m_testCaseID.assign(argv[i+1]);
-        }
-        else if (strcmp(argv[i], "-d") == 0)
-        {
-            this->m_testDataPath.assign(argv[i+1]);
+            if(strcmp(argv[i], "-c") == 0)
+            {
+                this->m_category.assign(argv[i+1]);
+            }
+            else if (strcmp(argv[i], "-t") == 0)
+            {
+                this->m_testCaseID.assign(argv[i+1]);
+            }
+            else if (strcmp(argv[i], "-d") == 0)
+            {
+                this->m_testDataPath.assign(argv[i+1]);
+            }
+            else
+            {
+                std::cout << "argv " << i << " : " << argv[i] << std::endl;
+            }
+
+            i = i + 2;
         }
         else
-        {
-            std::cout << "argv " << i << " : " << argv[i] << std::endl;
-        }
-
-        i = i + 2;
+            break;
     }
 }

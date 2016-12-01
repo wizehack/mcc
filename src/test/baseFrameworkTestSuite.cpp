@@ -1,5 +1,6 @@
 #include <iostream>
 #include "baseFrameworkTestSuite.h"
+#include "../taskSet.h"
 
 std::string BaseFrameworkTestSuite::_testDataPath("");
 
@@ -28,11 +29,12 @@ bool BaseFrameworkTestSuite::request(TestOption* opt)
 
 void BaseFrameworkTestSuite::registerTestCase()
 {
-    this->add(1, BaseFrameworkTestSuite::testSetupAcceptedList);
-    this->add(2, BaseFrameworkTestSuite::testCheckAcceptedClientKey);
+    this->add(1, BaseFrameworkTestSuite::_testSetupAcceptedList);
+    this->add(2, BaseFrameworkTestSuite::_testCheckAcceptedClientKey);
+    this->add(3, BaseFrameworkTestSuite::_testEmptyWaitingTask);
 }
 
-bool BaseFrameworkTestSuite::testSetupAcceptedList()
+bool BaseFrameworkTestSuite::_testSetupAcceptedList()
 {
     mcHubd::Mediator* mediator = new DummyMediator();
     mcHubd::Manager* manager = new DummyManager(mediator, "Manager");
@@ -44,7 +46,7 @@ bool BaseFrameworkTestSuite::testSetupAcceptedList()
     delete manager;
 }
 
-bool BaseFrameworkTestSuite::testCheckAcceptedClientKey()
+bool BaseFrameworkTestSuite::_testCheckAcceptedClientKey()
 {
     bool bResult = true;
     mcHubd::Mediator* mediator = new DummyMediator();
@@ -74,6 +76,24 @@ bool BaseFrameworkTestSuite::testCheckAcceptedClientKey()
         bResult = false;
 
     return bResult;
+}
+
+bool BaseFrameworkTestSuite::_testEmptyWaitingTask()
+{
+    std::string key1("com.mchannel.test.t1");
+    std::string key2("com.mchannel.test.t13");
+    std::string key3("com.mchannel.test.b2");
+
+    if(mcHubd::TaskSet::getInstance()->isWaitingTask(key1))
+       return false;
+
+    if(mcHubd::TaskSet::getInstance()->isWaitingTask(key2))
+        return false;
+
+    if(mcHubd::TaskSet::getInstance()->isWaitingTask(key3))
+        return false;
+
+    return true;
 }
 
 DummyManager::DummyManager(mcHubd::Mediator* mediator, std::string role) :

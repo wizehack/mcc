@@ -12,6 +12,10 @@
         "com.mchannel.test.t10",
         "com.mchannel.test.t11",
         "com.mchannel.test.t12",
-        "com.mchannel.test.t13"
+        "com.mchannel.test.t13",
+        "com.mchannel.foo.f1",
+        "com.mchannel.foo.f2",
+        "com.mchannel.bar.b1",
+        "com.mchannel.bar.b2"
         ]
 }

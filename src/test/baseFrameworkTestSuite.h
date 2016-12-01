@@ -37,8 +37,9 @@ class BaseFrameworkTestSuite : public TestSuite{
         ~BaseFrameworkTestSuite();
         bool request(TestOption* opt);
 
-        static bool testSetupAcceptedList();
-        static bool testCheckAcceptedClientKey();
+        static bool _testSetupAcceptedList();
+        static bool _testCheckAcceptedClientKey();
+        static bool _testEmptyWaitingTask();
 
     protected:
         void registerTestCase();

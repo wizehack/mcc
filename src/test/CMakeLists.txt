@@ -11,14 +11,13 @@ add_executable(
     test
     ${ROOT_DIR}/testSuite.cpp
     ${ROOT_DIR}/testOption.cpp
-    ${ROOT_DIR}/baseFrameworkTestSuite.cpp
     ${ROOT_DIR}/tester.cpp
     ${ROOT_DIR}/testmain.cpp
-
+    ${ROOT_DIR}/baseFrameworkTestSuite.cpp
     ${ROOT_DIR}/../../src/manager.cpp
     ${ROOT_DIR}/../../src/mediator.cpp
     ${ROOT_DIR}/../../src/connectionInfo.cpp
-
+    ${ROOT_DIR}/../../src/taskSet.cpp
 )
 
 # -ljson-c -lglib-2.0
