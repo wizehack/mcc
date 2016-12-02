@@ -15,8 +15,8 @@ bool Tester::execute(TestOption* opt)
     std::cout << "test data path: " << opt->getTestDataPath() << std::endl;
 
     TestSuite* frameworkTestSuite = new BaseFrameworkTestSuite();
-//    TestSuite* registerClientTestSuite = new RegisterClientTestSuite();
-//    frameworkTestSuite->setNext(registerClientTestSuite);
+    TestSuite* registerClientTestSuite = new RegisterClientTestSuite();
+    frameworkTestSuite->setNext(registerClientTestSuite);
 
     return frameworkTestSuite->request(opt);
 }
