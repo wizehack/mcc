@@ -45,6 +45,11 @@ void mcHubd::ChannelStatusMediator::getNewChannel(mcHubd::Contract** pContract)
 
 void mcHubd::ChannelStatusMediator::registerNewChannel(mcHubd::Contract** pContract)
 {
+    mcHubd::Manager* channelMgr = NULL;
+    std::string role("ChannelManager");
+
+    channelMgr = this->getManager(role);
+    channelMgr->add(pContract);
 }
 
 void mcHubd::ChannelStatusMediator::deleteClient(mcHubd::Contract** pContract)
@@ -94,11 +99,6 @@ mcHubd::RESPCODE mcHubd::ChannelStatusMediator::checkRegisterStatus(std::string&
     return MCHUBD_OK;
 }
 
-mcHubd::RESPCODE mcHubd::ChannelStatusMediator::checkCreateStatus(std::string& cKey)
-{
-    return MCHUBD_OK;
-}
-
 bool mcHubd::ChannelStatusMediator::createNewChannel(mcHubd::Contract** pContract)
 {
     mcHubd::Manager* channelMgr = NULL;
@@ -140,10 +140,6 @@ void mcHubd::ChannelStatusMediator::deleteClient(pid_t pid)
 }
 
 void mcHubd::ChannelStatusMediator::deleteChannel(std::string cKey)
-{
-}
-
-void mcHubd::ChannelStatusMediator::notify(std::string cKey, mcHubd::CONTRACTREASON reason)
 {
 }
 

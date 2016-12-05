@@ -34,7 +34,7 @@
 namespace mcHubd {
     typedef enum mType{
         REQ_REG_CLIENT = 0,
-        INF_CRT_CHANNEL,
+        REQ_REG_CHANNEL,
         REQ_DEL_CLIENT,
         REQ_DEL_CHANNEL,
         REQ_SUB_CHANNEL

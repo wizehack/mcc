@@ -27,7 +27,6 @@ namespace mcHubd {
             void notifyCreateChannel(std::string cKey, key_t channel);
             void deleteClient(pid_t pid);
             void deleteChannel(std::string cKey);
-            void notify(std::string cKey, mcHubd::CONTRACTREASON reason);
 
         private:
             mcHubd::Manager* getManager(std::string& role);

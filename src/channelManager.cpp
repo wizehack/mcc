@@ -5,7 +5,6 @@
 mcHubd::ChannelManager::ChannelManager(mcHubd::Mediator* mediator):
     Manager(mediator, "ChannelManager"),
     m_tSet(mcHubd::TaskSet::getInstance()),
-    m_cInfo(mcHubd::ConnectionInfo::getInstance()),
     MAX(10)
 {}
 mcHubd::ChannelManager::~ChannelManager(){}
@@ -15,13 +14,35 @@ void mcHubd::ChannelManager::create(mcHubd::Contract** contract)
     key_t ch = -1;
 
     if((*contract))
+    {
         ch = this->createNewChannel((*contract)->getClientKey(), (*contract)->getContractID());
+        this->m_mediator->notify((*contract), NOTI_INIT);
+    }
 
     (*contract)->setChannel(ch);
 }
 
 void mcHubd::ChannelManager::add(mcHubd::Contract** contract)
 {
+    std::string clientKey((*contract)->getClientKey());
+    key_t channel = (*contract)->getChannel();
+
+    if(this->isAvailable(clientKey))
+    {
+        (*contract)->setRespCode(MCHUBD_IS_AVAILABLE_KEY);
+        return;
+    }
+
+    if(mcHubd::TaskSet::getInstance()->isWaitingTask(clientKey))
+    {
+        mcHubd::ConnectionInfo::getInstance()->addAvailableKey(clientKey, channel);
+        mcHubd::TaskSet::getInstance()->rmWaitToReady(clientKey);
+        this->m_mediator->notify((*contract), NOTI_CHANNEL_READY);
+    }
+    else
+    {
+        (*contract)->setRespCode(MCHUBD_NOT_ACCEPTABLE_KEY);
+    }
 }
 
 void mcHubd::ChannelManager::remove(mcHubd::Contract** contract)
@@ -90,7 +111,6 @@ key_t mcHubd::ChannelManager::createNewChannel(std::string cKey, int id)
     }
 
     this->m_tSet->addWaitToReadyTask(cKey);
-    //notify to subsubscribers
     return ch;
 }
 

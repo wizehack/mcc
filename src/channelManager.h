@@ -23,9 +23,7 @@ namespace mcHubd {
             key_t makeChannelNumber(std::string& cKey, int id);
 
         private:
-            mcHubd::Mediator* m_mediator;
             mcHubd::TaskSet* m_tSet;
-            mcHubd::ConnectionInfo* m_cInfo;
             const int MAX;
     };
 }

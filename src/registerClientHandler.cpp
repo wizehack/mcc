@@ -65,6 +65,7 @@ void mcHubd::RegisterClientHandler::request(std::shared_ptr<mcHubd::Message> msg
             {
                 //send response message to client
                 this->responseOK(respMsg);
+                mediator->notify(NULL, NOTI_CHANNEL_OPEN);
             }
 
             delete mediator;
