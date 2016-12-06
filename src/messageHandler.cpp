@@ -31,7 +31,7 @@ void mcHubd::MessageHandler::responseError(mcHubd::RESPCODE code, std::string ex
     json_object_object_add(jobj, "extraMessage", extraJobj);
     json_object_object_add(jobj, "return", returnJobj);
 
-    std::cout << __FUNCTION__ << " : " << json_object_get_string(jobj) << std::endl;
+//    std::cout << __FUNCTION__ << " : " << json_object_get_string(jobj) << std::endl;
     json_object_put(jobj);
 }
 
@@ -52,7 +52,7 @@ void mcHubd::MessageHandler::responseOK(std::string respMsg)
     json_object_object_add(jobj, "message", msgJobj);
     json_object_object_add(jobj, "return", returnJobj);
 
-    std::cout << __FUNCTION__ << " : " << json_object_get_string(jobj) << std::endl;
+//    std::cout << __FUNCTION__ << " : " << json_object_get_string(jobj) << std::endl;
     json_object_put(jobj);
 }
 
