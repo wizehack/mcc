@@ -15,7 +15,6 @@ add_executable(
     ${ROOT_DIR}/testmain.cpp
     ${ROOT_DIR}/baseFrameworkTestSuite.cpp
     ${ROOT_DIR}/registerClientTestSuite.cpp
-    ${ROOT_DIR}/registerChannelTestSuite.cpp
 
     ${ROOT_DIR}/../../src/manager.cpp
     ${ROOT_DIR}/../../src/mediator.cpp
@@ -24,7 +23,6 @@ add_executable(
     ${ROOT_DIR}/../../src/messageHandler.cpp
     ${ROOT_DIR}/../../src/channelStatusMediator.cpp
     ${ROOT_DIR}/../../src/registerClientHandler.cpp
-    ${ROOT_DIR}/../../src/registerChannelHandler.cpp
     ${ROOT_DIR}/../../src/message.cpp
     ${ROOT_DIR}/../../src/clientManager.cpp
     ${ROOT_DIR}/../../src/channelManager.cpp

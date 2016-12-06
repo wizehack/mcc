@@ -15,20 +15,20 @@ int main(int argc, char **argv)
 
     if(opt)
     {
-//        std::cout << "######### START TEST #########" << std::endl;
+        std::cout << "######### START TEST #########" << std::endl;
 
         tester = new Tester();
         isSuccess = tester->execute(opt);
 
         if(isSuccess)
-            std::cout << opt->getCategory() << " " << opt->getTestCaseID() << ": Success" << std::endl;
+            std::cout << "Result: Success" << std::endl;
         else
-            std::cout << opt->getCategory() << " " << opt->getTestCaseID() << ": Failure" << std::endl;
+            std::cout << "Result: Failure" << std::endl;
 
         delete tester;
         delete opt;
 
-//        std::cout << "########## END TEST ##########" << std::endl;
+        std::cout << "########## END TEST ##########" << std::endl;
     }
     else
         std::cout << "NOT tested" << std::endl;
