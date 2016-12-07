@@ -1,3 +1,8 @@
+echo "##################################### Static Analysis Results ##################################### ";
+# Static Test
+cppcheck --enable=all --inconclusive --std=posix ../../src/ ;
+
+echo "##################################### Dynamic Analysis Results ##################################### ";
 # Test accepted list
 ./build/bin/test -c BaseFramework -t 1 -d ./build/bin/res/acceptedKey.json;
 
@@ -23,10 +28,10 @@
 ./build/bin/test -c RegisterClient -t 5 -d ./build/bin/res/acceptedKey.json;
 
 # Test Register created Channel
-./build/bin/test -c RegisterChannel -t 1 -d ./build/bin/res/createdChannelList.json
+./build/bin/test -c RegisterChannel -t 1 -d ./build/bin/res/createdChannelList.json;
 
 # Test Register NOT created Channel
-./build/bin/test -c RegisterChannel -t 2 -d ./build/bin/res/createdChannelList.json
+./build/bin/test -c RegisterChannel -t 2 -d ./build/bin/res/createdChannelList.json;
 
 # Test Register duplicated Channel
-./build/bin/test -c RegisterChannel -t 3 -d ./build/bin/res/createdChannelList.json
+./build/bin/test -c RegisterChannel -t 3 -d ./build/bin/res/createdChannelList.json;
