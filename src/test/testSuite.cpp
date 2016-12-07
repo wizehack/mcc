@@ -2,7 +2,9 @@
 #include <iostream>
 
 TestSuite::TestSuite():
-    m_next(NULL){}
+    m_next(NULL),
+    m_testFunc_cb(NULL),
+    m_cbFuncMap(){}
 TestSuite::~TestSuite(){}
 
 void TestSuite::setNext(TestSuite* testSuite)

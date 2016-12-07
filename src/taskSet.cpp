@@ -5,7 +5,8 @@
 std::atomic<mcHubd::TaskSet*> mcHubd::TaskSet::_singleton;
 std::mutex mcHubd::TaskSet::_mutex;
 
-mcHubd::TaskSet::TaskSet(){}
+mcHubd::TaskSet::TaskSet():
+    m_waitToReadyList(){}
 mcHubd::TaskSet::~TaskSet(){}
 
 mcHubd::TaskSet* mcHubd::TaskSet::getInstance() {

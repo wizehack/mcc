@@ -58,7 +58,7 @@ void mcHubd::ClientManager::remove(int pid)
 
     psVector = this->m_cInfo->getConnectedClientKey(static_cast<pid_t>(pid));
 
-    for(itor = psVector.begin(); itor != psVector.end(); itor++)
+    for(itor = psVector.begin(); itor != psVector.end(); ++itor)
     {
         this->m_cInfo->removeAvailalbeKey((*itor));  //notify to mediator
 

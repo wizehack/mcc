@@ -2,7 +2,8 @@
 #include "messageHandler.h"
 #include "taskSet.h"
 
-mcHubd::ChannelStatusMediator::ChannelStatusMediator(){}
+mcHubd::ChannelStatusMediator::ChannelStatusMediator():
+    m_mgrList(){}
 mcHubd::ChannelStatusMediator::~ChannelStatusMediator()
 {
     this->m_mgrList.clear();

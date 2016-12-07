@@ -6,7 +6,8 @@
 mcHubd::RegisterClientHandler::RegisterClientHandler():
     m_pid(-1),
     m_processName(),
-    MAX_NUMBER_OF_CLIENT_KEY(10){}
+    MAX_NUMBER_OF_CLIENT_KEY(10),
+    m_cKeyList(){}
 mcHubd::RegisterClientHandler::~RegisterClientHandler(){}
 
 void mcHubd::RegisterClientHandler::request(std::shared_ptr<mcHubd::Message> msg)
@@ -171,6 +172,7 @@ std::string mcHubd::RegisterClientHandler::makeNewChannelList(mcHubd::Mediator* 
     int sequenceNumber = 0;
     std::list<std::string>::iterator itor;
     std::string respMsg("[");
+    mcHubd::Contract* contract = NULL;
 
     if(mediator == NULL)
     {
@@ -180,24 +182,14 @@ std::string mcHubd::RegisterClientHandler::makeNewChannelList(mcHubd::Mediator* 
 
     // Each client sends its key list to create message channel
     // In this loop, new channel is created from the client key list
-    for(itor = this->m_cKeyList.begin(); itor != this->m_cKeyList.end(); itor++)
+    for(itor = this->m_cKeyList.begin(); itor != this->m_cKeyList.end(); ++itor)
     {
         mcHubd::RESPCODE code;
         struct json_object* jobj = NULL;
         std::string keyChannelJson;
-        mcHubd::Contract* contract = NULL;
 
         contract = new mcHubd::Contract(sequenceNumber);
         sequenceNumber++;
-
-        if(contract)
-        {
-            contract->setProcessName(this->m_processName);
-            contract->setProcessId(this->m_pid);
-            contract->setClientKey((*itor));
-        }
-
-        mediator->getNewChannel(&contract);
 
         if(contract == NULL)
         {
@@ -206,6 +198,11 @@ std::string mcHubd::RegisterClientHandler::makeNewChannelList(mcHubd::Mediator* 
             respMsg.clear();
             return respMsg;
         }
+
+        contract->setProcessName(this->m_processName);
+        contract->setProcessId(this->m_pid);
+        contract->setClientKey((*itor));
+        mediator->getNewChannel(&contract);
 
         if(contract->getRespCode() == MCHUBD_OK)
         {
@@ -217,6 +214,7 @@ std::string mcHubd::RegisterClientHandler::makeNewChannelList(mcHubd::Mediator* 
                 this->responseError(code, (*itor));
                 json_object_put(jobj);
                 respMsg.clear();
+                delete contract;
                 return respMsg;
             }
 
@@ -225,12 +223,12 @@ std::string mcHubd::RegisterClientHandler::makeNewChannelList(mcHubd::Mediator* 
             //make json array [ json1, json2, ...]
             if(keyChannelJson.empty() == false)
             {
-                itor++; //check if current key is last element or not
+                ++itor; //check if current key is last element or not
                 if((itor) != this->m_cKeyList.end())
                     respMsg = respMsg + keyChannelJson.c_str() + ", ";
                 else
                     respMsg = respMsg + keyChannelJson.c_str() + "]";
-                itor--;
+                --itor;
             }
 
             json_object_put(jobj);
@@ -239,8 +237,11 @@ std::string mcHubd::RegisterClientHandler::makeNewChannelList(mcHubd::Mediator* 
         {
             this->responseError(contract->getRespCode(), (*itor));
             respMsg.clear();
+            delete contract;
             return respMsg;
         }
+
+        delete contract;
     }
 
     return respMsg;

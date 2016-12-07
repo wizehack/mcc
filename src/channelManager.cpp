@@ -118,7 +118,6 @@ key_t mcHubd::ChannelManager::makeChannelNumber(std::string& cKey, int id)
 {
     std::map<std::string, pid_t> conMap;
     std::map<std::string, pid_t>::iterator it;
-    pid_t pid = -1;
     key_t ch = -1;
 
     if(id >= MAX)
@@ -129,10 +128,9 @@ key_t mcHubd::ChannelManager::makeChannelNumber(std::string& cKey, int id)
 
     if(it != conMap.end())
     {
+        pid_t pid = -1;
         pid = it->second;
         ch = static_cast<key_t>(pid * 10 + id); //create unique channel number
-//        std::cout << __FUNCTION__ << " [" << __LINE__ << "] " << " pid: "
-//            << it->second << " key: " << cKey << " ch: " << ch << " sequenceNumber: " << id << std::endl;
     }
 
     return ch;

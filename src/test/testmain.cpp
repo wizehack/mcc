@@ -7,8 +7,6 @@ int main(int argc, char **argv)
 {
     TestOption* opt = NULL;
     Tester* tester = NULL;
-    std::string category;
-    std::string dataPath;
     bool isSuccess = false;
 
     opt = new TestOption(argc, argv);

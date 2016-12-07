@@ -36,14 +36,17 @@ void BaseFrameworkTestSuite::registerTestCase()
 
 bool BaseFrameworkTestSuite::_testSetupAcceptedList()
 {
+    bool hasList = false;
     mcHubd::Mediator* mediator = new DummyMediator();
     mcHubd::Manager* manager = new DummyManager(mediator, "Manager");
 
     manager->setUpAcceptedList(BaseFrameworkTestSuite::_testDataPath);
-    return manager->hasAcceptedList();
+    hasList = manager->hasAcceptedList();
 
     delete mediator;
     delete manager;
+
+    return hasList;
 }
 
 bool BaseFrameworkTestSuite::_testCheckAcceptedClientKey()

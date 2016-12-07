@@ -35,6 +35,8 @@ namespace mcHubd {
 
         private:
             Manager();
+            Manager(const mcHubd::Manager&);
+            Manager& operator=(const mcHubd::Manager& rhs);
     };
 }
 

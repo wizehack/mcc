@@ -19,6 +19,9 @@ namespace mcHubd {
 
         private:
             ChannelManager();
+            ChannelManager(const mcHubd::ChannelManager&);
+            ChannelManager& operator=(const mcHubd::ChannelManager& rhs);
+
             key_t createNewChannel(std::string name, int id);
             key_t makeChannelNumber(std::string& cKey, int id);
 

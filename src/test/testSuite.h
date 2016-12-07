@@ -11,6 +11,7 @@ class TestSuite {
     public:
         TestSuite();
         virtual ~TestSuite();
+
         void setNext(TestSuite* testSuite);
         virtual bool request(TestOption* opt) = 0;
 
@@ -18,6 +19,10 @@ class TestSuite {
         virtual void registerTestCase() = 0;
         bool exec(int tcId);
         void add(int tcId, FuncPtr func_cb);
+
+    private:
+        TestSuite(const TestSuite&);
+        TestSuite& operator=(const TestSuite& rhs);
 
     protected:
         TestSuite* m_next;

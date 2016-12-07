@@ -25,6 +25,8 @@ namespace mcHubd {
 
         private:
             ClientManager();
+            ClientManager(const mcHubd::ClientManager&);
+            ClientManager& operator=(const mcHubd::ClientManager& rhs);
 
         private:
             mcHubd::ConnectionInfo* m_cInfo;

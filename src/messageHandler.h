@@ -18,6 +18,8 @@ namespace mcHubd {
             void responseOK(std::string respMsg);
 
         private:
+            MessageHandler(const mcHubd::MessageHandler&);
+            MessageHandler& operator=(const mcHubd::MessageHandler& rhs);
             std::string getMessage(mcHubd::RESPCODE code);
 
         protected:

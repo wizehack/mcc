@@ -3,7 +3,10 @@
 std::atomic<mcHubd::ConnectionInfo*> mcHubd::ConnectionInfo::_singleton;
 std::mutex mcHubd::ConnectionInfo::_mutex;
 
-mcHubd::ConnectionInfo::ConnectionInfo(){}
+mcHubd::ConnectionInfo::ConnectionInfo():
+    m_acceptedList(),
+    m_connectedProcessMap(),
+    m_availableListMap(){}
 mcHubd::ConnectionInfo::~ConnectionInfo(){}
 
 mcHubd::ConnectionInfo* mcHubd::ConnectionInfo::getInstance() {

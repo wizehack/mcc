@@ -75,39 +75,38 @@ void mcHubd::Manager::clearAcceptedList(std::string& acceptedKeyFilePath)
 bool mcHubd::Manager::hasAcceptedList()
 {
     std::vector<std::string> keyList = this->m_cInfo->getAcceptedList();
-    if(keyList.size())
-        return true;
-    return false;
+    if(keyList.empty())
+        return false;
+    return true;
 }
 
 bool mcHubd::Manager::isAccepted(std::string& key)
 {
     std::vector<std::string> keyList = this->m_cInfo->getAcceptedList();
 
-    if(keyList.size())
-    {
-        std::vector<std::string>::iterator it;
-        it = std::find(keyList.begin(), keyList.end(), key);
+    if(keyList.empty())
+        return false;
 
-        if(it != keyList.end())
-            return true;
-    }
+    std::vector<std::string>::iterator it;
+    it = std::find(keyList.begin(), keyList.end(), key);
 
-    return false;
+    if(it == keyList.end())
+        return false;
+
+    return true;
 }
 
 bool mcHubd::Manager::isAvailable(std::string& key)
 {
     std::map<std::string, key_t> availKeyMap = this->m_cInfo->getAvailableList();
 
-    if(availKeyMap.size())
-    {
-        std::map<std::string, key_t>::iterator it;
-        it = availKeyMap.find(key);
+    if(availKeyMap.empty())
+        return false;
+    std::map<std::string, key_t>::iterator it;
+    it = availKeyMap.find(key);
 
-        if(it != availKeyMap.end())
-            return true;
-    }
+    if(it == availKeyMap.end())
+        return false;
 
-    return false;
+    return true;
 }

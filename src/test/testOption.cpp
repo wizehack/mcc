@@ -13,12 +13,12 @@ TestOption::TestOption(int argc, char **argv):
 
 TestOption::~TestOption(){}
 
-std::string TestOption::getCategory()
+std::string& TestOption::getCategory()
 {
     return this->m_category;
 }
 
-std::string TestOption::getTestDataPath()
+std::string& TestOption::getTestDataPath()
 {
     return this->m_testDataPath;
 }

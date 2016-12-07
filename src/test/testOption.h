@@ -8,8 +8,8 @@ class TestOption {
         TestOption(int argc, char **argv);
         ~TestOption();
 
-        std::string getCategory();
-        std::string getTestDataPath();
+        std::string& getCategory();
+        std::string& getTestDataPath();
         int getTestCaseID();
 
     private:
