@@ -47,6 +47,52 @@ void mcHubd::ChannelManager::add(mcHubd::Contract** contract)
 
 void mcHubd::ChannelManager::remove(mcHubd::Contract** contract)
 {
+    std::map<std::string, key_t> chMap;
+    std::map<std::string, key_t>::iterator it;
+    std::string cKey;
+    cKey = (*contract)->getClientKey();
+
+    if(cKey.empty())
+    {
+        (*contract)->setRespCode(MCHUBD_INTERNAL_ERROR);
+        return;
+    }
+
+    if(this->m_tSet->isWaitingTask(cKey))
+    {
+        this->m_tSet->rmWaitToReady(cKey);
+        (*contract)->setRespCode(MCHUBD_OK);
+        return;
+    }
+
+    chMap = this->m_cInfo->getAvailableList();
+
+    if(chMap.empty())
+    {
+        (*contract)->setRespCode(MCHUBD_INTERNAL_ERROR);
+        return;
+    }
+
+    it = chMap.find(cKey);
+
+    if(it != chMap.end())
+    {
+        key_t ch = it->second;
+
+        if(ch != (*contract)->getChannel())
+        {
+            (*contract)->setRespCode(MCHUBD_INFORM_CHANNEL_ERROR);
+            return;
+        }
+
+        this->m_cInfo->removeAvailalbeKey(cKey);
+        this->removeChannel(ch);
+        (*contract)->setRespCode(MCHUBD_OK);
+    }
+    else
+    {
+        (*contract)->setRespCode(MCHUBD_INTERNAL_ERROR);
+    }
 }
 
 void mcHubd::ChannelManager::get(mcHubd::Contract** contract)
@@ -134,4 +180,22 @@ key_t mcHubd::ChannelManager::makeChannelNumber(std::string& cKey, int id)
     }
 
     return ch;
+}
+
+void mcHubd::ChannelManager::removeChannel(key_t ch)
+{
+    if(ch > 0)
+    {
+        int shmid = 0;
+
+        if((shmid = shmget(ch, 1024, IPC_CREAT| 0666)) == -1)
+        {
+            perror("shmget error");
+        }
+
+        if(shmctl(shmid, IPC_RMID, 0) == -1)
+        {
+            perror("shnctl failed");
+        }
+    }
 }

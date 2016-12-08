@@ -26,7 +26,6 @@ namespace mcHubd {
             bool createNewChannel(mcHubd::Contract** pContract);
             void notifyCreateChannel(std::string cKey, key_t channel);
             void deleteClient(pid_t pid);
-            void deleteChannel(std::string cKey);
 
         private:
             mcHubd::Manager* getManager(std::string& role);

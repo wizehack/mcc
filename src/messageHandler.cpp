@@ -78,7 +78,7 @@ std::string mcHubd::MessageHandler::getMessage(mcHubd::RESPCODE code)
     else if (code == MCHUBD_IS_INFORMED_KEY)
         message.assign("INFORMED KEY");
     else if (code == MCHUBD_INFORM_CHANNEL_ERROR)
-        message.assign("INFORM CHANNEL ERROR");
+        message.assign("INFORMED CHANNEL ERROR");
     else if (code == MCHUBD_EXCEEDED_MAXIMUM_CLIENT_KEY)
         message.assign("EXCEEDED MAXIMUM CLIENT KEY");
     else if (code == MCHUBD_INTERNAL_ERROR)

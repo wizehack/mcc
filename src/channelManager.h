@@ -24,6 +24,7 @@ namespace mcHubd {
 
             key_t createNewChannel(std::string name, int id);
             key_t makeChannelNumber(std::string& cKey, int id);
+            void removeChannel(key_t ch);
 
         private:
             mcHubd::TaskSet* m_tSet;

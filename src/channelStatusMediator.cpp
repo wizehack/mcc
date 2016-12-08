@@ -55,15 +55,22 @@ void mcHubd::ChannelStatusMediator::registerNewChannel(mcHubd::Contract** pContr
 
 void mcHubd::ChannelStatusMediator::deleteClient(mcHubd::Contract** pContract)
 {
+    /*
     if((*pContract))
     {
         this->deleteClient((*pContract)->getProcessId());
-        this->deleteChannel((*pContract)->getClientKey());
+        this->deleteChannel(pContract);
     }
+    */
 }
 
 void mcHubd::ChannelStatusMediator::deleteChannel(mcHubd::Contract** pContract)
 {
+    mcHubd::Manager* channelMgr = NULL;
+    std::string role("ChannelManager");
+
+    channelMgr = this->getManager(role);
+    channelMgr->remove(pContract);
 }
 
 void mcHubd::ChannelStatusMediator::notify(mcHubd::Contract* contract, mcHubd::CONTRACTREASON reason)
@@ -137,10 +144,6 @@ void mcHubd::ChannelStatusMediator::notifyCreateChannel(std::string cKey, key_t 
 }
 
 void mcHubd::ChannelStatusMediator::deleteClient(pid_t pid)
-{
-}
-
-void mcHubd::ChannelStatusMediator::deleteChannel(std::string cKey)
 {
 }
 
