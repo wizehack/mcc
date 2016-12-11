@@ -35,3 +35,15 @@ echo "##################################### Dynamic Analysis Results ###########
 
 # Test Register duplicated Channel
 ./build/bin/test -c RegisterChannel -t 3 -d ./build/bin/res/createdChannelList.json;
+
+# Test delete available key
+./build/bin/test -c DeleteChannel -t 1 -d ./build/bin/res/registeredChannelList.json;
+
+# Test delete ready key
+./build/bin/test -c DeleteChannel -t 2 -d ./build/bin/res/registeredChannelList.json;
+
+# Test delete empty Channel
+./build/bin/test -c DeleteChannel -t 3 -d ./build/bin/res/registeredChannelList.json;
+
+# Test delete unknown Channel
+./build/bin/test -c DeleteChannel -t 4 -d ./build/bin/res/registeredChannelList.json;
