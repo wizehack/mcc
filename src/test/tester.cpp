@@ -6,6 +6,7 @@
 #include "registerClientTestSuite.h"
 #include "registerChannelTestSuite.h"
 #include "deleteChannelTestSuite.h"
+#include "deleteClientTestSuite.h"
 
 Tester::Tester(){}
 Tester::~Tester(){}
@@ -22,10 +23,12 @@ bool Tester::execute(TestOption* opt)
     TestSuite* registerClientTestSuite = new RegisterClientTestSuite();
     TestSuite* registerChannelTestSuite = new RegisterChannelTestSuite();
     TestSuite* deleteChannelTestSuite = new DeleteChannelTestSuite();
+    TestSuite* deleteClientTestSuite = new DeleteClientTestSuite();
 
     frameworkTestSuite->setNext(registerClientTestSuite);
     registerClientTestSuite->setNext(registerChannelTestSuite);
     registerChannelTestSuite->setNext(deleteChannelTestSuite);
+    deleteChannelTestSuite->setNext(deleteClientTestSuite);
 
     return frameworkTestSuite->request(opt);
 }

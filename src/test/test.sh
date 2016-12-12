@@ -47,3 +47,5 @@ echo "##################################### Dynamic Analysis Results ###########
 
 # Test delete unknown Channel
 ./build/bin/test -c DeleteChannel -t 4 -d ./build/bin/res/registeredChannelList.json;
+
+./build/bin/test -c DeleteClient -t 1 -d ./build/bin/res/registeredChannelList.json;

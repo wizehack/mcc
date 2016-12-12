@@ -1,5 +1,5 @@
 #include <iostream>
-#include "deleteChannelTestSuite.h"
+#include "deleteClientTestSuite.h"
 #include "../mcHubType.h"
 #include "../connectionInfo.h"
 #include "../taskSet.h"
@@ -8,24 +8,23 @@
 #include "../mediator.h"
 #include "../channelStatusMediator.h"
 #include "../channelManager.h"
-#include "../deleteChannelHandler.h"
+#include "../deleteClientHandler.h"
 
+std::string DeleteClientTestSuite::_testDataPath("");
 
-std::string DeleteChannelTestSuite::_testDataPath("");
-
-DeleteChannelTestSuite::DeleteChannelTestSuite() :
+DeleteClientTestSuite::DeleteClientTestSuite() :
     TestSuite(),
     m_testCaseID(0){}
-DeleteChannelTestSuite::~DeleteChannelTestSuite(){}
+DeleteClientTestSuite::~DeleteClientTestSuite(){}
 
-bool DeleteChannelTestSuite::request(TestOption* opt)
+bool DeleteClientTestSuite::request(TestOption* opt)
 {
     if(opt == NULL)
         return false;
 
-    if(opt->getCategory().compare("DeleteChannel") == 0)
+    if(opt->getCategory().compare("DeleteClient") == 0)
     {
-        DeleteChannelTestSuite::_testDataPath = opt->getTestDataPath();
+        DeleteClientTestSuite::_testDataPath = opt->getTestDataPath();
         this->registerTestCase();
         return this->exec(opt->getTestCaseID());
     }
@@ -39,44 +38,42 @@ bool DeleteChannelTestSuite::request(TestOption* opt)
 }
 
 
-void DeleteChannelTestSuite::registerTestCase()
+void DeleteClientTestSuite::registerTestCase()
 {
     if(this->setPrecondition())
     {
-        this->add(1, DeleteChannelTestSuite::_testDeleteAvailableKey);
-        this->add(2, DeleteChannelTestSuite::_testDeleteReadyKey);
-        this->add(3, DeleteChannelTestSuite::_testDeleteEmptyChannel);
-        this->add(4, DeleteChannelTestSuite::_testDeleteUnknownChannel);
+        this->add(1, DeleteClientTestSuite::_testDeleteClient);
     }
     else
     {
         std::cout << "Precondition Failed" << std::endl;
     }
-
 }
 
-bool DeleteChannelTestSuite::setPrecondition()
+bool DeleteClientTestSuite::setPrecondition()
 {
     struct json_object* jobj = NULL;
     bool isParsed;
 
-    jobj = json_object_from_file(DeleteChannelTestSuite::_testDataPath.c_str());
+    jobj = json_object_from_file(DeleteClientTestSuite::_testDataPath.c_str());
 
     if( (jobj == NULL) || is_error(jobj) )
     {
         std::cout << "Test Data is NOT JSON" << std::endl;
-        std::cout << DeleteChannelTestSuite::_testDataPath<< std::endl;
+        std::cout << DeleteClientTestSuite::_testDataPath<< std::endl;
         return false;
     }
 
-    isParsed = parseProcessList(jobj) && parseRegisteredKeyList(jobj);
+    isParsed = parseProcessList(jobj);
+//    isParsed = isParsed && parseConnectedKeyList(jobj);
+    isParsed = isParsed && parseRegisteredKeyList(jobj);
 
     json_object_put(jobj);
 
     return isParsed;
 }
 
-bool DeleteChannelTestSuite::parseProcessList(struct json_object* jobj)
+bool DeleteClientTestSuite::parseProcessList(struct json_object* jobj)
 {
     struct json_object* psListJobj = NULL;
     struct array_list* psArrList = NULL;
@@ -163,7 +160,7 @@ bool DeleteChannelTestSuite::parseProcessList(struct json_object* jobj)
     return true;
 }
 
-bool DeleteChannelTestSuite::parseRegisteredKeyList(struct json_object* jobj)
+bool DeleteClientTestSuite::parseRegisteredKeyList(struct json_object* jobj)
 {
     struct json_object* regListJobj = NULL;
     struct array_list* regList = NULL;
@@ -176,7 +173,7 @@ bool DeleteChannelTestSuite::parseRegisteredKeyList(struct json_object* jobj)
 
     if(!json_object_object_get_ex(jobj, "registeredKeyList", &regListJobj))
     {
-        std::cout << "createdChannelList key is NOT found" << std::endl;
+        std::cout << "createdClientList key is NOT found" << std::endl;
         json_object_put(jobj);
         return false;
     }
@@ -223,44 +220,17 @@ bool DeleteChannelTestSuite::parseRegisteredKeyList(struct json_object* jobj)
     return true;
 }
 
-bool DeleteChannelTestSuite::_testDeleteAvailableKey()
+bool DeleteClientTestSuite::_testDeleteClient()
 {
-    mcHubd::DeleteChannelHandler handler;
+    std::vector<std::string> clientMap;
+    std::map<std::string, pid_t>::iterator itor;
+
+    mcHubd::DeleteClientHandler handler;
     mcHubd::Mediator* mediator = new mcHubd::ChannelStatusMediator();
     mcHubd::Manager* mgr = new mcHubd::ChannelManager(mediator);
 
-    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CHANNEL);
-    std::string body;
-    std::string f1("com.mchannel.foo.f1");
-    std::string f2("com.mchannel.foo.f2");
+    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CLIENT);
 
-    body.assign("{\"key\": \"com.mchannel.foo.f1\", \"channel\": 2000}");
-    msg->setBody(body);
-    handler.request(msg);
-
-    body.assign("{\"key\": \"com.mchannel.foo.f2\", \"channel\": 2001}");
-    msg->setBody(body);
-    handler.request(msg);
-
-    if(mgr->isAvailable(f1))
-        return false;
-    if(mgr->isAvailable(f2))
-        return false;
-    if(mcHubd::TaskSet::getInstance()->isWaitingTask(f1))
-       return false;
-    if(mcHubd::TaskSet::getInstance()->isWaitingTask(f2))
-       return false;
-
-    return true;
-}
-
-bool DeleteChannelTestSuite::_testDeleteReadyKey()
-{
-    mcHubd::DeleteChannelHandler handler;
-    mcHubd::Mediator* mediator = new mcHubd::ChannelStatusMediator();
-    mcHubd::Manager* mgr = new mcHubd::ChannelManager(mediator);
-
-    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CHANNEL);
     std::string body;
     std::string t1("com.mchannel.test.t1");
     std::string t2("com.mchannel.test.t2");
@@ -283,27 +253,15 @@ bool DeleteChannelTestSuite::_testDeleteReadyKey()
     if(mcHubd::TaskSet::getInstance()->isWaitingTask(b2) == false)
        return false;
 
-    body.assign("{\"key\": \"com.mchannel.test.t1\"}");
+    body.assign("{\"pid\": 100, \"psName\": \"test\"}");
     msg->setBody(body);
     handler.request(msg);
 
-    body.assign("{\"key\": \"com.mchannel.test.t2\"}");
+    body.assign("{\"pid\": 200, \"psName\": \"foo\"}");
     msg->setBody(body);
     handler.request(msg);
 
-    body.assign("{\"key\": \"com.mchannel.foo.f1\"}");
-    msg->setBody(body);
-    handler.request(msg);
-
-    body.assign("{\"key\": \"com.mchannel.foo.f2\"}");
-    msg->setBody(body);
-    handler.request(msg);
-
-    body.assign("{\"key\": \"com.mchannel.bar.b1\"}");
-    msg->setBody(body);
-    handler.request(msg);
-
-    body.assign("{\"key\": \"com.mchannel.bar.b2\"}");
+    body.assign("{\"pid\": 400, \"psName\": \"bar\"}");
     msg->setBody(body);
     handler.request(msg);
 
@@ -319,68 +277,30 @@ bool DeleteChannelTestSuite::_testDeleteReadyKey()
        return false;
     if(mcHubd::TaskSet::getInstance()->isWaitingTask(b2))
        return false;
-
-    return true;
-}
-
-bool DeleteChannelTestSuite::_testDeleteEmptyChannel()
-{
-    mcHubd::DeleteChannelHandler handler;
-    mcHubd::Mediator* mediator = new mcHubd::ChannelStatusMediator();
-    mcHubd::Manager* mgr = new mcHubd::ChannelManager(mediator);
-
-    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CHANNEL);
-    std::string body;
-    std::string f1("com.mchannel.foo.f1");
-    std::string f2("com.mchannel.foo.f2");
-
-    body.assign("{\"key\": \"com.mchannel.foo.f1\"}");
-    msg->setBody(body);
-    handler.request(msg);
-
-    body.assign("{\"key\": \"com.mchannel.foo.f2\"}");
-    msg->setBody(body);
-    handler.request(msg);
-
-    if(mgr->isAvailable(f1) == false)
+    if(mgr->isAvailable(t1))
         return false;
-    if(mgr->isAvailable(f2) == false)
+    if(mgr->isAvailable(t2))
         return false;
-    if(mcHubd::TaskSet::getInstance()->isWaitingTask(f1))
-       return false;
-    if(mcHubd::TaskSet::getInstance()->isWaitingTask(f2))
-       return false;
-
-    return true;
-}
-
-bool DeleteChannelTestSuite::_testDeleteUnknownChannel()
-{
-    mcHubd::DeleteChannelHandler handler;
-    mcHubd::Mediator* mediator = new mcHubd::ChannelStatusMediator();
-    mcHubd::Manager* mgr = new mcHubd::ChannelManager(mediator);
-
-    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CHANNEL);
-    std::string body;
-    std::string f1("com.mchannel.foo.f1");
-    std::string f2("com.mchannel.foo.f2");
-
-    body.assign("{\"key\": \"com.mchannel.foo.f1\", \"channel\": 3000}");
-    msg->setBody(body);
-    handler.request(msg);
-
-    body.assign("{\"key\": \"com.mchannel.foo.f2\", \"channel\": 3001}");
-    msg->setBody(body);
-    handler.request(msg);
-
-    if(mgr->isAvailable(f1) == false)
+    if(mgr->isAvailable(f1))
         return false;
-    if(mgr->isAvailable(f2) == false)
+    if(mgr->isAvailable(f2))
         return false;
-    if(mcHubd::TaskSet::getInstance()->isWaitingTask(f1))
-       return false;
-    if(mcHubd::TaskSet::getInstance()->isWaitingTask(f2))
-       return false;
+    if(mgr->isAvailable(b1))
+        return false;
+    if(mgr->isAvailable(b2))
+        return false;
+
+    clientMap = mcHubd::ConnectionInfo::getInstance()->getConnectedClientKey(100);
+    if(clientMap.empty() == false)
+        return false;
+
+    clientMap = mcHubd::ConnectionInfo::getInstance()->getConnectedClientKey(200);
+    if(clientMap.empty() == false)
+        return false;
+
+    clientMap = mcHubd::ConnectionInfo::getInstance()->getConnectedClientKey(400);
+    if(clientMap.empty() == false)
+        return false;
 
     return true;
 }
