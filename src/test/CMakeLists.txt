@@ -2,7 +2,12 @@ cmake_minimum_required (VERSION 2.8.7)
 project (mcc)
 
 #-Wall -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -std=c++11
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Weffc++ -g -Wall -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/local/include/json-c -std=c++11 -pthread")
+
+# Build to Unit Test
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Weffc++ -g -Wall -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/local/include/json-c -std=c++11 -pthread")
+
+# Build to meassure Coverage
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage -O0 -Weffc++ -g -Wall -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/local/include/json-c -std=c++11 -pthread")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin/")
 set(ROOT_DIR ./)
