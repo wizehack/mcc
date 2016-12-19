@@ -38,7 +38,7 @@ bool RegisterChannelTestSuite::request(TestOption* opt)
 
 void RegisterChannelTestSuite::registerTestCase()
 {
-    if(this->setPrecondition())
+    if(RegisterChannelTestSuite::_setPrecondition())
     {
         this->add(1, RegisterChannelTestSuite::_testRegisterCreatedChannel);
         this->add(2, RegisterChannelTestSuite::_testRegisterNOTCreatedChannel);
@@ -50,7 +50,7 @@ void RegisterChannelTestSuite::registerTestCase()
     }
 }
 
-bool RegisterChannelTestSuite::setPrecondition()
+bool RegisterChannelTestSuite::_setPrecondition()
 {
     struct json_object* jobj = NULL;
     struct json_object* psListJobj = NULL;
@@ -59,8 +59,6 @@ bool RegisterChannelTestSuite::setPrecondition()
     struct array_list* psArrList = NULL;
     struct array_list* chArrList = NULL;
 
-    struct json_object* psArrItemJobj = NULL;
-    struct json_object* chArrItemJobj = NULL;
     struct json_object* psNameJobj = NULL;
     struct json_object* pidJobj = NULL;
     struct json_object* keyJobj = NULL;
@@ -99,6 +97,7 @@ bool RegisterChannelTestSuite::setPrecondition()
     {
         std::string psName;
         int pid;
+        struct json_object* psArrItemJobj = NULL;
 
         psArrItemJobj = static_cast<json_object*>(array_list_get_idx(psArrList, arrIndex));
 
@@ -143,6 +142,7 @@ bool RegisterChannelTestSuite::setPrecondition()
     for(arrIndex = 0; arrIndex < arrSize; arrIndex++)
     {
         std::string key;
+        struct json_object* chArrItemJobj = NULL;
 
         chArrItemJobj = static_cast<json_object*>(array_list_get_idx(chArrList, arrIndex));
 
@@ -254,10 +254,6 @@ bool RegisterChannelTestSuite::_testRegisterNOTCreatedChannel()
 
     std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CHANNEL);
     std::string body;
-
-    /*Registered key*/
-    std::string f1("com.mchannel.foo.f1");
-    std::string f2("com.mchannel.foo.f2");
 
     /*NOT registered key*/
     std::string b1("com.mchannel.bar.b1");

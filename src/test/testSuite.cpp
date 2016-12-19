@@ -14,8 +14,6 @@ void TestSuite::setNext(TestSuite* testSuite)
 
 bool TestSuite::exec(int tcId)
 {
-    std::map<int, FuncPtr>::iterator itor;
-
     if(tcId <= 0)
         return false;
 

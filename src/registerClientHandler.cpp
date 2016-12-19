@@ -25,7 +25,7 @@ void mcHubd::RegisterClientHandler::request(std::shared_ptr<mcHubd::Message> msg
         {
             std::string emptyMsg;
             code = MCHUBD_INVALID_MSG;
-            this->responseError(code, emptyMsg);
+            this->_responseError(code, emptyMsg);
             return;
         }
 
@@ -34,7 +34,7 @@ void mcHubd::RegisterClientHandler::request(std::shared_ptr<mcHubd::Message> msg
             std::string msg;
             msg = "DO NOT EXCEED " + std::to_string(MAX_NUMBER_OF_CLIENT_KEY);
             code = MCHUBD_EXCEEDED_MAXIMUM_CLIENT_KEY;
-            this->responseError(code, msg);
+            this->_responseError(code, msg);
             return;
         }
 
@@ -65,7 +65,7 @@ void mcHubd::RegisterClientHandler::request(std::shared_ptr<mcHubd::Message> msg
             else
             {
                 //send response message to client
-                this->responseOK(respMsg);
+                this->_responseOK(respMsg);
                 mediator->notify(NULL, NOTI_CHANNEL_OPEN);
             }
 
@@ -79,7 +79,7 @@ void mcHubd::RegisterClientHandler::request(std::shared_ptr<mcHubd::Message> msg
     }
 }
 
-bool mcHubd::RegisterClientHandler::createChannelJobj(struct json_object** jobj, std::string cKey, key_t channel)
+bool mcHubd::RegisterClientHandler::_createChannelJobj(struct json_object** jobj, std::string cKey, key_t channel)
 {
     struct json_object* keyJobj = NULL;
     struct json_object* channelJobj = NULL;
@@ -105,7 +105,6 @@ bool mcHubd::RegisterClientHandler::parse(std::string payload)
     struct json_object* processIdJobj = NULL;
     struct json_object* processNameJobj = NULL;
     struct json_object* keyListJobj = NULL;
-    struct json_object* keyJobj = NULL;
     struct array_list* keyList = NULL;
 
     int arrSize = 0;
@@ -158,6 +157,7 @@ bool mcHubd::RegisterClientHandler::parse(std::string payload)
 
     for(arrIndex = 0; arrIndex < arrSize; arrIndex++)
     {
+        struct json_object* keyJobj = NULL;
         keyJobj = static_cast<json_object*>(array_list_get_idx(keyList, arrIndex));
         std::string clientKey(json_object_get_string(keyJobj));
         this->m_cKeyList.push_back(clientKey);
@@ -194,7 +194,7 @@ std::string mcHubd::RegisterClientHandler::makeNewChannelList(mcHubd::Mediator* 
         if(contract == NULL)
         {
             code = MCHUBD_INTERNAL_ERROR;
-            this->responseError(code, (*itor));
+            this->_responseError(code, (*itor));
             respMsg.clear();
             return respMsg;
         }
@@ -208,10 +208,10 @@ std::string mcHubd::RegisterClientHandler::makeNewChannelList(mcHubd::Mediator* 
         {
             jobj = json_object_new_object();
 
-            if(this->createChannelJobj(&jobj, (*itor), contract->getChannel()) == false)
+            if(mcHubd::RegisterClientHandler::_createChannelJobj(&jobj, (*itor), contract->getChannel()) == false)
             {
                 code = MCHUBD_CREATE_CHANNEL_ERROR;
-                this->responseError(code, (*itor));
+                this->_responseError(code, (*itor));
                 json_object_put(jobj);
                 respMsg.clear();
                 delete contract;
@@ -235,7 +235,7 @@ std::string mcHubd::RegisterClientHandler::makeNewChannelList(mcHubd::Mediator* 
         }
         else
         {
-            this->responseError(contract->getRespCode(), (*itor));
+            this->_responseError(contract->getRespCode(), (*itor));
             respMsg.clear();
             delete contract;
             return respMsg;

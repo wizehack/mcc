@@ -21,7 +21,7 @@ void mcHubd::DeleteClientHandler::request(std::shared_ptr<mcHubd::Message> msg)
             mcHubd::RESPCODE code;
             code = MCHUBD_INVALID_MSG;
 
-            this->responseError(code, respMsg);
+            this->_responseError(code, respMsg);
             return;
         }
 
@@ -46,16 +46,16 @@ void mcHubd::DeleteClientHandler::request(std::shared_ptr<mcHubd::Message> msg)
             code = contract->getRespCode();
             if(code != MCHUBD_OK)
             {
-                this->responseError(code, respMsg);
+                this->_responseError(code, respMsg);
             }
             else
             {
                 struct json_object* jobj = NULL;
                 jobj = json_object_new_object();
-                if(this->makeResponseMessage(&jobj, this->m_processName, this->m_pid) == false)
+                if(mcHubd::DeleteClientHandler::_makeResponseMessage(&jobj, this->m_processName, this->m_pid) == false)
                 {
                     code = MCHUBD_INTERNAL_ERROR;
-                    this->responseError(code, respMsg);
+                    this->_responseError(code, respMsg);
                     json_object_put(jobj);
                     delete contract;
                     delete mediator;
@@ -63,7 +63,7 @@ void mcHubd::DeleteClientHandler::request(std::shared_ptr<mcHubd::Message> msg)
                 }
 
                 respMsg.assign(json_object_get_string(jobj));
-                this->responseOK(respMsg);
+                this->_responseOK(respMsg);
                 mediator->notify(contract, NOTI_CHANNEL_CLOSE);
                 json_object_put(jobj);
             }
@@ -118,7 +118,7 @@ bool mcHubd::DeleteClientHandler::parse(std::string payload)
     return true;
 }
 
-bool mcHubd::DeleteClientHandler::makeResponseMessage(struct json_object** pJobj, std::string psName, pid_t pid)
+bool mcHubd::DeleteClientHandler::_makeResponseMessage(struct json_object** pJobj, std::string psName, pid_t pid)
 {
     struct json_object* jobj = NULL;
     struct json_object* psNameJobj = NULL;

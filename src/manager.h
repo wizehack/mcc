@@ -11,10 +11,10 @@ namespace mcHubd {
         public:
             Manager(mcHubd::Mediator* mediator, std::string role);
             virtual ~Manager();
-            std::string getRole();
+            std::string getRole() const;
 
             /* configuratoin */
-            void setUpAcceptedList(std::string& acceptedKeyFilePath);
+            static void _setUpAcceptedList(std::string& acceptedKeyFilePath);
             void clearAcceptedList(std::string& acceptedKeyFilePath);
 
             /* check */
@@ -30,7 +30,7 @@ namespace mcHubd {
 
         protected:
             mcHubd::Mediator* m_mediator;
-            std::string m_role;
+            const std::string m_role;
             mcHubd::ConnectionInfo* m_cInfo;
 
         private:

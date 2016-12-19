@@ -17,7 +17,7 @@ class RegisterChannelTestSuite : public TestSuite {
         void registerTestCase();
 
     private:
-        bool setPrecondition();
+        static bool _setPrecondition();
 
     private:
         static std::string _testDataPath;

@@ -22,7 +22,7 @@ void mcHubd::RegisterChannelHandler::request(std::shared_ptr<mcHubd::Message> ms
         if(this->parse(msg->getBody()) == false)
         {
             code = MCHUBD_INVALID_MSG;
-            this->responseError(code, respMsg);
+            this->_responseError(code, respMsg);
             return;
         }
 
@@ -47,7 +47,7 @@ void mcHubd::RegisterChannelHandler::request(std::shared_ptr<mcHubd::Message> ms
             {
                 code = MCHUBD_INTERNAL_ERROR;
                 respMsg.clear();
-                this->responseError(code, respMsg);
+                this->_responseError(code, respMsg);
                 delete mediator;
                 return;
             }
@@ -57,10 +57,10 @@ void mcHubd::RegisterChannelHandler::request(std::shared_ptr<mcHubd::Message> ms
                 struct json_object* jobj = NULL;
 
                 jobj = json_object_new_object();
-                if(this->makeResponseMessage(&jobj, this->m_cKey, this->m_channel) == false)
+                if(mcHubd::RegisterChannelHandler::_makeResponseMessage(&jobj, this->m_cKey, this->m_channel) == false)
                 {
                     code = MCHUBD_INFORM_CHANNEL_ERROR;
-                    this->responseError(code, this->m_cKey);
+                    this->_responseError(code, this->m_cKey);
                     json_object_put(jobj);
                     delete contract;
                     delete mediator;
@@ -68,14 +68,14 @@ void mcHubd::RegisterChannelHandler::request(std::shared_ptr<mcHubd::Message> ms
                 }
 
                 respMsg.assign(json_object_get_string(jobj));
-                this->responseOK(respMsg);
+                this->_responseOK(respMsg);
 
                 json_object_put(jobj);
             }
             else
             {
                 respMsg.clear();
-                this->responseError(contract->getRespCode(), respMsg);
+                this->_responseError(contract->getRespCode(), respMsg);
             }
 
             delete contract;
@@ -125,7 +125,7 @@ bool mcHubd::RegisterChannelHandler::parse(std::string payload)
     return true;
 }
 
-bool mcHubd::RegisterChannelHandler::makeResponseMessage(struct json_object** pJobj, std::string cKey, key_t channel)
+bool mcHubd::RegisterChannelHandler::_makeResponseMessage(struct json_object** pJobj, std::string cKey, key_t channel)
 {
     struct json_object* jobj;
     struct json_object* keyJobj;

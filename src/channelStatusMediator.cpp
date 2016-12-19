@@ -151,15 +151,17 @@ bool mcHubd::ChannelStatusMediator::createNewChannel(mcHubd::Contract** pContrac
     return true;
 }
 
+/*
 void mcHubd::ChannelStatusMediator::notifyCreateChannel(std::string cKey, key_t channel)
 {
 }
+*/
 
 mcHubd::Manager* mcHubd::ChannelStatusMediator::getManager(std::string& role)
 {
     std::list<std::shared_ptr<mcHubd::Manager>>::iterator itor;
 
-    for(itor = this->m_mgrList.begin(); itor != this->m_mgrList.end(); itor++)
+    for(itor = this->m_mgrList.begin(); itor != this->m_mgrList.end(); ++itor)
     {
         if((*itor)->getRole().compare(role) == 0)
             return (*itor).get();

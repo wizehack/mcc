@@ -21,7 +21,7 @@ void mcHubd::DeleteChannelHandler::request(std::shared_ptr<mcHubd::Message> msg)
             mcHubd::RESPCODE code;
             code = MCHUBD_INVALID_MSG;
 
-            this->responseError(code, respMsg);
+            this->_responseError(code, respMsg);
             return;
         }
 
@@ -46,16 +46,16 @@ void mcHubd::DeleteChannelHandler::request(std::shared_ptr<mcHubd::Message> msg)
             code = contract->getRespCode();
             if(code != MCHUBD_OK)
             {
-                this->responseError(code, respMsg);
+                this->_responseError(code, respMsg);
             }
             else
             {
                 struct json_object* jobj = NULL;
                 jobj = json_object_new_object();
-                if(this->makeResponseMessage(&jobj, this->m_cKey, this->m_channel) == false)
+                if(mcHubd::DeleteChannelHandler::_makeResponseMessage(&jobj, this->m_cKey, this->m_channel) == false)
                 {
                     code = MCHUBD_INTERNAL_ERROR;
-                    this->responseError(code, this->m_cKey);
+                    this->_responseError(code, this->m_cKey);
                     json_object_put(jobj);
                     delete contract;
                     delete mediator;
@@ -63,7 +63,7 @@ void mcHubd::DeleteChannelHandler::request(std::shared_ptr<mcHubd::Message> msg)
                 }
 
                 respMsg.assign(json_object_get_string(jobj));
-                this->responseOK(respMsg);
+                this->_responseOK(respMsg);
                 mediator->notify(contract, NOTI_CHANNEL_CLOSE);
                 json_object_put(jobj);
             }
@@ -116,7 +116,7 @@ bool mcHubd::DeleteChannelHandler::parse(std::string payload)
     return true;
 }
 
-bool mcHubd::DeleteChannelHandler::makeResponseMessage(struct json_object** pJobj, std::string cKey, key_t channel)
+bool mcHubd::DeleteChannelHandler::_makeResponseMessage(struct json_object** pJobj, std::string cKey, key_t channel)
 {
     struct json_object* jobj;
     struct json_object* keyJobj;

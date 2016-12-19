@@ -14,13 +14,13 @@ namespace mcHubd {
             virtual void request(std::shared_ptr<mcHubd::Message> msg) = 0;
 
         protected:
-            void responseError(mcHubd::RESPCODE code, std::string extraMsg);
-            void responseOK(std::string respMsg);
+            static void _responseError(mcHubd::RESPCODE code, std::string extraMsg);
+            static void _responseOK(std::string respMsg);
 
         private:
             MessageHandler(const mcHubd::MessageHandler&);
             MessageHandler& operator=(const mcHubd::MessageHandler& rhs);
-            std::string getMessage(mcHubd::RESPCODE code);
+            static std::string _getMessage(mcHubd::RESPCODE code);
 
         protected:
             mcHubd::MessageHandler* m_next;

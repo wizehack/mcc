@@ -36,12 +36,11 @@ void BaseFrameworkTestSuite::registerTestCase()
 
 bool BaseFrameworkTestSuite::_testSetupAcceptedList()
 {
-    bool hasList = false;
     mcHubd::Mediator* mediator = new DummyMediator();
     mcHubd::Manager* manager = new DummyManager(mediator, "Manager");
+    bool hasList = manager->hasAcceptedList();
 
-    manager->setUpAcceptedList(BaseFrameworkTestSuite::_testDataPath);
-    hasList = manager->hasAcceptedList();
+    manager->_setUpAcceptedList(BaseFrameworkTestSuite::_testDataPath);
 
     delete mediator;
     delete manager;
@@ -61,7 +60,7 @@ bool BaseFrameworkTestSuite::_testCheckAcceptedClientKey()
     std::string t4("com.mchannel.test.t4");
     std::string unAccepted("com.mchannel.test.u1");
 
-    manager->setUpAcceptedList(BaseFrameworkTestSuite::_testDataPath);
+    manager->_setUpAcceptedList(BaseFrameworkTestSuite::_testDataPath);
 
     if(manager->isAccepted(t1) == false)
         bResult = false;

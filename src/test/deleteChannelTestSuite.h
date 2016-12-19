@@ -18,10 +18,9 @@ class DeleteChannelTestSuite : public TestSuite {
         void registerTestCase();
 
     private:
-        bool setPrecondition();
-        bool parseProcessList(struct json_object* jobj);
-        bool parseConnectedKeyList(struct json_object* jobj);
-        bool parseRegisteredKeyList(struct json_object* jobj);
+        static bool _setPrecondition();
+        static bool _parseProcessList(struct json_object* jobj);
+        static bool _parseRegisteredKeyList(struct json_object* jobj);
 
     private:
         int m_testCaseID;

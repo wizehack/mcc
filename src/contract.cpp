@@ -52,37 +52,37 @@ void mcHubd::Contract::setRespCode(mcHubd::RESPCODE code)
     this->m_respCode = code;
 }
 
-std::string mcHubd::Contract::getProcessName()
+std::string mcHubd::Contract::getProcessName() const
 {
     return this->m_processName;
 }
 
-std::string mcHubd::Contract::getClientKey()
+std::string mcHubd::Contract::getClientKey() const
 {
     return this->m_clientKey;
 }
 
-pid_t mcHubd::Contract::getProcessId()
+pid_t mcHubd::Contract::getProcessId() const
 {
     return this->m_pid;
 }
 
-key_t mcHubd::Contract::getChannel()
+key_t mcHubd::Contract::getChannel() const
 {
     return this->m_channel;
 }
 
-int mcHubd::Contract::getContractID()
+int mcHubd::Contract::getContractID() const
 {
     return this->m_contractID;
 }
 
-mcHubd::CONTRACTREASON mcHubd::Contract::getContractReason()
+mcHubd::CONTRACTREASON mcHubd::Contract::getContractReason() const
 {
     return this->m_reason;
 }
 
-mcHubd::RESPCODE mcHubd::Contract::getRespCode()
+mcHubd::RESPCODE mcHubd::Contract::getRespCode() const
 {
     return this->m_respCode;
 }

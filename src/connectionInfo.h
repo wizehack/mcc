@@ -17,9 +17,9 @@ namespace mcHubd {
             void removeAvailalbeKey(std::string& cKey);
             void deleteConnectedProcess(pid_t pid);
             std::vector<std::string> getConnectedClientKey(pid_t pid);
-            std::vector<std::string> getAcceptedList();
-            std::map<std::string, key_t> getAvailableList();
-            std::map<std::string, pid_t> getConnectedClientKeyMap();
+            std::vector<std::string> getAcceptedList() const;
+            std::map<std::string, key_t> getAvailableList() const;
+            std::map<std::string, pid_t> getConnectedClientKeyMap() const;
 
         private:
             ConnectionInfo();

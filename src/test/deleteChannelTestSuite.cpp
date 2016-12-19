@@ -41,7 +41,7 @@ bool DeleteChannelTestSuite::request(TestOption* opt)
 
 void DeleteChannelTestSuite::registerTestCase()
 {
-    if(this->setPrecondition())
+    if(DeleteChannelTestSuite::_setPrecondition())
     {
         this->add(1, DeleteChannelTestSuite::_testDeleteAvailableKey);
         this->add(2, DeleteChannelTestSuite::_testDeleteReadyKey);
@@ -55,7 +55,7 @@ void DeleteChannelTestSuite::registerTestCase()
 
 }
 
-bool DeleteChannelTestSuite::setPrecondition()
+bool DeleteChannelTestSuite::_setPrecondition()
 {
     struct json_object* jobj = NULL;
     bool isParsed;
@@ -69,22 +69,20 @@ bool DeleteChannelTestSuite::setPrecondition()
         return false;
     }
 
-    isParsed = parseProcessList(jobj) && parseRegisteredKeyList(jobj);
+    isParsed = DeleteChannelTestSuite::_parseProcessList(jobj) && DeleteChannelTestSuite::_parseRegisteredKeyList(jobj);
 
     json_object_put(jobj);
 
     return isParsed;
 }
 
-bool DeleteChannelTestSuite::parseProcessList(struct json_object* jobj)
+bool DeleteChannelTestSuite::_parseProcessList(struct json_object* jobj)
 {
     struct json_object* psListJobj = NULL;
     struct array_list* psArrList = NULL;
-    struct json_object* psArrItemJobj = NULL;
     struct json_object* psNameJobj = NULL;
     struct json_object* pidJobj = NULL;
     struct json_object* keyListJobj = NULL;
-    struct array_list* keyArrList = NULL;
     struct json_object* keyJobj = NULL;
 
     int arrSize = 0;
@@ -113,6 +111,8 @@ bool DeleteChannelTestSuite::parseProcessList(struct json_object* jobj)
         int pid;
         int keyArrIndex;
         int keyArrSize;
+        struct json_object* psArrItemJobj = NULL;
+        struct array_list* keyArrList = NULL;
 
         psArrItemJobj = static_cast<json_object*>(array_list_get_idx(psArrList, arrIndex));
 
@@ -163,11 +163,10 @@ bool DeleteChannelTestSuite::parseProcessList(struct json_object* jobj)
     return true;
 }
 
-bool DeleteChannelTestSuite::parseRegisteredKeyList(struct json_object* jobj)
+bool DeleteChannelTestSuite::_parseRegisteredKeyList(struct json_object* jobj)
 {
     struct json_object* regListJobj = NULL;
     struct array_list* regList = NULL;
-    struct json_object* regItemJobj = NULL;
     struct json_object* keyJobj = NULL;
     struct json_object* channelJobj = NULL;
 
@@ -196,6 +195,7 @@ bool DeleteChannelTestSuite::parseRegisteredKeyList(struct json_object* jobj)
     {
         std::string key;
         key_t channel;
+        struct json_object* regItemJobj = NULL;
 
         regItemJobj = static_cast<json_object*>(array_list_get_idx(regList, arrIndex));
 

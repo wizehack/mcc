@@ -22,22 +22,22 @@ void mcHubd::Message::setBody(std::string body)
     this->m_body = body;
 }
 
-mcHubd::MSGTYPE mcHubd::Message::getType()
+mcHubd::MSGTYPE mcHubd::Message::getType() const
 {
     return this->m_msgType;
 }
 
-std::string mcHubd::Message::getData()
+std::string mcHubd::Message::getData() const
 {
     return this->m_data;
 }
 
-std::string mcHubd::Message::getHeader()
+std::string mcHubd::Message::getHeader() const
 {
     return this->m_header;
 }
 
-std::string mcHubd::Message::getBody()
+std::string mcHubd::Message::getBody() const
 {
     return this->m_body;
 }

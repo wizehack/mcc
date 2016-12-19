@@ -14,7 +14,7 @@ namespace mcHubd {
 
         private:
             bool parse(std::string payload);
-            bool makeResponseMessage(struct json_object** pJobj, std::string cKey, key_t channel);
+            static bool _makeResponseMessage(struct json_object** pJobj, std::string cKey, key_t channel);
 
         private:
             std::string m_cKey;

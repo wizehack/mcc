@@ -40,7 +40,7 @@ bool DeleteClientTestSuite::request(TestOption* opt)
 
 void DeleteClientTestSuite::registerTestCase()
 {
-    if(this->setPrecondition())
+    if(DeleteClientTestSuite::_setPrecondition())
     {
         this->add(1, DeleteClientTestSuite::_testDeleteClient);
     }
@@ -50,7 +50,7 @@ void DeleteClientTestSuite::registerTestCase()
     }
 }
 
-bool DeleteClientTestSuite::setPrecondition()
+bool DeleteClientTestSuite::_setPrecondition()
 {
     struct json_object* jobj = NULL;
     bool isParsed;
@@ -64,24 +64,21 @@ bool DeleteClientTestSuite::setPrecondition()
         return false;
     }
 
-    isParsed = parseProcessList(jobj);
-//    isParsed = isParsed && parseConnectedKeyList(jobj);
-    isParsed = isParsed && parseRegisteredKeyList(jobj);
+    isParsed = DeleteClientTestSuite::_parseProcessList(jobj);
+    isParsed = isParsed && DeleteClientTestSuite::_parseRegisteredKeyList(jobj);
 
     json_object_put(jobj);
 
     return isParsed;
 }
 
-bool DeleteClientTestSuite::parseProcessList(struct json_object* jobj)
+bool DeleteClientTestSuite::_parseProcessList(struct json_object* jobj)
 {
     struct json_object* psListJobj = NULL;
     struct array_list* psArrList = NULL;
-    struct json_object* psArrItemJobj = NULL;
     struct json_object* psNameJobj = NULL;
     struct json_object* pidJobj = NULL;
     struct json_object* keyListJobj = NULL;
-    struct array_list* keyArrList = NULL;
     struct json_object* keyJobj = NULL;
 
     int arrSize = 0;
@@ -110,6 +107,8 @@ bool DeleteClientTestSuite::parseProcessList(struct json_object* jobj)
         int pid;
         int keyArrIndex;
         int keyArrSize;
+        struct json_object* psArrItemJobj = NULL;
+        struct array_list* keyArrList = NULL;
 
         psArrItemJobj = static_cast<json_object*>(array_list_get_idx(psArrList, arrIndex));
 
@@ -160,11 +159,10 @@ bool DeleteClientTestSuite::parseProcessList(struct json_object* jobj)
     return true;
 }
 
-bool DeleteClientTestSuite::parseRegisteredKeyList(struct json_object* jobj)
+bool DeleteClientTestSuite::_parseRegisteredKeyList(struct json_object* jobj)
 {
     struct json_object* regListJobj = NULL;
     struct array_list* regList = NULL;
-    struct json_object* regItemJobj = NULL;
     struct json_object* keyJobj = NULL;
     struct json_object* channelJobj = NULL;
 
@@ -193,6 +191,7 @@ bool DeleteClientTestSuite::parseRegisteredKeyList(struct json_object* jobj)
     {
         std::string key;
         key_t channel;
+        struct json_object* regItemJobj = NULL;
 
         regItemJobj = static_cast<json_object*>(array_list_get_idx(regList, arrIndex));
 
@@ -223,8 +222,6 @@ bool DeleteClientTestSuite::parseRegisteredKeyList(struct json_object* jobj)
 bool DeleteClientTestSuite::_testDeleteClient()
 {
     std::vector<std::string> clientMap;
-    std::map<std::string, pid_t>::iterator itor;
-
     mcHubd::DeleteClientHandler handler;
     mcHubd::Mediator* mediator = new mcHubd::ChannelStatusMediator();
     mcHubd::Manager* mgr = new mcHubd::ChannelManager(mediator);

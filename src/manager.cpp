@@ -7,17 +7,16 @@ mcHubd::Manager::Manager(mcHubd::Mediator* mediator, std::string role):
     m_cInfo(mcHubd::ConnectionInfo::getInstance()){}
     mcHubd::Manager::~Manager(){}
 
-std::string mcHubd::Manager::getRole()
+std::string mcHubd::Manager::getRole() const
 {
     return this->m_role;
 }
 
-void mcHubd::Manager::setUpAcceptedList(std::string& acceptedKeyFilePath)
+void mcHubd::Manager::_setUpAcceptedList(std::string& acceptedKeyFilePath)
 {
     struct json_object* jobj = NULL;
     struct json_object* listJobj = NULL;
     struct array_list* arrList = NULL;
-    struct json_object* arrItemJobj = NULL;
 
     int arrSize = 0;
     int arrIndex = 0;
@@ -54,6 +53,7 @@ void mcHubd::Manager::setUpAcceptedList(std::string& acceptedKeyFilePath)
 
     for(arrIndex = 0; arrIndex < arrSize; arrIndex++)
     {
+        struct json_object* arrItemJobj = NULL;
         arrItemJobj = static_cast<json_object*>(array_list_get_idx(arrList, arrIndex));
         key.assign(json_object_get_string(arrItemJobj));
         mcHubd::ConnectionInfo::getInstance()->addAcceptedKey(key);

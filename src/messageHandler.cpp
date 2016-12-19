@@ -12,7 +12,7 @@ void mcHubd::MessageHandler::setNext(mcHubd::MessageHandler* handler)
         std::cout << __FUNCTION__ << " [" << __LINE__ << "]: " << "handler is NULL" << std::endl;
 }
 
-void mcHubd::MessageHandler::responseError(mcHubd::RESPCODE code, std::string extraMsg)
+void mcHubd::MessageHandler::_responseError(mcHubd::RESPCODE code, std::string extraMsg)
 {
     struct json_object* jobj = NULL;
     struct json_object* codeJobj = NULL;
@@ -22,7 +22,7 @@ void mcHubd::MessageHandler::responseError(mcHubd::RESPCODE code, std::string ex
 
     jobj = json_object_new_object();
     codeJobj = json_object_new_int(static_cast<int>(code));
-    msgJobj = json_object_new_string(this->getMessage(code).c_str());
+    msgJobj = json_object_new_string(mcHubd::MessageHandler::_getMessage(code).c_str());
     extraJobj = json_object_new_string(extraMsg.c_str());
     returnJobj = json_object_new_boolean(false);
 
@@ -31,11 +31,10 @@ void mcHubd::MessageHandler::responseError(mcHubd::RESPCODE code, std::string ex
     json_object_object_add(jobj, "extraMessage", extraJobj);
     json_object_object_add(jobj, "return", returnJobj);
 
-//    std::cout << __FUNCTION__ << " : " << json_object_get_string(jobj) << std::endl;
     json_object_put(jobj);
 }
 
-void mcHubd::MessageHandler::responseOK(std::string respMsg)
+void mcHubd::MessageHandler::_responseOK(std::string respMsg)
 {
     mcHubd::RESPCODE code = MCHUBD_OK;
     struct json_object* jobj = NULL;
@@ -52,12 +51,11 @@ void mcHubd::MessageHandler::responseOK(std::string respMsg)
     json_object_object_add(jobj, "message", msgJobj);
     json_object_object_add(jobj, "return", returnJobj);
 
-//    std::cout << __FUNCTION__ << " : " << json_object_get_string(jobj) << std::endl;
     json_object_put(jobj);
 }
 
 
-std::string mcHubd::MessageHandler::getMessage(mcHubd::RESPCODE code)
+std::string mcHubd::MessageHandler::_getMessage(mcHubd::RESPCODE code)
 {
     std::string message;
 

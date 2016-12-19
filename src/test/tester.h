@@ -6,7 +6,7 @@ class Tester {
     public:
         Tester();
         ~Tester();
-        bool execute(TestOption* opt);
+        static bool _execute(TestOption* opt);
 };
 
 #endif /* TEST_MANAGER_H_ */

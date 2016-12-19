@@ -38,7 +38,7 @@ void RegisterClientTestSuite::registerTestCase()
 {
     mcHubd::Mediator* mediator = new mcHubd::ChannelStatusMediator();
     mcHubd::Manager* manager = new mcHubd::ClientManager(mediator);
-    manager->setUpAcceptedList(RegisterClientTestSuite::_testDataPath);
+    manager->_setUpAcceptedList(RegisterClientTestSuite::_testDataPath);
 
     this->add(1, RegisterClientTestSuite::_testRegisterClientWithOneKey);
     this->add(2, RegisterClientTestSuite::_testRegisterClientWithManyKey);

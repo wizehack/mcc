@@ -86,7 +86,7 @@ void mcHubd::ChannelManager::remove(mcHubd::Contract** contract)
         }
 
         this->m_cInfo->removeAvailalbeKey(cKey);
-        this->removeChannel(ch);
+        mcHubd::ChannelManager::_removeChannel(ch);
         (*contract)->setRespCode(MCHUBD_OK);
     }
     else
@@ -130,10 +130,9 @@ key_t mcHubd::ChannelManager::createNewChannel(std::string cKey, int id)
 
     while((shmid == -1) && (tryCount < MAX))
     {
-        key_t originCh = -1;
+        key_t originCh = ch;
 
         tryCount++;
-        originCh = ch;
 
         ch = ch * 10 + static_cast<key_t>(tryCount);
 
@@ -174,15 +173,14 @@ key_t mcHubd::ChannelManager::makeChannelNumber(std::string& cKey, int id)
 
     if(it != conMap.end())
     {
-        pid_t pid = -1;
-        pid = it->second;
+        pid_t pid = it->second;
         ch = static_cast<key_t>(pid * 10 + id); //create unique channel number
     }
 
     return ch;
 }
 
-void mcHubd::ChannelManager::removeChannel(key_t ch)
+void mcHubd::ChannelManager::_removeChannel(key_t ch)
 {
     if(ch > 0)
     {

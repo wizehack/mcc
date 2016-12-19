@@ -13,10 +13,10 @@ namespace mcHubd {
             void setHeader(std::string header);
             void setBody(std::string body);
 
-            mcHubd::MSGTYPE getType();
-            std::string getData();
-            std::string getHeader();
-            std::string getBody();
+            mcHubd::MSGTYPE getType() const;
+            std::string getData() const;
+            std::string getHeader() const;
+            std::string getBody() const;
 
         private:
             mcHubd::MSGTYPE m_msgType;

@@ -23,9 +23,9 @@ namespace mcHubd {
         private:
             mcHubd::RESPCODE checkRegisterStatus(std::string& cKey);
             mcHubd::RESPCODE checkCreateStatus(std::string& cKey);
-            bool createNewChannel(mcHubd::Contract** pContract);
-            void notifyCreateChannel(std::string cKey, key_t channel);
+//            void notifyCreateChannel(std::string cKey, key_t channel);
             void deleteClient(pid_t pid);
+            bool createNewChannel(mcHubd::Contract** pContract);
 
         private:
             mcHubd::Manager* getManager(std::string& role);

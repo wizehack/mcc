@@ -100,19 +100,19 @@ std::vector<std::string> mcHubd::ConnectionInfo::getConnectedClientKey(pid_t pid
     return psVector;
 }
 
-std::vector<std::string> mcHubd::ConnectionInfo::getAcceptedList()
+std::vector<std::string> mcHubd::ConnectionInfo::getAcceptedList() const
 {
     std::lock_guard<std::mutex> lock(_mutex);
     return this->m_acceptedList;
 }
 
-std::map<std::string, key_t> mcHubd::ConnectionInfo::getAvailableList()
+std::map<std::string, key_t> mcHubd::ConnectionInfo::getAvailableList() const
 {
     std::lock_guard<std::mutex> lock(_mutex);
     return this->m_availableListMap;
 }
 
-std::map<std::string, pid_t> mcHubd::ConnectionInfo::getConnectedClientKeyMap()
+std::map<std::string, pid_t> mcHubd::ConnectionInfo::getConnectedClientKeyMap() const
 {
     std::lock_guard<std::mutex> lock(_mutex);
     return this->m_connectedProcessMap;

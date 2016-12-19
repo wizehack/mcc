@@ -12,7 +12,7 @@ void mcHubd::ClientManager::create(mcHubd::Contract** contract)
 
     if((*contract))
     {
-        pid = this->create((*contract)->getProcessName());
+        pid = mcHubd::ClientManager::_create((*contract)->getProcessName());
         (*contract)->setProcessId(pid);
     }
 }
@@ -31,12 +31,10 @@ void mcHubd::ClientManager::remove(mcHubd::Contract** contract)
 
 void mcHubd::ClientManager::get(mcHubd::Contract** contract)
 {
-    std::string clientKey;
-
     if((*contract))
     {
-        clientKey = (*contract)->getClientKey();
-        (*contract)->setProcessId(this->get(clientKey));
+        std::string clientKey((*contract)->getProcessName());
+        (*contract)->setProcessId(mcHubd::ClientManager::_get(clientKey));
     }
 }
 
@@ -73,7 +71,7 @@ void mcHubd::ClientManager::remove(int pid)
 /**
  * get pid
  */
-pid_t mcHubd::ClientManager::get(std::string& cKey)
+pid_t mcHubd::ClientManager::_get(std::string& cKey)
 {
     return -1;
 }
@@ -81,7 +79,7 @@ pid_t mcHubd::ClientManager::get(std::string& cKey)
 /**
  * launch process
  */
-pid_t mcHubd::ClientManager::create(std::string processName)
+pid_t mcHubd::ClientManager::_create(std::string processName)
 {
     pid_t pid = 0;
     return static_cast<pid_t>(pid);

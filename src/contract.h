@@ -18,13 +18,13 @@ namespace mcHubd {
             void setContractReason(mcHubd::CONTRACTREASON reason);
             void setRespCode(mcHubd::RESPCODE code);
 
-            std::string getProcessName();
-            std::string getClientKey();
-            pid_t getProcessId();
-            key_t getChannel();
-            int getContractID();
-            mcHubd::CONTRACTREASON getContractReason();
-            mcHubd::RESPCODE getRespCode();
+            std::string getProcessName() const;
+            std::string getClientKey() const;
+            pid_t getProcessId() const;
+            key_t getChannel() const;
+            int getContractID() const;
+            mcHubd::CONTRACTREASON getContractReason() const;
+            mcHubd::RESPCODE getRespCode() const;
 
         private:
             std::string m_processName;
