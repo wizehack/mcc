@@ -43,43 +43,37 @@ void mcHubd::RegisterChannelHandler::request(std::shared_ptr<mcHubd::Message> ms
 
             mediator->registerNewChannel(&contract);
 
-            if(contract == NULL)
+            if(contract)
             {
-                code = MCHUBD_INTERNAL_ERROR;
-                respMsg.clear();
-                this->_responseError(code, respMsg);
-                delete mediator;
-                return;
-            }
-
-            if(contract->getRespCode() == MCHUBD_OK)
-            {
-                struct json_object* jobj = NULL;
-
-                jobj = json_object_new_object();
-                if(mcHubd::RegisterChannelHandler::_makeResponseMessage(&jobj, this->m_cKey, this->m_channel) == false)
+                if(contract->getRespCode() == MCHUBD_OK)
                 {
-                    code = MCHUBD_INFORM_CHANNEL_ERROR;
-                    this->_responseError(code, this->m_cKey);
+                    struct json_object* jobj = NULL;
+
+                    jobj = json_object_new_object();
+                    if(mcHubd::RegisterChannelHandler::_makeResponseMessage(&jobj, this->m_cKey, this->m_channel) == false)
+                    {
+                        code = MCHUBD_INFORM_CHANNEL_ERROR;
+                        this->_responseError(code, this->m_cKey);
+                        json_object_put(jobj);
+                        delete contract;
+                        delete mediator;
+                        return;
+                    }
+
+                    respMsg.assign(json_object_get_string(jobj));
+                    this->_responseOK(respMsg);
+
                     json_object_put(jobj);
-                    delete contract;
-                    delete mediator;
-                    return;
+                }
+                else
+                {
+                    respMsg.clear();
+                    this->_responseError(contract->getRespCode(), respMsg);
                 }
 
-                respMsg.assign(json_object_get_string(jobj));
-                this->_responseOK(respMsg);
-
-                json_object_put(jobj);
+                delete contract;
+                delete mediator;
             }
-            else
-            {
-                respMsg.clear();
-                this->_responseError(contract->getRespCode(), respMsg);
-            }
-
-            delete contract;
-            delete mediator;
         }
     }
     else

@@ -22,7 +22,7 @@ void mcHubd::MessageHandler::_responseError(mcHubd::RESPCODE code, std::string e
 
     jobj = json_object_new_object();
     codeJobj = json_object_new_int(static_cast<int>(code));
-    msgJobj = json_object_new_string(mcHubd::MessageHandler::_getMessage(code).c_str());
+    msgJobj = json_object_new_string(mcHubd::MessageHandler::_getErrorMessage(code).c_str());
     extraJobj = json_object_new_string(extraMsg.c_str());
     returnJobj = json_object_new_boolean(false);
 
@@ -55,13 +55,11 @@ void mcHubd::MessageHandler::_responseOK(std::string respMsg)
 }
 
 
-std::string mcHubd::MessageHandler::_getMessage(mcHubd::RESPCODE code)
+std::string mcHubd::MessageHandler::_getErrorMessage(mcHubd::RESPCODE code)
 {
     std::string message;
 
-    if(code == MCHUBD_OK)
-        message.assign("OK");
-    else if (code == MCHUBD_INVALID_MSG)
+    if (code == MCHUBD_INVALID_MSG)
         message.assign("INVALID MESSAGE");
     else if (code == MCHUBD_NOT_ACCEPTABLE_KEY)
         message.assign("NOT ACCEPTABLE KEY");

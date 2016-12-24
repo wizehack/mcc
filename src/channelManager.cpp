@@ -52,12 +52,6 @@ void mcHubd::ChannelManager::remove(mcHubd::Contract** contract)
     std::string cKey;
     cKey = (*contract)->getClientKey();
 
-    if(cKey.empty())
-    {
-        (*contract)->setRespCode(MCHUBD_INTERNAL_ERROR);
-        return;
-    }
-
     if(this->m_tSet->isWaitingTask(cKey))
     {
         this->m_tSet->rmWaitToReady(cKey);

@@ -128,7 +128,7 @@ bool mcHubd::DeleteChannelHandler::_makeResponseMessage(struct json_object** pJo
     if(jobj == NULL)
         return false;
 
-    if(cKey.empty() == true)
+    if(cKey.empty())
         return false;
 
     if(channel < 0)

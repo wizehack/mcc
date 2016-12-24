@@ -191,58 +191,53 @@ std::string mcHubd::RegisterClientHandler::makeNewChannelList(mcHubd::Mediator* 
         contract = new mcHubd::Contract(sequenceNumber);
         sequenceNumber++;
 
-        if(contract == NULL)
+        if(contract)
         {
-            code = MCHUBD_INTERNAL_ERROR;
-            this->_responseError(code, (*itor));
-            respMsg.clear();
-            return respMsg;
-        }
+            contract->setProcessName(this->m_processName);
+            contract->setProcessId(this->m_pid);
+            contract->setClientKey((*itor));
+            mediator->getNewChannel(&contract);
 
-        contract->setProcessName(this->m_processName);
-        contract->setProcessId(this->m_pid);
-        contract->setClientKey((*itor));
-        mediator->getNewChannel(&contract);
-
-        if(contract->getRespCode() == MCHUBD_OK)
-        {
-            jobj = json_object_new_object();
-
-            if(mcHubd::RegisterClientHandler::_createChannelJobj(&jobj, (*itor), contract->getChannel()) == false)
+            if(contract->getRespCode() == MCHUBD_OK)
             {
-                code = MCHUBD_CREATE_CHANNEL_ERROR;
-                this->_responseError(code, (*itor));
+                jobj = json_object_new_object();
+
+                if(mcHubd::RegisterClientHandler::_createChannelJobj(&jobj, (*itor), contract->getChannel()) == false)
+                {
+                    code = MCHUBD_CREATE_CHANNEL_ERROR;
+                    this->_responseError(code, (*itor));
+                    json_object_put(jobj);
+                    respMsg.clear();
+                    delete contract;
+                    return respMsg;
+                }
+
+                keyChannelJson.assign(json_object_get_string(jobj));
+
+                //make json array [ json1, json2, ...]
+                if(keyChannelJson.empty() == false)
+                {
+                    ++itor; //check if current key is last element or not
+                    if((itor) != this->m_cKeyList.end())
+                        respMsg = respMsg + keyChannelJson.c_str() + ", ";
+                    else
+                        respMsg = respMsg + keyChannelJson.c_str() + "]";
+                    --itor;
+                }
+
                 json_object_put(jobj);
+            }
+            else
+            {
+                this->_responseError(contract->getRespCode(), (*itor));
                 respMsg.clear();
                 delete contract;
                 return respMsg;
             }
 
-            keyChannelJson.assign(json_object_get_string(jobj));
-
-            //make json array [ json1, json2, ...]
-            if(keyChannelJson.empty() == false)
-            {
-                ++itor; //check if current key is last element or not
-                if((itor) != this->m_cKeyList.end())
-                    respMsg = respMsg + keyChannelJson.c_str() + ", ";
-                else
-                    respMsg = respMsg + keyChannelJson.c_str() + "]";
-                --itor;
-            }
-
-            json_object_put(jobj);
-        }
-        else
-        {
-            this->_responseError(contract->getRespCode(), (*itor));
-            respMsg.clear();
             delete contract;
-            return respMsg;
-        }
-
-        delete contract;
-    }
+        } //if contract
+    }//for
 
     return respMsg;
 }

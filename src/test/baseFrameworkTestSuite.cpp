@@ -38,9 +38,9 @@ bool BaseFrameworkTestSuite::_testSetupAcceptedList()
 {
     mcHubd::Mediator* mediator = new DummyMediator();
     mcHubd::Manager* manager = new DummyManager(mediator, "Manager");
-    bool hasList = manager->hasAcceptedList();
 
     manager->_setUpAcceptedList(BaseFrameworkTestSuite::_testDataPath);
+    bool hasList = manager->hasAcceptedList();
 
     delete mediator;
     delete manager;

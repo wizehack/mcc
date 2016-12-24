@@ -24,24 +24,24 @@ void mcHubd::ChannelStatusMediator::getNewChannel(mcHubd::Contract** pContract)
     mcHubd::RESPCODE code;
     std::string cKey;
 
-    if((*pContract) == NULL)
-        return;
-
-    cKey = (*pContract)->getClientKey();
-    code = this->checkRegisterStatus(cKey);
-
-    if(code != MCHUBD_OK)
+    if((*pContract))
     {
-        (*pContract)->setRespCode(code);
-        return;
-    }
+        cKey = (*pContract)->getClientKey();
+        code = this->checkRegisterStatus(cKey);
 
-    if(this->createNewChannel(pContract) == false)
-    {
-        (*pContract)->setRespCode(MCHUBD_CREATE_CHANNEL_ERROR);
-    }
+        if(code != MCHUBD_OK)
+        {
+            (*pContract)->setRespCode(code);
+            return;
+        }
 
-    (*pContract)->setRespCode(MCHUBD_OK);
+        if(this->createNewChannel(pContract) == false)
+        {
+            (*pContract)->setRespCode(MCHUBD_CREATE_CHANNEL_ERROR);
+        }
+
+        (*pContract)->setRespCode(MCHUBD_OK);
+    }
 }
 
 void mcHubd::ChannelStatusMediator::registerNewChannel(mcHubd::Contract** pContract)
@@ -55,25 +55,22 @@ void mcHubd::ChannelStatusMediator::registerNewChannel(mcHubd::Contract** pContr
 
 void mcHubd::ChannelStatusMediator::deleteClient(mcHubd::Contract** pContract)
 {
-    mcHubd::Manager* clientMgr = NULL;
     std::string roleClientMgr("ClientManager");
 
-    if((*pContract) == NULL)
+    if((*pContract))
     {
-        (*pContract)->setRespCode(MCHUBD_INTERNAL_ERROR);
-        return;
+        mcHubd::Manager* clientMgr = NULL;
+        clientMgr = this->getManager(roleClientMgr);
+
+        if(clientMgr == NULL)
+        {
+            (*pContract)->setRespCode(MCHUBD_INTERNAL_ERROR);
+            return;
+        }
+
+        clientMgr->remove(pContract);
+        (*pContract)->setRespCode(MCHUBD_OK);
     }
-
-    clientMgr = this->getManager(roleClientMgr);
-
-    if(clientMgr == NULL)
-    {
-        (*pContract)->setRespCode(MCHUBD_INTERNAL_ERROR);
-        return;
-    }
-
-    clientMgr->remove(pContract);
-    (*pContract)->setRespCode(MCHUBD_OK);
 }
 
 void mcHubd::ChannelStatusMediator::deleteChannel(mcHubd::Contract** pContract)
@@ -121,34 +118,37 @@ mcHubd::RESPCODE mcHubd::ChannelStatusMediator::checkRegisterStatus(std::string&
 
 bool mcHubd::ChannelStatusMediator::createNewChannel(mcHubd::Contract** pContract)
 {
-    mcHubd::Manager* channelMgr = NULL;
-    mcHubd::Manager* clientMgr = NULL;
     std::string roleChannelMgr("ChannelManager");
     std::string roleClientMgr("ClientManager");
 
-    if((*pContract) == NULL)
-        return false;
-
-    channelMgr = this->getManager(roleChannelMgr);
-    clientMgr = this->getManager(roleClientMgr);
-
-    if((clientMgr == NULL) || (channelMgr == NULL))
+    if((*pContract))
     {
-        return false;
+        mcHubd::Manager* channelMgr = NULL;
+        mcHubd::Manager* clientMgr = NULL;
+
+        channelMgr = this->getManager(roleChannelMgr);
+        clientMgr = this->getManager(roleClientMgr);
+
+        if((clientMgr == NULL) || (channelMgr == NULL))
+        {
+            return false;
+        }
+
+        if( ((*pContract)->getProcessId() > 0) &&
+                ((*pContract)->getClientKey().empty() == false) &&
+                ((*pContract)->getProcessName().empty() == false) )
+        {
+            clientMgr->add(pContract); // register process id
+            channelMgr->create(pContract); //new channel is created
+        }
+
+        if((*pContract)->getChannel() < 0)
+            return false;
+
+        return true;
     }
 
-    if( ((*pContract)->getProcessId() > 0) &&
-            ((*pContract)->getClientKey().empty() == false) &&
-            ((*pContract)->getProcessName().empty() == false) )
-    {
-        clientMgr->add(pContract); // register process id
-        channelMgr->create(pContract); //new channel is created
-    }
-
-    if((*pContract)->getChannel() < 0)
-        return false;
-
-    return true;
+    return false;
 }
 
 /*

@@ -129,7 +129,7 @@ bool mcHubd::DeleteClientHandler::_makeResponseMessage(struct json_object** pJob
     if(jobj == NULL)
         return false;
 
-    if(psName.empty() == true)
+    if(psName.empty())
         return false;
 
     if(pid < 0)

@@ -20,7 +20,7 @@ namespace mcHubd {
         private:
             MessageHandler(const mcHubd::MessageHandler&);
             MessageHandler& operator=(const mcHubd::MessageHandler& rhs);
-            static std::string _getMessage(mcHubd::RESPCODE code);
+            static std::string _getErrorMessage(mcHubd::RESPCODE code);
 
         protected:
             mcHubd::MessageHandler* m_next;
