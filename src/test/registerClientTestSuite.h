@@ -14,6 +14,8 @@ class RegisterClientTestSuite : public TestSuite {
         static bool _testRegisterClientWithMAXKey();
         static bool _testRegisterClientWitUnlimitedKey();
         static bool _testRegisterClientWitUnacceptedKey();
+        static bool _testInvalidRequestMessage();
+        static bool _testCreateChannelError();
 
     protected:
         void registerTestCase();

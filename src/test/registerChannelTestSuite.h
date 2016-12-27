@@ -12,6 +12,8 @@ class RegisterChannelTestSuite : public TestSuite {
         static bool _testRegisterCreatedChannel();
         static bool _testRegisterNOTCreatedChannel();
         static bool _testRegisterDuplicatedChannel();
+        static bool _testInvalidRequestMessage();
+        static bool _testInformedChennelRequest();
 
     protected:
         void registerTestCase();

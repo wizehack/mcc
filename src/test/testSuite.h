@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include "testOption.h"
+#include "../mcHubType.h"
 
 typedef bool (*FuncPtr)(void);
 
@@ -19,6 +20,7 @@ class TestSuite {
         virtual void registerTestCase() = 0;
         bool exec(int tcId);
         void add(int tcId, FuncPtr func_cb);
+        static bool _verifyResponseError(struct json_object* jobj, mcHubd::RESPCODE code, std::string message);
 
     private:
         TestSuite(const TestSuite&);

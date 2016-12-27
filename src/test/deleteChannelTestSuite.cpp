@@ -9,6 +9,7 @@
 #include "../channelStatusMediator.h"
 #include "../channelManager.h"
 #include "../deleteChannelHandler.h"
+#include "../testStub.h"
 
 
 std::string DeleteChannelTestSuite::_testDataPath("");
@@ -47,6 +48,7 @@ void DeleteChannelTestSuite::registerTestCase()
         this->add(2, DeleteChannelTestSuite::_testDeleteReadyKey);
         this->add(3, DeleteChannelTestSuite::_testDeleteEmptyChannel);
         this->add(4, DeleteChannelTestSuite::_testDeleteUnknownChannel);
+        this->add(5, DeleteChannelTestSuite::_testInvalidRequestMessage);
     }
     else
     {
@@ -57,23 +59,26 @@ void DeleteChannelTestSuite::registerTestCase()
 
 bool DeleteChannelTestSuite::_setPrecondition()
 {
-    struct json_object* jobj = NULL;
-    bool isParsed;
-
-    jobj = json_object_from_file(DeleteChannelTestSuite::_testDataPath.c_str());
-
-    if( (jobj == NULL) || is_error(jobj) )
+    if(DeleteChannelTestSuite::_testDataPath.empty() == false)
     {
-        std::cout << "Test Data is NOT JSON" << std::endl;
-        std::cout << DeleteChannelTestSuite::_testDataPath<< std::endl;
-        return false;
+        struct json_object* jobj = NULL;
+        bool isParsed;
+        jobj = json_object_from_file(DeleteChannelTestSuite::_testDataPath.c_str());
+
+        if( (jobj == NULL) || is_error(jobj) )
+        {
+            std::cout << "Test Data is NOT JSON" << std::endl;
+            std::cout << DeleteChannelTestSuite::_testDataPath<< std::endl;
+            return false;
+        }
+
+        isParsed = DeleteChannelTestSuite::_parseProcessList(jobj) && DeleteChannelTestSuite::_parseRegisteredKeyList(jobj);
+
+        json_object_put(jobj);
+        return isParsed;
     }
 
-    isParsed = DeleteChannelTestSuite::_parseProcessList(jobj) && DeleteChannelTestSuite::_parseRegisteredKeyList(jobj);
-
-    json_object_put(jobj);
-
-    return isParsed;
+    return true;
 }
 
 bool DeleteChannelTestSuite::_parseProcessList(struct json_object* jobj)
@@ -378,9 +383,55 @@ bool DeleteChannelTestSuite::_testDeleteUnknownChannel()
     if(mgr->isAvailable(f2) == false)
         return false;
     if(mcHubd::TaskSet::getInstance()->isWaitingTask(f1))
-       return false;
+        return false;
     if(mcHubd::TaskSet::getInstance()->isWaitingTask(f2))
-       return false;
+        return false;
 
     return true;
+}
+
+bool DeleteChannelTestSuite::_testInvalidRequestMessage()
+{
+    mcHubd::DeleteChannelHandler handler;
+    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CHANNEL);
+    std::string body;
+    mcHubd::RESPCODE code = mcHubd::MCHUBD_INVALID_MSG;
+    std::string respMessge("INVALID MESSAGE");
+    bool isPassed = true;
+    struct json_object* jobj = NULL;
+
+    // empty key
+    body.assign("{\"channel\": 3000}");
+    msg->setBody(body);
+    handler.request(msg);
+    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
+
+    if(DeleteChannelTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+        isPassed = false;
+
+    json_object_put(jobj);
+
+    // NOT JSON
+    body.assign("\"key\": \"com.mchannel.foo.f1\" \"channel\": 3000}");
+    msg->setBody(body);
+    handler.request(msg);
+    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(1).c_str());
+
+    if(DeleteChannelTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+        isPassed = false;
+
+    json_object_put(jobj);
+
+    // msg 3 Empty Payload
+    body.clear();
+    msg->setBody(body);
+    handler.request(msg);
+    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(2).c_str());
+
+    if(DeleteChannelTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+        isPassed = false;
+
+    json_object_put(jobj);
+
+    return isPassed;
 }

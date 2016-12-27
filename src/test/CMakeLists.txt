@@ -24,6 +24,7 @@ add_executable(
     ${ROOT_DIR}/deleteChannelTestSuite.cpp
     ${ROOT_DIR}/deleteClientTestSuite.cpp
 
+    ${ROOT_DIR}/../../testStub.cpp
     ${ROOT_DIR}/../../src/manager.cpp
     ${ROOT_DIR}/../../src/mediator.cpp
     ${ROOT_DIR}/../../src/connectionInfo.cpp

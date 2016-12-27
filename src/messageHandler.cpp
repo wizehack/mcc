@@ -1,4 +1,5 @@
 #include "messageHandler.h"
+#include "testStub.h"
 
 mcHubd::MessageHandler::MessageHandler():m_next(NULL){}
 
@@ -31,6 +32,7 @@ void mcHubd::MessageHandler::_responseError(mcHubd::RESPCODE code, std::string e
     json_object_object_add(jobj, "extraMessage", extraJobj);
     json_object_object_add(jobj, "return", returnJobj);
 
+    TestStub::getInstance()->addRespMsg(json_object_get_string(jobj)); //Test Code
     json_object_put(jobj);
 }
 
@@ -51,6 +53,7 @@ void mcHubd::MessageHandler::_responseOK(std::string respMsg)
     json_object_object_add(jobj, "message", msgJobj);
     json_object_object_add(jobj, "return", returnJobj);
 
+    TestStub::getInstance()->addRespMsg(json_object_get_string(jobj)); //Test Code
     json_object_put(jobj);
 }
 

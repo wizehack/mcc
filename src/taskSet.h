@@ -17,7 +17,7 @@ namespace mcHubd {
             TaskSet();
 
         private:
-            std::list <std::string> m_waitToReadyList; //client key list
+            std::list<std::string> m_waitToReadyList; //client key list
             static std::atomic<TaskSet*> _singleton;
             static std::mutex _mutex;
     };

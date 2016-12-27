@@ -8,6 +8,7 @@
 #include "../clientManager.h"
 #include "../mediator.h"
 #include "../channelStatusMediator.h"
+#include "../testStub.h"
 
 std::string RegisterClientTestSuite::_testDataPath("");
 
@@ -45,6 +46,8 @@ void RegisterClientTestSuite::registerTestCase()
     this->add(3, RegisterClientTestSuite::_testRegisterClientWithMAXKey);
     this->add(4, RegisterClientTestSuite::_testRegisterClientWitUnlimitedKey);
     this->add(5, RegisterClientTestSuite::_testRegisterClientWitUnacceptedKey);
+    this->add(6, RegisterClientTestSuite::_testInvalidRequestMessage);
+    this->add(7, RegisterClientTestSuite::_testCreateChannelError);
 
     delete mediator;
     delete manager;
@@ -64,6 +67,8 @@ bool RegisterClientTestSuite::_testRegisterClientWithOneKey()
 
     if(mcHubd::TaskSet::getInstance()->isWaitingTask(key) == false)
        return false;
+
+    //std::cout << mcHubd::TestStub::getInstance()->getRespMsg(0)<< std::endl;
 
     return true;
 }
@@ -100,6 +105,7 @@ bool RegisterClientTestSuite::_testRegisterClientWithManyKey()
     if(mcHubd::TaskSet::getInstance()->isWaitingTask(bar2) == false)
        return false;
 
+    //std::cout << mcHubd::TestStub::getInstance()->getRespMsg(0)<< std::endl;
     return true;
 }
 
@@ -248,4 +254,124 @@ bool RegisterClientTestSuite::_testRegisterClientWitUnacceptedKey()
        return false;
 
     return true;
+}
+
+bool RegisterClientTestSuite::_testInvalidRequestMessage()
+{
+    mcHubd::RegisterClientHandler regCliHandler;
+    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CLIENT);
+    std::string body;
+    std::string respMessge("INVALID MESSAGE");
+    mcHubd::RESPCODE code = mcHubd::MCHUBD_INVALID_MSG;
+    bool isPassed = true;
+    struct json_object* jobj = NULL;
+
+    //1. empty message
+    msg->setBody(body);
+    regCliHandler.request(msg);
+    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
+
+    if(RegisterClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+        isPassed = false;
+
+    json_object_put(jobj);
+
+    //2. NOT json
+    body.assign("{\"pid\": 1212 \"keyList\"[\"com.mchannel.test.t1\"]}");
+    msg->setBody(body);
+    regCliHandler.request(msg);
+    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(1).c_str());
+
+    if(RegisterClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+        isPassed = false;
+
+    json_object_put(jobj);
+
+    //3. psName NOT found
+    body.assign("{\"pid\": 1212, \"keyList\": [\"com.mchannel.test.t1\"]}");
+    msg->setBody(body);
+    regCliHandler.request(msg);
+    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(2).c_str());
+
+    if(RegisterClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+        isPassed = false;
+
+    json_object_put(jobj);
+
+    //4. pid NOT found
+    body.assign("{\"psName\": \"test\",\"keyList\":[\"com.mchannel.test.t1\"]}");
+    msg->setBody(body);
+    regCliHandler.request(msg);
+    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(3).c_str());
+
+    if(RegisterClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+        isPassed = false;
+
+    json_object_put(jobj);
+
+    //5. keyList NOT Found
+    body.assign("{\"pid\": 1212, \"psName\": \"test\"}");
+    msg->setBody(body);
+    regCliHandler.request(msg);
+    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(4).c_str());
+
+    if(RegisterClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+        isPassed = false;
+
+    json_object_put(jobj);
+
+    //6. empty keyList
+    body.assign("{\"pid\": 1212, \"psName\": \"test\",\"keyList\":[]}");
+    msg->setBody(body);
+    regCliHandler.request(msg);
+    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(5).c_str());
+
+    if(RegisterClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+        isPassed = false;
+
+    json_object_put(jobj);
+
+    //for debugging
+    /*
+    for(int i=0; i<6; i++)
+    {
+        std::cout << mcHubd::TestStub::getInstance()->getRespMsg(i)<< std::endl;
+    }
+    */
+    return isPassed;
+}
+
+bool RegisterClientTestSuite::_testCreateChannelError()
+{
+    mcHubd::RegisterClientHandler regCliHandler;
+    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CLIENT);
+    std::string body;
+    std::string respMessge("CREATE CHANNEL ERROR");
+    mcHubd::RESPCODE code = mcHubd::MCHUBD_CREATE_CHANNEL_ERROR;
+    bool isPassed = true;
+    struct json_object* jobj = NULL;
+
+    //invalid pid
+    body.assign("{\"pid\": -1, \"psName\": \"test\", \"keyList\": [\"com.mchannel.test.t1\"]}");
+    msg->setBody(body);
+    regCliHandler.request(msg);
+    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
+
+    if(RegisterClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+        isPassed = false;
+
+    json_object_put(jobj);
+
+    //invalid pid
+    body.assign("{\"pid\": 0, \"psName\": \"test\", \"keyList\": [\"com.mchannel.test.t1\"]}");
+    msg->setBody(body);
+    regCliHandler.request(msg);
+    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(1).c_str());
+
+    if(RegisterClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+        isPassed = false;
+
+    json_object_put(jobj);
+
+    return isPassed;
 }

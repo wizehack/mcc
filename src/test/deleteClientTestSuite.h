@@ -9,6 +9,8 @@ class DeleteClientTestSuite : public TestSuite {
         ~DeleteClientTestSuite();
         bool request(TestOption* opt);
         static bool _testDeleteClient();
+        static bool _testInvalidRequestMessage();
+        static bool _testInternalError();
 
     protected:
         void registerTestCase();

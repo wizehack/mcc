@@ -13,6 +13,7 @@ class DeleteChannelTestSuite : public TestSuite {
         static bool _testDeleteReadyKey();
         static bool _testDeleteEmptyChannel();
         static bool _testDeleteUnknownChannel();
+        static bool _testInvalidRequestMessage();
 
     protected:
         void registerTestCase();

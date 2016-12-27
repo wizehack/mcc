@@ -9,6 +9,7 @@
 #include "../channelStatusMediator.h"
 #include "../channelManager.h"
 #include "../deleteClientHandler.h"
+#include "../testStub.h"
 
 std::string DeleteClientTestSuite::_testDataPath("");
 
@@ -43,6 +44,8 @@ void DeleteClientTestSuite::registerTestCase()
     if(DeleteClientTestSuite::_setPrecondition())
     {
         this->add(1, DeleteClientTestSuite::_testDeleteClient);
+        this->add(2, DeleteClientTestSuite::_testInvalidRequestMessage);
+        this->add(3, DeleteClientTestSuite::_testInternalError);
     }
     else
     {
@@ -301,3 +304,102 @@ bool DeleteClientTestSuite::_testDeleteClient()
 
     return true;
 }
+
+bool DeleteClientTestSuite::_testInvalidRequestMessage()
+{
+    mcHubd::DeleteClientHandler handler;
+    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CLIENT);
+    std::string body;
+
+    mcHubd::RESPCODE code = mcHubd::MCHUBD_INVALID_MSG;
+    std::string respMessge("INVALID MESSAGE");
+    bool isPassed = true;
+    struct json_object* jobj = NULL;
+
+    msg->setBody(body); //empty body
+    handler.request(msg);
+
+    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
+
+    if(DeleteClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+        isPassed = false;
+
+    json_object_put(jobj);
+
+    body.assign("{\"psName\": \"test\"}"); //parameter error
+    msg->setBody(body);
+    handler.request(msg);
+
+    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(1).c_str());
+
+    if(DeleteClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+        isPassed = false;
+
+    json_object_put(jobj);
+
+    body.assign("{\"pid\": 200}"); //parameter error
+    msg->setBody(body);
+    handler.request(msg);
+
+    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(2).c_str());
+
+    if(DeleteClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+        isPassed = false;
+
+    json_object_put(jobj);
+
+    body.assign("{\"pid\": 400 \"psName\": \"bar\"}"); //NOT json
+    msg->setBody(body);
+    handler.request(msg);
+
+    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(3).c_str());
+
+    if(DeleteClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+        isPassed = false;
+
+    json_object_put(jobj);
+
+    return isPassed;
+}
+
+bool DeleteClientTestSuite::_testInternalError()
+{
+    mcHubd::DeleteClientHandler handler;
+    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CLIENT);
+    std::string body;
+    mcHubd::RESPCODE code = mcHubd::MCHUBD_INTERNAL_ERROR;
+    std::string respMessge("INTERNAL ERROR");
+    bool isPassed = true;
+    struct json_object* jobj = NULL;
+
+    body.assign("{\"pid\": -1, \"psName\": \"bar\"}");
+    msg->setBody(body);
+    handler.request(msg);
+
+    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
+
+    if(DeleteClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+        isPassed = false;
+
+    json_object_put(jobj);
+
+    body.assign("{\"pid\": 0, \"psName\": \"bar\"}");
+    msg->setBody(body);
+    handler.request(msg);
+
+    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(1).c_str());
+
+    if(DeleteClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+        isPassed = false;
+
+    json_object_put(jobj);
+    /*
+    for(int i=0; i<2; i++)
+    {
+        std::cout << mcHubd::TestStub::getInstance()->getRespMsg(i)<< std::endl;
+    }
+    */
+
+    return isPassed;
+}
+

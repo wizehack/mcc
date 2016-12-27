@@ -10,6 +10,7 @@
 #include "../mediator.h"
 #include "../channelStatusMediator.h"
 #include "../channelManager.h"
+#include "../testStub.h"
 
 std::string RegisterChannelTestSuite::_testDataPath("");
 
@@ -43,6 +44,8 @@ void RegisterChannelTestSuite::registerTestCase()
         this->add(1, RegisterChannelTestSuite::_testRegisterCreatedChannel);
         this->add(2, RegisterChannelTestSuite::_testRegisterNOTCreatedChannel);
         this->add(3, RegisterChannelTestSuite::_testRegisterDuplicatedChannel);
+        this->add(4, RegisterChannelTestSuite::_testInvalidRequestMessage);
+        this->add(5, RegisterChannelTestSuite::_testInformedChennelRequest);
     }
     else
     {
@@ -295,6 +298,13 @@ bool RegisterChannelTestSuite::_testRegisterDuplicatedChannel()
     msg->setBody(body);
     regChannelHandler.request(msg);
 
+    /*
+    for(int i=0; i<2; i++)
+    {
+        std::cout << mcHubd::TestStub::getInstance()->getRespMsg(i)<< std::endl;
+    }
+    */
+
     if(mgr->isAvailable(f1) == false)
         return false;
 
@@ -303,6 +313,89 @@ bool RegisterChannelTestSuite::_testRegisterDuplicatedChannel()
 
     if(it->second == 4000)
         return false;
+    if(it->second == 2000)
+        return true;
+    return false;
+}
 
-    return true;
+bool RegisterChannelTestSuite::_testInvalidRequestMessage()
+{
+    mcHubd::RegisterChannelHandler handler;
+    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CHANNEL);
+    std::string body;
+
+    mcHubd::RESPCODE code = mcHubd::MCHUBD_INVALID_MSG;
+    std::string respMessge("INVALID MESSAGE");
+    bool isPassed = true;
+    struct json_object* jobj = NULL;
+
+    msg->setBody(body); //empty body
+    handler.request(msg);
+
+    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
+
+    if(RegisterChannelTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+        isPassed = false;
+
+    json_object_put(jobj);
+
+    body.assign("{\"key\": \"com.mchannel.foo.f1\" \"channel\": 2000}");
+    msg->setBody(body);
+    handler.request(msg);
+
+    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(1).c_str());
+
+    if(RegisterChannelTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+        isPassed = false;
+
+    json_object_put(jobj);
+
+    body.assign("{\"channel\": 2000}");
+    msg->setBody(body);
+    handler.request(msg);
+
+    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(2).c_str());
+
+    if(RegisterChannelTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+        isPassed = false;
+
+    json_object_put(jobj);
+
+    body.assign("{\"key\": \"com.mchannel.foo.f1\"}");
+    msg->setBody(body);
+    handler.request(msg);
+
+    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(3).c_str());
+
+    if(RegisterChannelTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+        isPassed = false;
+
+    json_object_put(jobj);
+
+    return isPassed;
+}
+
+bool RegisterChannelTestSuite::_testInformedChennelRequest()
+{
+    mcHubd::RegisterChannelHandler handler;
+    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CHANNEL);
+    std::string body;
+
+    mcHubd::RESPCODE code = mcHubd::MCHUBD_INFORM_CHANNEL_ERROR;
+    std::string respMessge("INFORMED CHANNEL ERROR");
+    bool isPassed = true;
+    struct json_object* jobj = NULL;
+
+    body.assign("{\"key\": \"com.mchannel.foo.f1\", \"channel\": -1}");
+    msg->setBody(body);
+    handler.request(msg);
+
+    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
+
+    if(RegisterChannelTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+        isPassed = false;
+
+    json_object_put(jobj);
+
+    return isPassed;
 }

@@ -40,6 +40,8 @@ class BaseFrameworkTestSuite : public TestSuite{
         static bool _testSetupAcceptedList();
         static bool _testCheckAcceptedClientKey();
         static bool _testEmptyWaitingTask();
+        static bool _testClearAcceptedList();
+        static bool _testInvalidAcceptedList();
 
     protected:
         void registerTestCase();
