@@ -21,7 +21,7 @@ void mcHubd::RegisterClientHandler::request(std::shared_ptr<mcHubd::Message> msg
         std::shared_ptr<mcHubd::ChannelManager> channelMgr;
 
         // parse() assigns value to member fields; m_pid, m_processNameand m_cKeyList.
-        if(this->parse(msg->getBody()) == false)
+        if((this->parse(msg->getBody()) == false) || (this->m_cKeyList.size() < 1))
         {
             std::string emptyMsg;
             code = MCHUBD_INVALID_MSG;
@@ -155,12 +155,22 @@ bool mcHubd::RegisterClientHandler::parse(std::string payload)
 
     arrSize = array_list_length(keyList);
 
+    if(arrSize < 1)
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
     for(arrIndex = 0; arrIndex < arrSize; arrIndex++)
     {
         struct json_object* keyJobj = NULL;
         keyJobj = static_cast<json_object*>(array_list_get_idx(keyList, arrIndex));
-        std::string clientKey(json_object_get_string(keyJobj));
-        this->m_cKeyList.push_back(clientKey);
+
+        if(keyJobj && json_object_is_type(keyJobj, json_type_string))
+        {
+            std::string clientKey(json_object_get_string(keyJobj));
+            this->m_cKeyList.push_back(clientKey);
+        }
     }
 
     json_object_put(jobj);
