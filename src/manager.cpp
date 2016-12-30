@@ -1,5 +1,6 @@
 #include "manager.h"
 #include "connectionInfo.h"
+#include "taskSet.h"
 
 mcHubd::Manager::Manager(mcHubd::Mediator* mediator, std::string role):
     m_mediator(mediator),
@@ -64,12 +65,13 @@ void mcHubd::Manager::_setUpAcceptedList(std::string& acceptedKeyFilePath)
 
 void mcHubd::Manager::clearAcceptedList(std::string& acceptedKeyFilePath)
 {
+    // check the status of client in the availableListMap
+    // remove clients in the availableListMap if thay are unAvailable.
+
     this->m_cInfo->clearAcceptedKeyList();
     this->m_cInfo->clearAvailableKeyList();
     this->m_cInfo->clearConnecteProcessMap();
-
-    // check the status of client in the availableListMap
-    // remove clients in the availableListMap if thay are unAvailable.
+    mcHubd::TaskSet::getInstance()->clearWaitingTask();
 }
 
 bool mcHubd::Manager::hasAcceptedList()
