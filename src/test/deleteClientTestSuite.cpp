@@ -229,7 +229,8 @@ bool DeleteClientTestSuite::_testDeleteClient()
     mcHubd::Mediator* mediator = new mcHubd::ChannelStatusMediator();
     mcHubd::Manager* mgr = new mcHubd::ChannelManager(mediator);
 
-    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CLIENT);
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CLIENT);
+    mcHubd::Message* msg = sptrMsg.get();
 
     std::string body;
     std::string t1("com.mchannel.test.t1");
@@ -308,7 +309,8 @@ bool DeleteClientTestSuite::_testDeleteClient()
 bool DeleteClientTestSuite::_testInvalidRequestMessage()
 {
     mcHubd::DeleteClientHandler handler;
-    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CLIENT);
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CLIENT);
+    mcHubd::Message* msg = sptrMsg.get();
     std::string body;
 
     mcHubd::RESPCODE code = mcHubd::MCHUBD_INVALID_MSG;
@@ -365,7 +367,8 @@ bool DeleteClientTestSuite::_testInvalidRequestMessage()
 bool DeleteClientTestSuite::_testInternalError()
 {
     mcHubd::DeleteClientHandler handler;
-    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CLIENT);
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CLIENT);
+    mcHubd::Message* msg = sptrMsg.get();
     std::string body;
     mcHubd::RESPCODE code = mcHubd::MCHUBD_INTERNAL_ERROR;
     std::string respMessge("INTERNAL ERROR");

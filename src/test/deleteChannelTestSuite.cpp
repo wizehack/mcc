@@ -54,7 +54,6 @@ void DeleteChannelTestSuite::registerTestCase()
     {
         std::cout << "Precondition Failed" << std::endl;
     }
-
 }
 
 bool DeleteChannelTestSuite::_setPrecondition()
@@ -234,7 +233,8 @@ bool DeleteChannelTestSuite::_testDeleteAvailableKey()
     mcHubd::Mediator* mediator = new mcHubd::ChannelStatusMediator();
     mcHubd::Manager* mgr = new mcHubd::ChannelManager(mediator);
 
-    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CHANNEL);
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CHANNEL);
+    mcHubd::Message* msg = sptrMsg.get();
     std::string body;
     std::string f1("com.mchannel.foo.f1");
     std::string f2("com.mchannel.foo.f2");
@@ -265,7 +265,8 @@ bool DeleteChannelTestSuite::_testDeleteReadyKey()
     mcHubd::Mediator* mediator = new mcHubd::ChannelStatusMediator();
     mcHubd::Manager* mgr = new mcHubd::ChannelManager(mediator);
 
-    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CHANNEL);
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CHANNEL);
+    mcHubd::Message* msg = sptrMsg.get();
     std::string body;
     std::string t1("com.mchannel.test.t1");
     std::string t2("com.mchannel.test.t2");
@@ -334,7 +335,8 @@ bool DeleteChannelTestSuite::_testDeleteEmptyChannel()
     mcHubd::Mediator* mediator = new mcHubd::ChannelStatusMediator();
     mcHubd::Manager* mgr = new mcHubd::ChannelManager(mediator);
 
-    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CHANNEL);
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CHANNEL);
+    mcHubd::Message* msg = sptrMsg.get();
     std::string body;
     std::string f1("com.mchannel.foo.f1");
     std::string f2("com.mchannel.foo.f2");
@@ -365,7 +367,8 @@ bool DeleteChannelTestSuite::_testDeleteUnknownChannel()
     mcHubd::Mediator* mediator = new mcHubd::ChannelStatusMediator();
     mcHubd::Manager* mgr = new mcHubd::ChannelManager(mediator);
 
-    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CHANNEL);
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CHANNEL);
+    mcHubd::Message* msg = sptrMsg.get();
     std::string body;
     std::string f1("com.mchannel.foo.f1");
     std::string f2("com.mchannel.foo.f2");
@@ -393,7 +396,8 @@ bool DeleteChannelTestSuite::_testDeleteUnknownChannel()
 bool DeleteChannelTestSuite::_testInvalidRequestMessage()
 {
     mcHubd::DeleteChannelHandler handler;
-    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CHANNEL);
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CHANNEL);
+    mcHubd::Message* msg = sptrMsg.get();
     std::string body;
     mcHubd::RESPCODE code = mcHubd::MCHUBD_INVALID_MSG;
     std::string respMessge("INVALID MESSAGE");

@@ -170,7 +170,8 @@ bool RegisterChannelTestSuite::_testRegisterCreatedChannel()
     mcHubd::Mediator* mediator = new mcHubd::ChannelStatusMediator();
     mcHubd::Manager* mgr = new mcHubd::ChannelManager(mediator);
 
-    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CHANNEL);
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CHANNEL);
+    mcHubd::Message* msg = sptrMsg.get();
     std::string body;
 
     /*registered key*/
@@ -255,7 +256,8 @@ bool RegisterChannelTestSuite::_testRegisterNOTCreatedChannel()
     mcHubd::Mediator* mediator = new mcHubd::ChannelStatusMediator();
     mcHubd::Manager* mgr = new mcHubd::ChannelManager(mediator);
 
-    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CHANNEL);
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CHANNEL);
+    mcHubd::Message* msg = sptrMsg.get();
     std::string body;
 
     /*NOT registered key*/
@@ -283,7 +285,8 @@ bool RegisterChannelTestSuite::_testRegisterDuplicatedChannel()
     mcHubd::RegisterChannelHandler regChannelHandler;
     mcHubd::Mediator* mediator = new mcHubd::ChannelStatusMediator();
     mcHubd::Manager* mgr = new mcHubd::ChannelManager(mediator);
-    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CHANNEL);
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CHANNEL);
+    mcHubd::Message* msg = sptrMsg.get();
     std::string body;
 
     std::string f1("com.mchannel.foo.f1");
@@ -321,7 +324,8 @@ bool RegisterChannelTestSuite::_testRegisterDuplicatedChannel()
 bool RegisterChannelTestSuite::_testInvalidRequestMessage()
 {
     mcHubd::RegisterChannelHandler handler;
-    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CHANNEL);
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CHANNEL);
+    mcHubd::Message* msg = sptrMsg.get();
     std::string body;
 
     mcHubd::RESPCODE code = mcHubd::MCHUBD_INVALID_MSG;
@@ -378,7 +382,8 @@ bool RegisterChannelTestSuite::_testInvalidRequestMessage()
 bool RegisterChannelTestSuite::_testInformedChennelRequest()
 {
     mcHubd::RegisterChannelHandler handler;
-    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CHANNEL);
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CHANNEL);
+    mcHubd::Message* msg = sptrMsg.get();
     std::string body;
 
     mcHubd::RESPCODE code = mcHubd::MCHUBD_INFORM_CHANNEL_ERROR;

@@ -67,3 +67,30 @@ bool TestSuite::_verifyResponseError(struct json_object* jobj, mcHubd::RESPCODE 
 
     return true;
 }
+
+/*
+bool TestSuite::_verifyResponseOk(struct json_object* jobj)
+{
+    struct json_object* codeJobj = NULL;
+    struct json_object* retJobj = NULL;
+    mcHubd::RESPCODE code;
+
+    if((jobj == NULL) || is_error(jobj))
+        return false;
+
+    if(!json_object_object_get_ex(jobj, "code", &codeJobj))
+        return false;
+
+    code = static_cast<mcHubd::RESPCODE>(json_object_get_int(codeJobj));
+    if(code != mcHubd::MCHUBD_OK)
+        return false;
+
+    if(!json_object_object_get_ex(jobj, "return", &retJobj))
+        return false;
+
+    if(!json_object_get_boolean(retJobj))
+        return false;
+
+    return true;
+}
+*/

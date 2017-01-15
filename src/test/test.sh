@@ -77,3 +77,5 @@ echo "##################################### Dynamic Analysis Results ###########
 
 # Test Informed Channel Error
 ./build/bin/test -c RegisterChannel -t 5 -d ./res/createdChannelList.json;
+
+#./build/bin/test -c MessageQueue -t 1 -d ./res/acceptedKey.json;

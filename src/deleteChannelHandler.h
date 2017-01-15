@@ -10,7 +10,7 @@ namespace mcHubd {
         public:
             DeleteChannelHandler();
             virtual ~DeleteChannelHandler();
-            void request(std::shared_ptr<mcHubd::Message> msg);
+            void request(mcHubd::Message* msg);
 
         private:
             bool parse(std::string payload);

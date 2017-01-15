@@ -8,7 +8,7 @@ mcHubd::DeleteChannelHandler::DeleteChannelHandler():
     m_channel(-1){}
 mcHubd::DeleteChannelHandler::~DeleteChannelHandler(){}
 
-void mcHubd::DeleteChannelHandler::request(std::shared_ptr<mcHubd::Message> msg)
+void mcHubd::DeleteChannelHandler::request(mcHubd::Message* msg)
 {
     if(msg->getType() == REQ_DEL_CHANNEL)
     {

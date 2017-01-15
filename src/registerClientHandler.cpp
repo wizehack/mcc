@@ -10,7 +10,7 @@ mcHubd::RegisterClientHandler::RegisterClientHandler():
     m_cKeyList(){}
 mcHubd::RegisterClientHandler::~RegisterClientHandler(){}
 
-void mcHubd::RegisterClientHandler::request(std::shared_ptr<mcHubd::Message> msg)
+void mcHubd::RegisterClientHandler::request(mcHubd::Message* msg)
 {
     if(msg->getType() == REQ_REG_CLIENT)
     {

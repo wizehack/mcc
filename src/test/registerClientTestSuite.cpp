@@ -56,7 +56,8 @@ void RegisterClientTestSuite::registerTestCase()
 bool RegisterClientTestSuite::_testRegisterClientWithOneKey()
 {
     mcHubd::RegisterClientHandler regCliHandler;
-    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CLIENT);
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CLIENT);
+    mcHubd::Message* msg = sptrMsg.get();
     std::string body;
     std::string key("com.mchannel.test.t1");
     body.assign("{\"pid\": 1212, \"psName\": \"test\", \"keyList\":");
@@ -76,7 +77,8 @@ bool RegisterClientTestSuite::_testRegisterClientWithOneKey()
 bool RegisterClientTestSuite::_testRegisterClientWithManyKey()
 {
     mcHubd::RegisterClientHandler regCliHandler;
-    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CLIENT);
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CLIENT);
+    mcHubd::Message* msg = sptrMsg.get();
     std::string body;
     std::string foo1("com.mchannel.foo.f1");
     std::string foo2("com.mchannel.foo.f2");
@@ -112,7 +114,8 @@ bool RegisterClientTestSuite::_testRegisterClientWithManyKey()
 bool RegisterClientTestSuite::_testRegisterClientWithMAXKey()
 {
     mcHubd::RegisterClientHandler regCliHandler;
-    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CLIENT);
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CLIENT);
+    mcHubd::Message* msg = sptrMsg.get();
     std::string body;
     std::string t1("com.mchannel.test.t1");
     std::string t2("com.mchannel.test.t2");
@@ -181,7 +184,8 @@ bool RegisterClientTestSuite::_testRegisterClientWithMAXKey()
 bool RegisterClientTestSuite::_testRegisterClientWitUnlimitedKey()
 {
     mcHubd::RegisterClientHandler regCliHandler;
-    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CLIENT);
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CLIENT);
+    mcHubd::Message* msg = sptrMsg.get();
     std::string body;
     std::string t1("com.mchannel.test.t1");
     std::string t2("com.mchannel.test.t2");
@@ -238,7 +242,8 @@ bool RegisterClientTestSuite::_testRegisterClientWitUnlimitedKey()
 bool RegisterClientTestSuite::_testRegisterClientWitUnacceptedKey()
 {
     mcHubd::RegisterClientHandler regCliHandler;
-    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CLIENT);
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CLIENT);
+    mcHubd::Message* msg = sptrMsg.get();
     std::string body;
     std::string u1("com.mchannel.unaccepted.u1");
 
@@ -259,7 +264,8 @@ bool RegisterClientTestSuite::_testRegisterClientWitUnacceptedKey()
 bool RegisterClientTestSuite::_testInvalidRequestMessage()
 {
     mcHubd::RegisterClientHandler regCliHandler;
-    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CLIENT);
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CLIENT);
+    mcHubd::Message* msg = sptrMsg.get();
     std::string body;
     std::string respMessge("INVALID MESSAGE");
     mcHubd::RESPCODE code = mcHubd::MCHUBD_INVALID_MSG;
@@ -344,7 +350,8 @@ bool RegisterClientTestSuite::_testInvalidRequestMessage()
 bool RegisterClientTestSuite::_testCreateChannelError()
 {
     mcHubd::RegisterClientHandler regCliHandler;
-    std::shared_ptr<mcHubd::Message> msg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CLIENT);
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CLIENT);
+    mcHubd::Message* msg = sptrMsg.get();
     std::string body;
     std::string respMessge("CREATE CHANNEL ERROR");
     mcHubd::RESPCODE code = mcHubd::MCHUBD_CREATE_CHANNEL_ERROR;

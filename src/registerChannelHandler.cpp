@@ -8,7 +8,7 @@ mcHubd::RegisterChannelHandler::RegisterChannelHandler():
     m_cKey(){}
 mcHubd::RegisterChannelHandler::~RegisterChannelHandler(){}
 
-void mcHubd::RegisterChannelHandler::request(std::shared_ptr<mcHubd::Message> msg)
+void mcHubd::RegisterChannelHandler::request(mcHubd::Message* msg)
 {
     if(msg->getType() == REQ_REG_CHANNEL)
     {

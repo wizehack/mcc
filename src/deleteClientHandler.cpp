@@ -8,7 +8,7 @@ mcHubd::DeleteClientHandler::DeleteClientHandler():
     m_processName(){}
 mcHubd::DeleteClientHandler::~DeleteClientHandler(){}
 
-void mcHubd::DeleteClientHandler::request(std::shared_ptr<mcHubd::Message> msg)
+void mcHubd::DeleteClientHandler::request(mcHubd::Message* msg)
 {
     if(msg->getType() == REQ_DEL_CLIENT)
     {

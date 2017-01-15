@@ -23,6 +23,7 @@ add_executable(
     ${ROOT_DIR}/registerChannelTestSuite.cpp
     ${ROOT_DIR}/deleteChannelTestSuite.cpp
     ${ROOT_DIR}/deleteClientTestSuite.cpp
+    #    ${ROOT_DIR}/messageQueueTestSuite.cpp
 
     ${ROOT_DIR}/../../testStub.cpp
     ${ROOT_DIR}/../../src/manager.cpp
@@ -39,6 +40,7 @@ add_executable(
     ${ROOT_DIR}/../../src/clientManager.cpp
     ${ROOT_DIR}/../../src/channelManager.cpp
     ${ROOT_DIR}/../../src/taskSet.cpp
+    #    ${ROOT_DIR}/../../src/messageQueue.cpp
 )
 
 # -ljson-c -lglib-2.0

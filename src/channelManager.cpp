@@ -5,8 +5,7 @@
 mcHubd::ChannelManager::ChannelManager(mcHubd::Mediator* mediator):
     Manager(mediator, "ChannelManager"),
     m_tSet(mcHubd::TaskSet::getInstance()),
-    MAX(10)
-{}
+    MAX(10){}
 mcHubd::ChannelManager::~ChannelManager(){}
 
 void mcHubd::ChannelManager::create(mcHubd::Contract** contract)
