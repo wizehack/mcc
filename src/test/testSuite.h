@@ -21,7 +21,6 @@ class TestSuite {
         bool exec(int tcId);
         void add(int tcId, FuncPtr func_cb);
         static bool _verifyResponseError(struct json_object* jobj, mcHubd::RESPCODE code, std::string message);
-//        static bool _verifyResponseOk(struct json_object* jobj);
 
     private:
         TestSuite(const TestSuite&);

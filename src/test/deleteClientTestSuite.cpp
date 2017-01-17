@@ -46,6 +46,7 @@ void DeleteClientTestSuite::registerTestCase()
         this->add(1, DeleteClientTestSuite::_testDeleteClient);
         this->add(2, DeleteClientTestSuite::_testInvalidRequestMessage);
         this->add(3, DeleteClientTestSuite::_testInternalError);
+        this->add(4, DeleteClientTestSuite::_testOKResponse);
     }
     else
     {
@@ -406,3 +407,86 @@ bool DeleteClientTestSuite::_testInternalError()
     return isPassed;
 }
 
+bool DeleteClientTestSuite::_testOKResponse()
+{
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CLIENT);
+    mcHubd::Message* msg = sptrMsg.get();
+
+    std::string body;
+    mcHubd::DeleteClientHandler handler;
+    body.assign("{\"pid\": 100, \"psName\": \"test\"}");
+    msg->setBody(body);
+    handler.request(msg);
+
+    struct json_object* jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
+    bool isPassed = DeleteClientTestSuite::_verifyResponseOk(jobj);
+    json_object_put(jobj);
+    return isPassed;
+}
+
+bool DeleteClientTestSuite::_verifyResponseOk(struct json_object* jobj)
+{
+    struct json_object* codeJobj = NULL;
+    struct json_object* retJobj = NULL;
+    struct json_object* messageJobj = NULL;
+    struct json_object* psNameJobj = NULL;
+    struct json_object* pidJobj = NULL;
+    mcHubd::RESPCODE code;
+
+    if((jobj == NULL) || is_error(jobj))
+        return false;
+
+//    std::cout << json_object_get_string(jobj) << std::endl;
+
+    if(!json_object_object_get_ex(jobj, "code", &codeJobj))
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    code = static_cast<mcHubd::RESPCODE>(json_object_get_int(codeJobj));
+    if(code != mcHubd::MCHUBD_OK)
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    if(!json_object_object_get_ex(jobj, "return", &retJobj))
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    if(!json_object_get_boolean(retJobj))
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    if(!json_object_object_get_ex(jobj, "message", &messageJobj))
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    if(!json_object_object_get_ex(messageJobj, "psName", &psNameJobj))
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    if(!json_object_object_get_ex(jobj, "pid", &pidJobj))
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    if(!psNameJobj || !pidJobj)
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    json_object_put(jobj);
+    return true;
+}

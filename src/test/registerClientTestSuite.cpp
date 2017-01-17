@@ -48,6 +48,7 @@ void RegisterClientTestSuite::registerTestCase()
     this->add(5, RegisterClientTestSuite::_testRegisterClientWitUnacceptedKey);
     this->add(6, RegisterClientTestSuite::_testInvalidRequestMessage);
     this->add(7, RegisterClientTestSuite::_testCreateChannelError);
+    this->add(8, RegisterClientTestSuite::_testOKResponse);
 
     delete mediator;
     delete manager;
@@ -381,4 +382,124 @@ bool RegisterClientTestSuite::_testCreateChannelError()
     json_object_put(jobj);
 
     return isPassed;
+}
+
+bool RegisterClientTestSuite::_testOKResponse()
+{
+    struct json_object* jobj = NULL;
+    mcHubd::RegisterClientHandler regCliHandler;
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_REG_CLIENT);
+    mcHubd::Message* msg = sptrMsg.get();
+    std::string response;
+    std::string body;
+
+    body.assign("{\"pid\": 1212, \"psName\": \"test\", \"keyList\":");
+    body.append("[\"com.mchannel.test.t1\", \"com.mchannel.test.t2\"]");
+    body.append("}");
+    msg->setBody(body);
+    regCliHandler.request(msg);
+
+    response = mcHubd::TestStub::getInstance()->getRespMsg(0);
+    jobj = json_tokener_parse(response.c_str());
+
+    if((jobj == NULL) || is_error(jobj))
+        return false;
+
+    if(RegisterClientTestSuite::_verifyResponseOk(jobj) == false)
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    json_object_put(jobj);
+
+    return true;
+}
+
+
+bool RegisterClientTestSuite::_verifyResponseOk(struct json_object* jobj)
+{
+    struct json_object* codeJobj = NULL;
+    struct json_object* retJobj = NULL;
+    struct json_object* messageJobj = NULL;
+    struct array_list* keyChannelList = NULL;
+    mcHubd::RESPCODE code;
+
+    if((jobj == NULL) || is_error(jobj))
+        return false;
+
+//    std::cout << json_object_get_string(jobj) << std::endl;
+
+    if(!json_object_object_get_ex(jobj, "code", &codeJobj))
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    code = static_cast<mcHubd::RESPCODE>(json_object_get_int(codeJobj));
+    if(code != mcHubd::MCHUBD_OK)
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    if(!json_object_object_get_ex(jobj, "return", &retJobj))
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    if(!json_object_get_boolean(retJobj))
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    if(!json_object_object_get_ex(jobj, "message", &messageJobj))
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    keyChannelList = json_object_get_array(messageJobj);
+
+    if(keyChannelList)
+    {
+        int arrSize = array_list_length(keyChannelList);
+        int arrIndex = 0;
+
+        for(arrIndex = 0; arrIndex < arrSize; arrIndex++)
+        {
+            struct json_object* keyChannelJobj = NULL;
+            struct json_object* keyJobj = NULL;
+            struct json_object* channelJobj = NULL;
+
+            keyChannelJobj = static_cast<json_object*>(array_list_get_idx(keyChannelList, arrIndex));
+
+            if(!json_object_object_get_ex(keyChannelJobj, "key", &keyJobj))
+            {
+                json_object_put(jobj);
+                return false;
+            }
+
+            if(!json_object_object_get_ex(keyChannelJobj, "channel", &channelJobj))
+            {
+                json_object_put(jobj);
+                return false;
+            }
+
+            if(!keyJobj || !channelJobj)
+            {
+                json_object_put(jobj);
+                return false;
+            }
+        }
+    }
+    else
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    return true;
 }

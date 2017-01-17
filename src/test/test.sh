@@ -78,4 +78,10 @@ echo "##################################### Dynamic Analysis Results ###########
 # Test Informed Channel Error
 ./build/bin/test -c RegisterChannel -t 5 -d ./res/createdChannelList.json;
 
+# Test OK response
+./build/bin/test -c RegisterClient -t 8 -d ./res/acceptedKey.json;
+./build/bin/test -c RegisterChannel -t 6 -d ./res/createdChannelList.json;
+./build/bin/test -c DeleteChannel -t 6 -d ./res/registeredChannelList.json;
+./build/bin/test -c DeleteClient -t 4 -d ./res/registeredChannelList.json;
+
 #./build/bin/test -c MessageQueue -t 1 -d ./res/acceptedKey.json;

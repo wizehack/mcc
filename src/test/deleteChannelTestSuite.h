@@ -14,9 +14,11 @@ class DeleteChannelTestSuite : public TestSuite {
         static bool _testDeleteEmptyChannel();
         static bool _testDeleteUnknownChannel();
         static bool _testInvalidRequestMessage();
+        static bool _testOKResponse();
 
     protected:
         void registerTestCase();
+        static bool _verifyResponseOk(struct json_object* jobj);
 
     private:
         static bool _setPrecondition();

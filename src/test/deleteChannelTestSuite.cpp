@@ -49,6 +49,7 @@ void DeleteChannelTestSuite::registerTestCase()
         this->add(3, DeleteChannelTestSuite::_testDeleteEmptyChannel);
         this->add(4, DeleteChannelTestSuite::_testDeleteUnknownChannel);
         this->add(5, DeleteChannelTestSuite::_testInvalidRequestMessage);
+        this->add(6, DeleteChannelTestSuite::_testOKResponse);
     }
     else
     {
@@ -438,4 +439,95 @@ bool DeleteChannelTestSuite::_testInvalidRequestMessage()
     json_object_put(jobj);
 
     return isPassed;
+}
+
+bool DeleteChannelTestSuite::_testOKResponse()
+{
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CHANNEL);
+    mcHubd::Message* msg = sptrMsg.get();
+
+    std::string body;
+    mcHubd::DeleteChannelHandler handler;
+    body.assign("{\"key\": \"com.mchannel.foo.f1\", \"channel\": 2000}");
+    msg->setBody(body);
+    handler.request(msg);
+
+    struct json_object* jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
+    bool isPassed = DeleteChannelTestSuite::_verifyResponseOk(jobj);
+    json_object_put(jobj);
+    return isPassed;
+}
+
+bool DeleteChannelTestSuite::_verifyResponseOk(struct json_object* jobj)
+{
+    struct json_object* codeJobj = NULL;
+    struct json_object* retJobj = NULL;
+    struct json_object* messageJobj = NULL;
+    struct json_object* keyJobj = NULL;
+    struct json_object* channelJobj = NULL;
+    struct json_object* stateJobj = NULL;
+    mcHubd::RESPCODE code;
+
+    if((jobj == NULL) || is_error(jobj))
+        return false;
+
+//    std::cout << json_object_get_string(jobj) << std::endl;
+
+    if(!json_object_object_get_ex(jobj, "code", &codeJobj))
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    code = static_cast<mcHubd::RESPCODE>(json_object_get_int(codeJobj));
+    if(code != mcHubd::MCHUBD_OK)
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    if(!json_object_object_get_ex(jobj, "return", &retJobj))
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    if(!json_object_get_boolean(retJobj))
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    if(!json_object_object_get_ex(jobj, "message", &messageJobj))
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    if(!json_object_object_get_ex(messageJobj, "key", &keyJobj))
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    if(!json_object_object_get_ex(jobj, "channel", &channelJobj))
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    if(!json_object_object_get_ex(jobj, "state", &stateJobj))
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    if(!keyJobj || !channelJobj || !stateJobj)
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    json_object_put(jobj);
+    return true;
 }
