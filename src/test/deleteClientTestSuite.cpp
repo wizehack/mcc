@@ -436,8 +436,6 @@ bool DeleteClientTestSuite::_verifyResponseOk(struct json_object* jobj)
     if((jobj == NULL) || is_error(jobj))
         return false;
 
-//    std::cout << json_object_get_string(jobj) << std::endl;
-
     if(!json_object_object_get_ex(jobj, "code", &codeJobj))
     {
         json_object_put(jobj);
@@ -475,7 +473,7 @@ bool DeleteClientTestSuite::_verifyResponseOk(struct json_object* jobj)
         return false;
     }
 
-    if(!json_object_object_get_ex(jobj, "pid", &pidJobj))
+    if(!json_object_object_get_ex(messageJobj, "pid", &pidJobj))
     {
         json_object_put(jobj);
         return false;

@@ -2,6 +2,7 @@
 #include "clientManager.h"
 #include "channelStatusMediator.h"
 #include "channelManager.h"
+#include "testStub.h"
 
 mcHubd::RegisterClientHandler::RegisterClientHandler():
     m_pid(-1),
@@ -14,14 +15,13 @@ void mcHubd::RegisterClientHandler::request(mcHubd::Message* msg)
 {
     if(msg->getType() == REQ_REG_CLIENT)
     {
-        std::string respMsg;
         mcHubd::RESPCODE code;
         mcHubd::Mediator* mediator = NULL;
         std::shared_ptr<mcHubd::ClientManager> clientMgr;
         std::shared_ptr<mcHubd::ChannelManager> channelMgr;
 
         // parse() assigns value to member fields; m_pid, m_processNameand m_cKeyList.
-        if((this->parse(msg->getBody()) == false) || (this->m_cKeyList.size() < 1))
+        if((this->parse(msg->getBody()) == false))
         {
             std::string emptyMsg;
             code = MCHUBD_INVALID_MSG;
@@ -42,15 +42,16 @@ void mcHubd::RegisterClientHandler::request(mcHubd::Message* msg)
 
         if(mediator)
         {
+            std::map<std::string, key_t> keyChannelMap;
             clientMgr = std::make_shared<mcHubd::ClientManager>(mediator);
             channelMgr = std::make_shared<mcHubd::ChannelManager>(mediator);
 
             mediator->appendManager(clientMgr);
             mediator->appendManager(channelMgr);
 
-            respMsg = this->makeNewChannelList(mediator);
+            keyChannelMap = this->makeNewChannelList(mediator);
 
-            if(respMsg.empty()) //error response was sent
+            if(keyChannelMap.empty()) //error response was sent
             {
                 mcHubd::Contract* contract = new mcHubd::Contract();
 
@@ -65,7 +66,7 @@ void mcHubd::RegisterClientHandler::request(mcHubd::Message* msg)
             else
             {
                 //send response message to client
-                this->_responseOK(respMsg);
+                this->_responseOK(keyChannelMap);
                 mediator->notify(NULL, NOTI_CHANNEL_OPEN);
             }
 
@@ -77,26 +78,6 @@ void mcHubd::RegisterClientHandler::request(mcHubd::Message* msg)
         if(this->m_next)
             this->m_next->request(msg);
     }
-}
-
-bool mcHubd::RegisterClientHandler::_createChannelJobj(struct json_object** jobj, std::string cKey, key_t channel)
-{
-    struct json_object* keyJobj = NULL;
-    struct json_object* channelJobj = NULL;
-
-    if((*jobj) == NULL)
-        return false;
-
-    if(channel <= 0)
-        return false;
-
-    keyJobj = json_object_new_string(cKey.c_str());
-    channelJobj = json_object_new_int(static_cast<int>(channel));
-
-    json_object_object_add((*jobj), "key", keyJobj);
-    json_object_object_add((*jobj), "channel", channelJobj);
-
-    return true;
 }
 
 bool mcHubd::RegisterClientHandler::parse(std::string payload)
@@ -129,7 +110,8 @@ bool mcHubd::RegisterClientHandler::parse(std::string payload)
         return false;
     }
 
-    this->m_processName.assign(json_object_get_string(processNameJobj));
+    if(processNameJobj)
+        this->m_processName.assign(json_object_get_string(processNameJobj));
 
     if(!json_object_object_get_ex(jobj, "pid", &processIdJobj))
     {
@@ -174,80 +156,104 @@ bool mcHubd::RegisterClientHandler::parse(std::string payload)
     }
 
     json_object_put(jobj);
+
+    if(this->m_cKeyList.empty() || this->m_processName.empty())
+        return false;
+
     return true;
 }
 
-std::string mcHubd::RegisterClientHandler::makeNewChannelList(mcHubd::Mediator* mediator)
+std::map<std::string, key_t> mcHubd::RegisterClientHandler::makeNewChannelList(mcHubd::Mediator* mediator)
 {
-    int sequenceNumber = 0;
     std::list<std::string>::iterator itor;
-    std::string respMsg("[");
+    std::map<std::string, key_t> keyChannelMap;
     mcHubd::Contract* contract = NULL;
 
-    if(mediator == NULL)
+    if(mediator)
     {
-        respMsg.clear();
-        return respMsg;
-    }
+        // Each client sends its key list to create message channel
+        // In this loop, new channel is created from the client key list
 
-    // Each client sends its key list to create message channel
-    // In this loop, new channel is created from the client key list
-    for(itor = this->m_cKeyList.begin(); itor != this->m_cKeyList.end(); ++itor)
-    {
-        mcHubd::RESPCODE code;
-        struct json_object* jobj = NULL;
-        std::string keyChannelJson;
+        int sequenceNumber = 0;
 
-        contract = new mcHubd::Contract(sequenceNumber);
-        sequenceNumber++;
-
-        if(contract)
+        for(itor = this->m_cKeyList.begin(); itor != this->m_cKeyList.end(); ++itor)
         {
-            contract->setProcessName(this->m_processName);
-            contract->setProcessId(this->m_pid);
-            contract->setClientKey((*itor));
-            mediator->getNewChannel(&contract);
+            mcHubd::RESPCODE code;
 
-            if(contract->getRespCode() == MCHUBD_OK)
+            contract = new mcHubd::Contract(sequenceNumber);
+            sequenceNumber++;
+
+            if(contract)
             {
-                jobj = json_object_new_object();
+                contract->setProcessName(this->m_processName);
+                contract->setProcessId(this->m_pid);
+                contract->setClientKey((*itor));
+                mediator->getNewChannel(&contract);
 
-                if(mcHubd::RegisterClientHandler::_createChannelJobj(&jobj, (*itor), contract->getChannel()) == false)
+                if(contract->getRespCode() == MCHUBD_OK)
                 {
-                    code = MCHUBD_CREATE_CHANNEL_ERROR;
-                    this->_responseError(code, (*itor));
-                    json_object_put(jobj);
-                    respMsg.clear();
+                    if(contract->getChannel() <= 0)
+                    {
+                        code = MCHUBD_CREATE_CHANNEL_ERROR;
+                        this->_responseError(code, (*itor));
+                        delete contract;
+                        return keyChannelMap;;
+                    }
+
+                    keyChannelMap.insert(std::pair<std::string, key_t>((*itor), contract->getChannel()));
+                }
+                else
+                {
+                    this->_responseError(contract->getRespCode(), (*itor));
                     delete contract;
-                    return respMsg;
+                    return keyChannelMap;;
                 }
 
-                keyChannelJson.assign(json_object_get_string(jobj));
-
-                //make json array [ json1, json2, ...]
-                if(keyChannelJson.empty() == false)
-                {
-                    ++itor; //check if current key is last element or not
-                    if((itor) != this->m_cKeyList.end())
-                        respMsg = respMsg + keyChannelJson.c_str() + ", ";
-                    else
-                        respMsg = respMsg + keyChannelJson.c_str() + "]";
-                    --itor;
-                }
-
-                json_object_put(jobj);
-            }
+                delete contract;
+            } //if contract
             else
             {
-                this->_responseError(contract->getRespCode(), (*itor));
-                respMsg.clear();
-                delete contract;
-                return respMsg;
+                code = MCHUBD_INTERNAL_ERROR;
+                this->_responseError(code, (*itor));
+                return keyChannelMap;;
             }
+        }//for
+    } // if mediator
 
-            delete contract;
-        } //if contract
-    }//for
+    return keyChannelMap;;
+}
 
-    return respMsg;
+
+void mcHubd::RegisterClientHandler::_responseOK(std::map<std::string, key_t> keyChannelMap)
+{
+    mcHubd::RESPCODE code = MCHUBD_OK;
+    struct json_object* jobj = NULL;
+    struct json_object* codeJobj = NULL;
+    struct json_object* msgJobj = NULL;
+    struct json_object* returnJobj = NULL;
+
+    std::map<std::string, key_t>::iterator it;
+
+    jobj = json_object_new_object();
+    codeJobj = json_object_new_int(static_cast<int>(code));
+    returnJobj = json_object_new_boolean(true);
+
+    msgJobj = json_object_new_array();
+
+    for(it = keyChannelMap.begin(); it != keyChannelMap.end(); ++it)
+    {
+        struct json_object* keyChannelJobj = json_object_new_object();
+        struct json_object* keyJobj = json_object_new_string(it->first.c_str());
+        struct json_object* channelJobj = json_object_new_int(static_cast<int>(it->second));
+
+        json_object_object_add(keyChannelJobj, "key", keyJobj);
+        json_object_object_add(keyChannelJobj, "channel", channelJobj);
+        json_object_array_add(msgJobj, keyChannelJobj);
+    }
+
+    json_object_object_add(jobj, "code", codeJobj);
+    json_object_object_add(jobj, "message", msgJobj);
+    json_object_object_add(jobj, "return", returnJobj);
+
+    TestStub::getInstance()->addRespMsg(json_object_get_string(jobj)); //Test Code
 }

@@ -15,9 +15,8 @@ namespace mcHubd {
 
         private:
             bool parse(std::string payload);
-            std::string makeNewChannelList(mcHubd::Mediator* mediator);
-
-            static bool _createChannelJobj(struct json_object** jobj, std::string cKey, key_t channel);
+            std::map<std::string, key_t> makeNewChannelList(mcHubd::Mediator* mediator);
+            static void _responseOK(std::map<std::string, key_t> keyChannelMap);
 
         private:
             pid_t m_pid;

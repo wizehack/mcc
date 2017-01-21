@@ -442,8 +442,6 @@ bool RegisterChannelTestSuite::_verifyResponseOk(struct json_object* jobj)
     if((jobj == NULL) || is_error(jobj))
         return false;
 
-//    std::cout << json_object_get_string(jobj) << std::endl;
-
     if(!json_object_object_get_ex(jobj, "code", &codeJobj))
     {
         json_object_put(jobj);
@@ -481,13 +479,13 @@ bool RegisterChannelTestSuite::_verifyResponseOk(struct json_object* jobj)
         return false;
     }
 
-    if(!json_object_object_get_ex(jobj, "channel", &channelJobj))
+    if(!json_object_object_get_ex(messageJobj, "channel", &channelJobj))
     {
         json_object_put(jobj);
         return false;
     }
 
-    if(!json_object_object_get_ex(jobj, "state", &stateJobj))
+    if(!json_object_object_get_ex(messageJobj, "state", &stateJobj))
     {
         json_object_put(jobj);
         return false;

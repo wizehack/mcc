@@ -46,7 +46,7 @@ void mcHubd::MessageHandler::_responseOK(std::string respMsg)
 
     jobj = json_object_new_object();
     codeJobj = json_object_new_int(static_cast<int>(code));
-    msgJobj = json_object_new_string(respMsg.c_str());
+    msgJobj = json_tokener_parse(respMsg.c_str());
     returnJobj = json_object_new_boolean(true);
 
     json_object_object_add(jobj, "code", codeJobj);
