@@ -201,8 +201,6 @@ std::map<std::string, key_t> MessageQueueTestSuite::_getkeyChannelMap(std::strin
             struct json_object* channelJobj = NULL;
 
             std::string key;
-            std::string reqBody;
-            int channel;
 
             keyChannelJobj = static_cast<json_object*>(array_list_get_idx(keyChannelList, arrIndex));
 
@@ -220,6 +218,7 @@ std::map<std::string, key_t> MessageQueueTestSuite::_getkeyChannelMap(std::strin
 
             if(keyJobj && channelJobj)
             {
+                int channel;
                 key.assign(json_object_get_string(keyJobj));
                 channel = static_cast<key_t>(json_object_get_int(channelJobj));
                 map.insert(std::pair<std::string, key_t>(key, channel));
@@ -235,7 +234,6 @@ std::map<std::string, key_t> MessageQueueTestSuite::_getkeyChannelMap(std::strin
 bool MessageQueueTestSuite::_checkRequestType(std::string keyChannelResponse, mcHubd::MSGTYPE type)
 {
     std::shared_ptr<mcHubd::Message> sptrMsg;
-    mcHubd::Message* msg = NULL;
 
     std::map<std::string, key_t> keyChannelMap;
     std::map<std::string, pid_t>::iterator itor;
@@ -245,6 +243,7 @@ bool MessageQueueTestSuite::_checkRequestType(std::string keyChannelResponse, mc
 
     while(itor != keyChannelMap.end())
     {
+        mcHubd::Message* msg = NULL;
         bool isPassed = true;
         struct json_object* respJobj = NULL;
         std::string body;

@@ -19,11 +19,11 @@ namespace mcHubd {
             void deleteChannel(mcHubd::Contract** pContract);
 
             void notify(mcHubd::Contract* contract, mcHubd::CONTRACTREASON reason);
+            static std::string getChannelStatusMessage(mcHubd::Contract* contract, bool isSubscribe);
 
         private:
             mcHubd::RESPCODE checkRegisterStatus(std::string& cKey);
             mcHubd::RESPCODE checkCreateStatus(std::string& cKey);
-//            void notifyCreateChannel(std::string cKey, key_t channel);
             void deleteClient(pid_t pid);
             bool createNewChannel(mcHubd::Contract** pContract);
 
@@ -31,7 +31,6 @@ namespace mcHubd {
             mcHubd::Manager* getManager(std::string& role);
 
         private:
-//            mcHubd::ChannelSubscriberData* m_chSubscriberData;
             std::list<std::shared_ptr<mcHubd::Manager>> m_mgrList;
     };
 }

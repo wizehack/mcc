@@ -84,3 +84,9 @@ echo "##################################### Dynamic Analysis Results ###########
 ./build/bin/test -c DeleteChannel -t 6 -d ./res/registeredChannelList.json;
 ./build/bin/test -c DeleteClient -t 4 -d ./res/registeredChannelList.json;
 ./build/bin/test -c MessageQueue -t 1 -d ./res/acceptedKey.json;
+
+# Test subscription
+./build/bin/test -c SubscribeChannelStatus -t 1 -d ./res/acceptedKey.json;
+./build/bin/test -c SubscribeChannelStatus -t 2 -d ./res/createdChannelList.json;
+./build/bin/test -c SubscribeChannelStatus -t 3 -d ./res/registeredChannelList.json;
+./build/bin/test -c SubscribeChannelStatus -t 4 -d ./res/registeredChannelList.json;

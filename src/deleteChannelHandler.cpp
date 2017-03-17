@@ -64,7 +64,6 @@ void mcHubd::DeleteChannelHandler::request(mcHubd::Message* msg)
 
                 respMsg.assign(json_object_get_string(jobj));
                 this->_responseOK(respMsg);
-                mediator->notify(contract, NOTI_CHANNEL_CLOSE);
                 json_object_put(jobj);
             }
 

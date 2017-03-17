@@ -13,11 +13,15 @@ namespace mcHubd {
             static TestStub* getInstance();
             void addRespMsg(std::string msg);
             std::string getRespMsg(int id);
+            void addSubscribeMsg(std::string msg);
+            std::string getSubscribepMsg(int id);
 
         private:
             TestStub();
             std::map<int, std::string> m_respMsgMap;
+            std::map<int, std::string> m_subscribeMsgMap;
             int m_id;
+            int m_sid;
 
         private:
             static std::atomic<TestStub*> _singleton;

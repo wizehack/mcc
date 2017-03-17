@@ -30,6 +30,7 @@
 
 /* log */
 #include <iostream>
+#include "testStub.h"
 
 namespace mcHubd {
     typedef enum mType{
@@ -37,16 +38,20 @@ namespace mcHubd {
         REQ_REG_CHANNEL,
         REQ_DEL_CLIENT,
         REQ_DEL_CHANNEL,
-        REQ_SUB_CHANNEL
+        REQ_GET_CHANNEL
     } MSGTYPE;
 
     typedef enum reason {
-        NOTI_INIT = 0,
-        NOTI_RM_CKEY,
         NOTI_CHANNEL_OPEN,
         NOTI_CHANNEL_READY,
         NOTI_CHANNEL_CLOSE
     } CONTRACTREASON;
+
+    typedef enum status {
+        OPEN = 0,
+        READY,
+        CLOSE
+    } STATUS;
 
     typedef enum respCode {
         MCHUBD_OK = 0,
@@ -54,9 +59,9 @@ namespace mcHubd {
         MCHUBD_NOT_ACCEPTABLE_KEY,
         MCHUBD_IS_CREATED_KEY,
         MCHUBD_IS_AVAILABLE_KEY,
-        MCHUBD_IS_NOT_AVAILABLE_KEY, //unused
+        MCHUBD_IS_NOT_AVAILABLE_KEY, //unused --> request channel
         MCHUBD_CREATE_CHANNEL_ERROR,
-        MCHUBD_IS_INFORMED_KEY, //unused
+        MCHUBD_IS_INFORMED_KEY, //unused --> subscribe, register client, register channel
         MCHUBD_INFORM_CHANNEL_ERROR,
         MCHUBD_INTERNAL_ERROR,
         MCHUBD_EXCEEDED_MAXIMUM_CLIENT_KEY

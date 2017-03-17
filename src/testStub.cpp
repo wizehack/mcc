@@ -5,7 +5,9 @@ std::mutex mcHubd::TestStub::_mutex;
 
 mcHubd::TestStub::TestStub():
     m_respMsgMap(),
-    m_id(0){}
+    m_subscribeMsgMap(),
+    m_id(0),
+    m_sid(0){}
 mcHubd::TestStub::~TestStub(){}
 
 mcHubd::TestStub* mcHubd::TestStub::getInstance() {
@@ -39,6 +41,29 @@ std::string mcHubd::TestStub::getRespMsg(int id)
     it = this->m_respMsgMap.find(id);
 
     if(it != this->m_respMsgMap.end())
+    {
+        msg = it->second;
+    }
+
+    return msg;
+}
+
+void mcHubd::TestStub::addSubscribeMsg(std::string msg)
+{
+    std::lock_guard<std::mutex> lock(_mutex);
+    this->m_subscribeMsgMap.insert(std::pair<int, std::string>(this->m_sid, msg));
+    this->m_sid++;
+}
+
+std::string mcHubd::TestStub::getSubscribepMsg(int id)
+{
+    std::lock_guard<std::mutex> lock(_mutex);
+
+    std::string msg;
+    std::map<int, std::string>::iterator it;
+    it = this->m_subscribeMsgMap.find(id);
+
+    if(it != this->m_subscribeMsgMap.end())
     {
         msg = it->second;
     }

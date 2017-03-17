@@ -7,7 +7,8 @@ mcHubd::Contract::Contract(int contractID):
     m_channel(-1),
     m_respCode(MCHUBD_OK),
     m_contractID(contractID),
-    m_reason(NOTI_INIT)
+    m_reason(NOTI_CHANNEL_CLOSE),
+    m_status(CLOSE)
 {}
 
 
@@ -18,7 +19,8 @@ mcHubd::Contract::Contract():
     m_channel(-1),
     m_respCode(MCHUBD_OK),
     m_contractID(0),
-    m_reason(NOTI_INIT)
+    m_reason(NOTI_CHANNEL_CLOSE),
+    m_status(CLOSE)
 {}
 mcHubd::Contract::~Contract(){}
 
@@ -50,6 +52,11 @@ void mcHubd::Contract::setContractReason(mcHubd::CONTRACTREASON reason)
 void mcHubd::Contract::setRespCode(mcHubd::RESPCODE code)
 {
     this->m_respCode = code;
+}
+
+void mcHubd::Contract::setChannelStatus(mcHubd::STATUS status)
+{
+    this->m_status = status;
 }
 
 std::string mcHubd::Contract::getProcessName() const
@@ -85,4 +92,9 @@ mcHubd::CONTRACTREASON mcHubd::Contract::getContractReason() const
 mcHubd::RESPCODE mcHubd::Contract::getRespCode() const
 {
     return this->m_respCode;
+}
+
+mcHubd::STATUS mcHubd::Contract::getChannelStatus() const
+{
+    return this->m_status;
 }

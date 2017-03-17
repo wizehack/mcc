@@ -17,5 +17,7 @@
     "registeredKeyList" : [
     {"key" : "com.mchannel.foo.f1", "channel" : 2000},
     {"key" : "com.mchannel.foo.f2", "channel" : 2001},
+    {"key" : "com.mchannel.bar.f1", "channel" : 4001},
+    {"key" : "com.mchannel.bar.f2", "channel" : 4002}
     ]
 }

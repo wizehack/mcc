@@ -51,18 +51,27 @@ void mcHubd::ClientManager::add(std::string cKey, int pid)
  */
 void mcHubd::ClientManager::remove(int pid)
 {
-    std::vector<std::string> psVector;
-    std::vector<std::string>::iterator itor;
+    std::map<std::string, key_t> availableListMap;
+    std::map<std::string, key_t>::iterator mItor = availableListMap.begin();
 
+    std::vector<std::string> psVector;
+    std::vector<std::string>::iterator vItor;
+
+    availableListMap = this->m_cInfo->getAvailableList();
     psVector = this->m_cInfo->getConnectedClientKey(static_cast<pid_t>(pid));
 
-    for(itor = psVector.begin(); itor != psVector.end(); ++itor)
+    for(vItor = psVector.begin(); vItor != psVector.end(); ++vItor)
     {
-        this->m_cInfo->removeAvailalbeKey((*itor));  //notify to mediator
+        mcHubd::Contract* contract = new mcHubd::Contract();
+        contract->setClientKey((*vItor));
 
-        if(mcHubd::TaskSet::getInstance()->isWaitingTask((*itor)))
-            mcHubd::TaskSet::getInstance()->rmWaitToReady((*itor));
-        //notify to subsubscribers
+        mItor = availableListMap.find((*vItor));
+
+        if(mItor != availableListMap.end())
+            contract->setChannel(mItor->second);
+
+        this->m_mediator->deleteChannel(&contract);
+        delete contract;
     }
 
     this->m_cInfo->deleteConnectedProcess(pid);

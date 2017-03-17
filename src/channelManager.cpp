@@ -15,7 +15,7 @@ void mcHubd::ChannelManager::create(mcHubd::Contract** contract)
     if((*contract))
     {
         ch = this->createNewChannel((*contract)->getClientKey(), (*contract)->getContractID());
-        this->m_mediator->notify((*contract), NOTI_INIT);
+        this->m_mediator->notify((*contract), NOTI_CHANNEL_OPEN);
     }
 
     (*contract)->setChannel(ch);
@@ -55,6 +55,7 @@ void mcHubd::ChannelManager::remove(mcHubd::Contract** contract)
     {
         this->m_tSet->rmWaitToReady(cKey);
         (*contract)->setRespCode(MCHUBD_OK);
+        this->m_mediator->notify((*contract), NOTI_CHANNEL_CLOSE);
         return;
     }
 
@@ -81,6 +82,7 @@ void mcHubd::ChannelManager::remove(mcHubd::Contract** contract)
         this->m_cInfo->removeAvailalbeKey(cKey);
         mcHubd::ChannelManager::_removeChannel(ch);
         (*contract)->setRespCode(MCHUBD_OK);
+        this->m_mediator->notify((*contract), NOTI_CHANNEL_CLOSE);
     }
     else
     {

@@ -67,7 +67,6 @@ void mcHubd::RegisterClientHandler::request(mcHubd::Message* msg)
             {
                 //send response message to client
                 this->_responseOK(keyChannelMap);
-                mediator->notify(NULL, NOTI_CHANNEL_OPEN);
             }
 
             delete mediator;

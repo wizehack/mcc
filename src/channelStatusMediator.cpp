@@ -1,5 +1,6 @@
 #include "channelStatusMediator.h"
 #include "messageHandler.h"
+#include "messageTransportService.h"
 #include "taskSet.h"
 
 mcHubd::ChannelStatusMediator::ChannelStatusMediator():
@@ -84,6 +85,82 @@ void mcHubd::ChannelStatusMediator::deleteChannel(mcHubd::Contract** pContract)
 
 void mcHubd::ChannelStatusMediator::notify(mcHubd::Contract* contract, mcHubd::CONTRACTREASON reason)
 {
+    std::string msg;
+    mcHubd::MessageTransportService mts;
+
+    if(reason == NOTI_CHANNEL_OPEN)
+    {
+        contract->setChannelStatus(OPEN);
+    }
+    else if(reason == NOTI_CHANNEL_READY)
+    {
+        contract->setChannelStatus(READY);
+    }
+    else if(reason == NOTI_CHANNEL_CLOSE)
+    {
+        contract->setChannelStatus(CLOSE);
+    }
+
+    msg = mcHubd::ChannelStatusMediator::getChannelStatusMessage(contract, true);
+    mts.sendAll(msg);
+}
+
+std::string mcHubd::ChannelStatusMediator::getChannelStatusMessage(mcHubd::Contract* contract, bool isSubscribe)
+{
+    std::string msg;
+    std::string state;
+
+    if(contract->getChannelStatus() == OPEN)
+    {
+        state.assign("open");
+    }
+    else if(contract->getChannelStatus() == READY)
+    {
+        state.assign("ready");
+    }
+    else if(contract->getChannelStatus() == CLOSE)
+    {
+        state.assign("closed");
+    }
+
+    if(state.empty() == false)
+    {
+        std::string key = contract->getClientKey();
+        int channel = static_cast<int>(contract->getChannel());
+
+        if( key.empty() == false )
+        {
+            struct json_object* jobj = NULL;
+            struct json_object* codeJobj = NULL;
+            struct json_object* retJobj = NULL;
+            struct json_object* messageJobj = NULL;
+            struct json_object* keyJobj = NULL;
+            struct json_object* channelJobj = NULL;
+            struct json_object* stateJobj = NULL;
+
+            jobj = json_object_new_object();
+            codeJobj = json_object_new_int(MCHUBD_OK);
+            retJobj = json_object_new_boolean(true);
+
+            messageJobj = json_object_new_object();
+            keyJobj = json_object_new_string(key.c_str());
+            channelJobj = json_object_new_int(channel);
+            stateJobj = json_object_new_string(state.c_str());
+
+            json_object_object_add(messageJobj, "key", keyJobj);
+            json_object_object_add(messageJobj, "channel", channelJobj);
+            json_object_object_add(messageJobj, "state", stateJobj);
+
+            json_object_object_add(jobj, "code", codeJobj);
+            json_object_object_add(jobj, "message", messageJobj);
+            json_object_object_add(jobj, "return", retJobj);
+
+            msg.assign(json_object_get_string(jobj));
+            json_object_put(jobj);
+        }
+    }
+
+    return msg;
 }
 
 mcHubd::RESPCODE mcHubd::ChannelStatusMediator::checkRegisterStatus(std::string& cKey)

@@ -443,11 +443,11 @@ bool DeleteChannelTestSuite::_testInvalidRequestMessage()
 
 bool DeleteChannelTestSuite::_testOKResponse()
 {
+    mcHubd::DeleteChannelHandler handler;
     std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CHANNEL);
     mcHubd::Message* msg = sptrMsg.get();
 
     std::string body;
-    mcHubd::DeleteChannelHandler handler;
     body.assign("{\"key\": \"com.mchannel.foo.f1\", \"channel\": 2000}");
     msg->setBody(body);
     handler.request(msg);
