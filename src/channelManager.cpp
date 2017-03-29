@@ -92,6 +92,23 @@ void mcHubd::ChannelManager::remove(mcHubd::Contract** contract)
 
 void mcHubd::ChannelManager::get(mcHubd::Contract** contract)
 {
+    key_t channel = -1;
+    std::string key = (*contract)->getClientKey();
+    std::map<std::string, key_t> keyChannelMap = mcHubd::ConnectionInfo::getInstance()->getAvailableList();
+    auto search = keyChannelMap.find(key);
+
+    if(search != keyChannelMap.end())
+    {
+        (*contract)->setChannelStatus(mcHubd::READY);
+        (*contract)->setRespCode(MCHUBD_OK);
+        channel = search->second;
+    }
+    else
+    {
+        (*contract)->setRespCode(MCHUBD_IS_NOT_AVAILABLE_KEY);
+    }
+
+    (*contract)->setChannel(channel);
 }
 
 key_t mcHubd::ChannelManager::createNewChannel(std::string cKey, int id)

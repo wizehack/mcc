@@ -14,12 +14,14 @@ namespace mcHubd {
             void removeManager(std::shared_ptr<mcHubd::Manager> manager);
 
             void getNewChannel(mcHubd::Contract** pContract);
+            void getChannel(mcHubd::Contract** pContract);
             void registerNewChannel(mcHubd::Contract** pContract);
             void deleteClient(mcHubd::Contract** pContract);
             void deleteChannel(mcHubd::Contract** pContract);
 
             void notify(mcHubd::Contract* contract, mcHubd::CONTRACTREASON reason);
-            static std::string getChannelStatusMessage(mcHubd::Contract* contract, bool isSubscribe);
+            static std::string getChannelStatusMessage(mcHubd::Contract* contract);
+            static std::string getChannelStatus(mcHubd::Contract* contract);
 
         private:
             mcHubd::RESPCODE checkRegisterStatus(std::string& cKey);

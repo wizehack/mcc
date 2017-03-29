@@ -24,6 +24,7 @@ class DummyMediator : public mcHubd::Mediator {
         void removeManager(std::shared_ptr<mcHubd::Manager> manager){};
 
         void getNewChannel(mcHubd::Contract** pContract){};
+        void getChannel(mcHubd::Contract** pContract){};
         void registerNewChannel(mcHubd::Contract** pContract){};
         void deleteClient(mcHubd::Contract** pContract){};
         void deleteChannel(mcHubd::Contract** pContract){};

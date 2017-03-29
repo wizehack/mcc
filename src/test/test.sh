@@ -90,3 +90,7 @@ echo "##################################### Dynamic Analysis Results ###########
 ./build/bin/test -c SubscribeChannelStatus -t 2 -d ./res/createdChannelList.json;
 ./build/bin/test -c SubscribeChannelStatus -t 3 -d ./res/registeredChannelList.json;
 ./build/bin/test -c SubscribeChannelStatus -t 4 -d ./res/registeredChannelList.json;
+
+# Test request Channel
+./build/bin/test -c RequestChannel -t 1 -d ./res/registeredChannelList.json --config ./res/acceptedKey.json;
+./build/bin/test -c RequestChannel -t 2 -d ./res/registeredChannelList.json --config ./res/acceptedKey.json;

@@ -6,7 +6,8 @@
 TestOption::TestOption(int argc, char **argv):
     m_category(),
     m_testCaseID(),
-    m_testDataPath()
+    m_testDataPath(),
+    m_configPath()
 {
     this->parse(argc, argv);
 }
@@ -21,6 +22,11 @@ std::string& TestOption::getCategory()
 std::string& TestOption::getTestDataPath()
 {
     return this->m_testDataPath;
+}
+
+std::string& TestOption::getConfigPath()
+{
+    return this->m_configPath;
 }
 
 int TestOption::getTestCaseID()
@@ -51,7 +57,7 @@ int TestOption::getTestCaseID()
 void TestOption::parse(int argc, char **argv)
 {
     const int OPT_NUMBER = 4;
-    const int MAX_OPT_NUMBER = 6;
+    const int MAX_OPT_NUMBER = 8;
     int i = 1;
 
     if(argc < OPT_NUMBER)
@@ -75,6 +81,10 @@ void TestOption::parse(int argc, char **argv)
             else if (strcmp(argv[i], "-d") == 0)
             {
                 this->m_testDataPath.assign(argv[i+1]);
+            }
+            else if (strcmp(argv[i], "--config") == 0)
+            {
+                this->m_configPath.assign(argv[i+1]);
             }
             else
             {

@@ -45,6 +45,16 @@ void mcHubd::ChannelStatusMediator::getNewChannel(mcHubd::Contract** pContract)
     }
 }
 
+void mcHubd::ChannelStatusMediator::getChannel(mcHubd::Contract** pContract)
+{
+    if((*pContract))
+    {
+        std::string role("ChannelManager");
+        mcHubd::Manager* channelMgr = this->getManager(role);
+        channelMgr->get(pContract);
+    }
+}
+
 void mcHubd::ChannelStatusMediator::registerNewChannel(mcHubd::Contract** pContract)
 {
     mcHubd::Manager* channelMgr = NULL;
@@ -101,27 +111,16 @@ void mcHubd::ChannelStatusMediator::notify(mcHubd::Contract* contract, mcHubd::C
         contract->setChannelStatus(CLOSE);
     }
 
-    msg = mcHubd::ChannelStatusMediator::getChannelStatusMessage(contract, true);
+    msg = mcHubd::ChannelStatusMediator::getChannelStatusMessage(contract);
     mts.sendAll(msg);
 }
 
-std::string mcHubd::ChannelStatusMediator::getChannelStatusMessage(mcHubd::Contract* contract, bool isSubscribe)
+std::string mcHubd::ChannelStatusMediator::getChannelStatusMessage(mcHubd::Contract* contract)
 {
     std::string msg;
     std::string state;
 
-    if(contract->getChannelStatus() == OPEN)
-    {
-        state.assign("open");
-    }
-    else if(contract->getChannelStatus() == READY)
-    {
-        state.assign("ready");
-    }
-    else if(contract->getChannelStatus() == CLOSE)
-    {
-        state.assign("closed");
-    }
+    state = mcHubd::ChannelStatusMediator::getChannelStatus(contract);
 
     if(state.empty() == false)
     {
@@ -161,6 +160,26 @@ std::string mcHubd::ChannelStatusMediator::getChannelStatusMessage(mcHubd::Contr
     }
 
     return msg;
+}
+
+std::string mcHubd::ChannelStatusMediator::getChannelStatus(mcHubd::Contract* contract)
+{
+    std::string state;
+
+    if(contract->getChannelStatus() == OPEN)
+    {
+        state.assign("open");
+    }
+    else if(contract->getChannelStatus() == READY)
+    {
+        state.assign("ready");
+    }
+    else if(contract->getChannelStatus() == CLOSE)
+    {
+        state.assign("closed");
+    }
+
+    return state;
 }
 
 mcHubd::RESPCODE mcHubd::ChannelStatusMediator::checkRegisterStatus(std::string& cKey)
@@ -227,12 +246,6 @@ bool mcHubd::ChannelStatusMediator::createNewChannel(mcHubd::Contract** pContrac
 
     return false;
 }
-
-/*
-void mcHubd::ChannelStatusMediator::notifyCreateChannel(std::string cKey, key_t channel)
-{
-}
-*/
 
 mcHubd::Manager* mcHubd::ChannelStatusMediator::getManager(std::string& role)
 {

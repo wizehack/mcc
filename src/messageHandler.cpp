@@ -74,8 +74,6 @@ std::string mcHubd::MessageHandler::_getErrorMessage(mcHubd::RESPCODE code)
         message.assign("NOT AVAILABLE KEY");
     else if (code == MCHUBD_CREATE_CHANNEL_ERROR)
         message.assign("CREATE CHANNEL ERROR");
-    else if (code == MCHUBD_IS_INFORMED_KEY)
-        message.assign("INFORMED KEY");
     else if (code == MCHUBD_INFORM_CHANNEL_ERROR)
         message.assign("INFORMED CHANNEL ERROR");
     else if (code == MCHUBD_EXCEEDED_MAXIMUM_CLIENT_KEY)

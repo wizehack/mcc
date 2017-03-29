@@ -25,6 +25,7 @@ add_executable(
     ${ROOT_DIR}/deleteClientTestSuite.cpp
     ${ROOT_DIR}/messageQueueTestSuite.cpp
     ${ROOT_DIR}/subscriptionTestSuite.cpp
+    ${ROOT_DIR}/requestChannelTestSuite.cpp
     ${ROOT_DIR}/../../testStub.cpp
     ${ROOT_DIR}/../../src/manager.cpp
     ${ROOT_DIR}/../../src/mediator.cpp
@@ -36,6 +37,7 @@ add_executable(
     ${ROOT_DIR}/../../src/registerChannelHandler.cpp
     ${ROOT_DIR}/../../src/deleteChannelHandler.cpp
     ${ROOT_DIR}/../../src/deleteClientHandler.cpp
+    ${ROOT_DIR}/../../src/requestChannelHandler.cpp
     ${ROOT_DIR}/../../src/message.cpp
     ${ROOT_DIR}/../../src/clientManager.cpp
     ${ROOT_DIR}/../../src/channelManager.cpp

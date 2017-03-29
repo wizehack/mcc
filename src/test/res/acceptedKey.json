@@ -16,6 +16,8 @@
         "com.mchannel.foo.f1",
         "com.mchannel.foo.f2",
         "com.mchannel.bar.b1",
-        "com.mchannel.bar.b2"
+        "com.mchannel.bar.b2",
+        "com.mchannel.bar.f1",
+        "com.mchannel.bar.f2"
         ]
 }

@@ -5,6 +5,7 @@
 #include "registerClientHandler.h"
 #include "deleteChannelHandler.h"
 #include "deleteClientHandler.h"
+#include "requestChannelHandler.h"
 
 std::atomic<mcHubd::MessageQueue*> mcHubd::MessageQueue::_singleton;
 std::mutex mcHubd::MessageQueue::_mutex;
@@ -39,6 +40,7 @@ gpointer mcHubd::MessageQueue::_msgProcessor(void* data)
     mcHubd::MessageHandler* regChannelHandler = new mcHubd::RegisterChannelHandler();
     mcHubd::MessageHandler* delClientHandler = new mcHubd::DeleteClientHandler();
     mcHubd::MessageHandler* delChannelHandler = new mcHubd::DeleteChannelHandler();
+    mcHubd::MessageHandler* requestChannelHandler = new mcHubd::RequestChannelHandler();
 
     while(true)
     {
@@ -50,6 +52,8 @@ gpointer mcHubd::MessageQueue::_msgProcessor(void* data)
             regClientHandler->setNext(regChannelHandler);
             regChannelHandler->setNext(delClientHandler);
             delClientHandler->setNext(delChannelHandler);
+            delChannelHandler->setNext(requestChannelHandler);
+
             regClientHandler->request(message);
         }
     }

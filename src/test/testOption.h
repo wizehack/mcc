@@ -10,6 +10,7 @@ class TestOption {
 
         std::string& getCategory();
         std::string& getTestDataPath();
+        std::string& getConfigPath();
         int getTestCaseID();
 
     private:
@@ -20,6 +21,7 @@ class TestOption {
         std::string m_category;
         std::string m_testCaseID;
         std::string m_testDataPath;
+        std::string m_configPath;
 };
 
 #endif /*TEST_OPTION__H*/

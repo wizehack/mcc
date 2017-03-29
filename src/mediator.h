@@ -14,6 +14,7 @@ namespace mcHubd {
             virtual void removeManager(std::shared_ptr<mcHubd::Manager> manager) = 0;
 
             virtual void getNewChannel(mcHubd::Contract** pContract) = 0;
+            virtual void getChannel(mcHubd::Contract** pContract) = 0;
             virtual void registerNewChannel(mcHubd::Contract** pContract) = 0;
             virtual void deleteClient(mcHubd::Contract** pContract) = 0;
             virtual void deleteChannel(mcHubd::Contract** pContract) = 0;
