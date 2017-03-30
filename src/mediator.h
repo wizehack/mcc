@@ -11,7 +11,6 @@ namespace mcHubd {
             Mediator();
             virtual ~Mediator();
             virtual void appendManager(std::shared_ptr<mcHubd::Manager> manager) = 0;
-            virtual void removeManager(std::shared_ptr<mcHubd::Manager> manager) = 0;
 
             virtual void getNewChannel(mcHubd::Contract** pContract) = 0;
             virtual void getChannel(mcHubd::Contract** pContract) = 0;

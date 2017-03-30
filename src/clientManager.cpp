@@ -6,13 +6,17 @@ mcHubd::ClientManager::ClientManager(mcHubd::Mediator* mediator):
     m_cInfo(mcHubd::ConnectionInfo::getInstance()){}
 mcHubd::ClientManager::~ClientManager(){}
 
+/**
+ * launch process
+ */
 void mcHubd::ClientManager::create(mcHubd::Contract** contract)
 {
     pid_t pid;
 
     if((*contract))
     {
-        pid = mcHubd::ClientManager::_create((*contract)->getProcessName());
+        std::string psName = (*contract)->getProcessName();
+        pid = 0; //Not implemented
         (*contract)->setProcessId(pid);
     }
 }
@@ -29,12 +33,15 @@ void mcHubd::ClientManager::remove(mcHubd::Contract** contract)
         this->remove((*contract)->getProcessId());
 }
 
+/**
+ * get pid
+ */
 void mcHubd::ClientManager::get(mcHubd::Contract** contract)
 {
     if((*contract))
     {
         std::string clientKey((*contract)->getProcessName());
-        (*contract)->setProcessId(mcHubd::ClientManager::_get(clientKey));
+        (*contract)->setProcessId(-1); //Not implemented
     }
 }
 
@@ -75,21 +82,4 @@ void mcHubd::ClientManager::remove(int pid)
     }
 
     this->m_cInfo->deleteConnectedProcess(pid);
-}
-
-/**
- * get pid
- */
-pid_t mcHubd::ClientManager::_get(std::string& cKey)
-{
-    return -1;
-}
-
-/**
- * launch process
- */
-pid_t mcHubd::ClientManager::_create(std::string processName)
-{
-    pid_t pid = 0;
-    return static_cast<pid_t>(pid);
 }

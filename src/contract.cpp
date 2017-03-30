@@ -44,11 +44,6 @@ void mcHubd::Contract::setChannel(key_t channel)
     this->m_channel = channel;
 }
 
-void mcHubd::Contract::setContractReason(mcHubd::CONTRACTREASON reason)
-{
-    this->m_reason = reason;
-}
-
 void mcHubd::Contract::setRespCode(mcHubd::RESPCODE code)
 {
     this->m_respCode = code;
@@ -82,11 +77,6 @@ key_t mcHubd::Contract::getChannel() const
 int mcHubd::Contract::getContractID() const
 {
     return this->m_contractID;
-}
-
-mcHubd::CONTRACTREASON mcHubd::Contract::getContractReason() const
-{
-    return this->m_reason;
 }
 
 mcHubd::RESPCODE mcHubd::Contract::getRespCode() const

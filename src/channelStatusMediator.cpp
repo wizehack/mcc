@@ -15,11 +15,6 @@ void mcHubd::ChannelStatusMediator::appendManager(std::shared_ptr<mcHubd::Manage
     this->m_mgrList.push_back(manager);
 }
 
-void mcHubd::ChannelStatusMediator::removeManager(std::shared_ptr<mcHubd::Manager> manager)
-{
-    this->m_mgrList.remove(manager);
-}
-
 void mcHubd::ChannelStatusMediator::getNewChannel(mcHubd::Contract** pContract)
 {
     mcHubd::RESPCODE code;

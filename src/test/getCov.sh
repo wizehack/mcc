@@ -152,10 +152,67 @@ lcov -c -o cov25.info -d ./ --rc lcov_brnch_coverage=1;
 rm -rf ./build/CMakeFiles/test.dir/*.gcda;
 rm -rf ./build/CMakeFiles/test.dir/home/wizehack/devel/mcc/src/*.gcda;
 
+# Test OK response
+./build/bin/test -c RegisterClient -t 8 -d ./res/acceptedKey.json;
+lcov -c -o cov26.info -d ./ --rc lcov_brnch_coverage=1;
+rm -rf ./build/CMakeFiles/test.dir/*.gcda;
+rm -rf ./build/CMakeFiles/test.dir/home/wizehack/devel/mcc/src/*.gcda;
+
+./build/bin/test -c RegisterChannel -t 6 -d ./res/createdChannelList.json;
+lcov -c -o cov27.info -d ./ --rc lcov_brnch_coverage=1;
+rm -rf ./build/CMakeFiles/test.dir/*.gcda;
+rm -rf ./build/CMakeFiles/test.dir/home/wizehack/devel/mcc/src/*.gcda;
+
+./build/bin/test -c DeleteChannel -t 6 -d ./res/registeredChannelList.json;
+lcov -c -o cov28.info -d ./ --rc lcov_brnch_coverage=1;
+rm -rf ./build/CMakeFiles/test.dir/*.gcda;
+rm -rf ./build/CMakeFiles/test.dir/home/wizehack/devel/mcc/src/*.gcda;
+
+./build/bin/test -c DeleteClient -t 4 -d ./res/registeredChannelList.json;
+lcov -c -o cov29.info -d ./ --rc lcov_brnch_coverage=1;
+rm -rf ./build/CMakeFiles/test.dir/*.gcda;
+rm -rf ./build/CMakeFiles/test.dir/home/wizehack/devel/mcc/src/*.gcda;
+
+./build/bin/test -c MessageQueue -t 1 -d ./res/acceptedKey.json;
+lcov -c -o cov30.info -d ./ --rc lcov_brnch_coverage=1;
+rm -rf ./build/CMakeFiles/test.dir/*.gcda;
+rm -rf ./build/CMakeFiles/test.dir/home/wizehack/devel/mcc/src/*.gcda;
+
+# Test subscription
+./build/bin/test -c SubscribeChannelStatus -t 1 -d ./res/acceptedKey.json;
+lcov -c -o cov31.info -d ./ --rc lcov_brnch_coverage=1;
+rm -rf ./build/CMakeFiles/test.dir/*.gcda;
+rm -rf ./build/CMakeFiles/test.dir/home/wizehack/devel/mcc/src/*.gcda;
+
+./build/bin/test -c SubscribeChannelStatus -t 2 -d ./res/createdChannelList.json;
+lcov -c -o cov32.info -d ./ --rc lcov_brnch_coverage=1;
+rm -rf ./build/CMakeFiles/test.dir/*.gcda;
+rm -rf ./build/CMakeFiles/test.dir/home/wizehack/devel/mcc/src/*.gcda;
+
+./build/bin/test -c SubscribeChannelStatus -t 3 -d ./res/registeredChannelList.json;
+lcov -c -o cov33.info -d ./ --rc lcov_brnch_coverage=1;
+rm -rf ./build/CMakeFiles/test.dir/*.gcda;
+rm -rf ./build/CMakeFiles/test.dir/home/wizehack/devel/mcc/src/*.gcda;
+
+./build/bin/test -c SubscribeChannelStatus -t 4 -d ./res/registeredChannelList.json;
+lcov -c -o cov34.info -d ./ --rc lcov_brnch_coverage=1;
+rm -rf ./build/CMakeFiles/test.dir/*.gcda;
+rm -rf ./build/CMakeFiles/test.dir/home/wizehack/devel/mcc/src/*.gcda;
+
+# Test request Channel
+./build/bin/test -c RequestChannel -t 1 -d ./res/registeredChannelList.json --config ./res/acceptedKey.json;
+lcov -c -o cov35.info -d ./ --rc lcov_brnch_coverage=1;
+rm -rf ./build/CMakeFiles/test.dir/*.gcda;
+rm -rf ./build/CMakeFiles/test.dir/home/wizehack/devel/mcc/src/*.gcda;
+
+./build/bin/test -c RequestChannel -t 2 -d ./res/registeredChannelList.json --config ./res/acceptedKey.json;
+lcov -c -o cov36.info -d ./ --rc lcov_brnch_coverage=1;
+rm -rf ./build/CMakeFiles/test.dir/*.gcda;
+rm -rf ./build/CMakeFiles/test.dir/home/wizehack/devel/mcc/src/*.gcda;
 
 # create coverage report
 
-lcov --add-tracefile cov1.info --add-tracefile cov2.info --add-tracefile cov3.info --add-tracefile cov4.info --add-tracefile cov5.info --add-tracefile cov6.info --add-tracefile cov7.info --add-tracefile cov8.info --add-tracefile cov9.info --add-tracefile cov10.info --add-tracefile cov11.info --add-tracefile cov12.info --add-tracefile cov13.info --add-tracefile cov14.info --add-tracefile cov15.info --add-tracefile cov16.info --add-tracefile cov17.info --add-tracefile cov18.info --add-tracefile cov19.info --add-tracefile cov20.info --add-tracefile cov21.info --add-tracefile cov22.info --add-tracefile cov23.info --add-tracefile cov24.info --add-tracefile cov25.info --rc lcov_brnch_coverage=1 --output-file cov.info;
+lcov --add-tracefile cov1.info --add-tracefile cov2.info --add-tracefile cov3.info --add-tracefile cov4.info --add-tracefile cov5.info --add-tracefile cov6.info --add-tracefile cov7.info --add-tracefile cov8.info --add-tracefile cov9.info --add-tracefile cov10.info --add-tracefile cov11.info --add-tracefile cov12.info --add-tracefile cov13.info --add-tracefile cov14.info --add-tracefile cov15.info --add-tracefile cov16.info --add-tracefile cov17.info --add-tracefile cov18.info --add-tracefile cov19.info --add-tracefile cov20.info --add-tracefile cov21.info --add-tracefile cov22.info --add-tracefile cov23.info --add-tracefile cov24.info --add-tracefile cov25.info --add-tracefile cov26.info --add-tracefile cov27.info --add-tracefile cov28.info --add-tracefile cov29.info --add-tracefile cov30.info --add-tracefile cov31.info --add-tracefile cov32.info --add-tracefile cov33.info --add-tracefile cov34.info --add-tracefile cov35.info --add-tracefile cov36.info -rc lcov_brnch_coverage=1 --output-file cov.info;
 genhtml --highlight --legend --rc lcov_brnch_coverage=1 --output-directory cov ./cov.info;
 
 rm -rf ./*.info;

@@ -11,7 +11,6 @@ namespace mcHubd {
             ChannelStatusMediator();
             ~ChannelStatusMediator();
             void appendManager(std::shared_ptr<mcHubd::Manager> manager);
-            void removeManager(std::shared_ptr<mcHubd::Manager> manager);
 
             void getNewChannel(mcHubd::Contract** pContract);
             void getChannel(mcHubd::Contract** pContract);

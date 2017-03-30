@@ -20,9 +20,6 @@ namespace mcHubd {
             void add(std::string cKey, int numId);
             void remove(int numId);
 
-            static pid_t _get(std::string& cKey);
-            static int _create(std::string name);
-
         private:
             ClientManager();
             ClientManager(const mcHubd::ClientManager&);
