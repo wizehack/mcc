@@ -11,7 +11,7 @@ namespace mcHubd {
             virtual ~MessageHandler();
 
             void setNext(mcHubd::MessageHandler* handler);
-            virtual void request(mcHubd::Message* msg) = 0;
+            virtual bool request(mcHubd::Message* msg) = 0;
 
         protected:
             static void _responseError(mcHubd::RESPCODE code, std::string extraMsg);

@@ -6,10 +6,11 @@
 mcHubd::RequestChannelHandler::RequestChannelHandler():m_cKey(){}
 mcHubd::RequestChannelHandler::~RequestChannelHandler(){}
 
-void mcHubd::RequestChannelHandler::request(mcHubd::Message* msg)
+bool mcHubd::RequestChannelHandler::request(mcHubd::Message* msg)
 {
     if(msg->getType() == REQ_GET_CHANNEL)
     {
+        bool ret = false;
         std::string respMsg;
         mcHubd::RESPCODE code;
         mcHubd::Mediator* mediator = NULL;
@@ -20,7 +21,7 @@ void mcHubd::RequestChannelHandler::request(mcHubd::Message* msg)
             code = MCHUBD_INVALID_MSG;
 
             this->_responseError(code, respMsg);
-            return;
+            return false;
         }
 
         mediator = new ChannelStatusMediator();
@@ -59,21 +60,27 @@ void mcHubd::RequestChannelHandler::request(mcHubd::Message* msg)
                     json_object_put(jobj);
                     delete contract;
                     delete mediator;
-                    return;
+                    return false;
                 }
 
                 respMsg.assign(json_object_get_string(jobj));
                 this->_responseOK(respMsg);
+                ret = true;
                 json_object_put(jobj);
             }
 
             delete contract;
             delete mediator;
         }
+
+        return ret;
     }
     else
     {
-        this->m_next->request(msg);
+        if(this->m_next)
+            return this->m_next->request(msg);
+        else
+            return false;
     }
 }
 

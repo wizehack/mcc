@@ -11,7 +11,7 @@ namespace mcHubd {
         public:
             RegisterChannelHandler();
             virtual ~RegisterChannelHandler();
-            void request(mcHubd::Message* msg);
+            bool request(mcHubd::Message* msg);
 
         private:
             bool parse(std::string payload);

@@ -8,10 +8,11 @@ mcHubd::DeleteChannelHandler::DeleteChannelHandler():
     m_channel(-1){}
 mcHubd::DeleteChannelHandler::~DeleteChannelHandler(){}
 
-void mcHubd::DeleteChannelHandler::request(mcHubd::Message* msg)
+bool mcHubd::DeleteChannelHandler::request(mcHubd::Message* msg)
 {
     if(msg->getType() == REQ_DEL_CHANNEL)
     {
+        bool ret = false;
         std::string respMsg;
         mcHubd::RESPCODE code;
         mcHubd::Mediator* mediator = NULL;
@@ -22,7 +23,7 @@ void mcHubd::DeleteChannelHandler::request(mcHubd::Message* msg)
             code = MCHUBD_INVALID_MSG;
 
             this->_responseError(code, respMsg);
-            return;
+            return false;
         }
 
         mediator = new ChannelStatusMediator();
@@ -59,21 +60,27 @@ void mcHubd::DeleteChannelHandler::request(mcHubd::Message* msg)
                     json_object_put(jobj);
                     delete contract;
                     delete mediator;
-                    return;
+                    return false;
                 }
 
                 respMsg.assign(json_object_get_string(jobj));
                 this->_responseOK(respMsg);
+                ret = true;
                 json_object_put(jobj);
             }
 
             delete contract;
             delete mediator;
         }
+
+        return ret;
     }
     else
     {
-        this->m_next->request(msg);
+        if(this->m_next)
+            return this->m_next->request(msg);
+        else
+            return false;
     }
 }
 
@@ -130,16 +137,17 @@ bool mcHubd::DeleteChannelHandler::_makeResponseMessage(struct json_object** pJo
     if(cKey.empty())
         return false;
 
-    if(channel < 0)
-        return false;
-
     keyJobj = json_object_new_string(cKey.c_str());
-    channelJobj = json_object_new_int(static_cast<int>(channel));
     stateJobj = json_object_new_string("closed");
 
     json_object_object_add(jobj, "key", keyJobj);
-    json_object_object_add(jobj, "channel", channelJobj);
     json_object_object_add(jobj, "state", stateJobj);
+
+    if(channel > 0)
+    {
+        channelJobj = json_object_new_int(static_cast<int>(channel));
+        json_object_object_add(jobj, "channel", channelJobj);
+    }
 
     return true;
 }

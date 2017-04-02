@@ -72,8 +72,9 @@ void mcHubd::ChannelManager::remove(mcHubd::Contract** contract)
     if(it != chMap.end())
     {
         key_t ch = it->second;
+        key_t myCh = (*contract)->getChannel();
 
-        if(ch != (*contract)->getChannel())
+        if(ch != myCh)
         {
             (*contract)->setRespCode(MCHUBD_INFORM_CHANNEL_ERROR);
             return;

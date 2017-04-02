@@ -305,7 +305,8 @@ bool RequestChannelTestSuite::_testRequestReadyChannel()
     key.assign("com.mchannel.test.t3");
     body.assign("{\"key\": \"com.mchannel.test.t3\"}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == false)
+        return false;
 
     struct json_object* jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
     bool isPassed = RequestChannelTestSuite::_verifyResponseOk(jobj, key, state, 1000);
@@ -317,7 +318,8 @@ bool RequestChannelTestSuite::_testRequestReadyChannel()
     key.assign("com.mchannel.test.t4");
     body.assign("{\"key\": \"com.mchannel.test.t4\"}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == false)
+        return false;
 
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(1).c_str());
     isPassed = RequestChannelTestSuite::_verifyResponseOk(jobj, key, state, 1001);
@@ -344,7 +346,8 @@ bool RequestChannelTestSuite::_testRequestNotReadyChannel()
     key.assign("com.mchannel.test.t1");
     body.assign("{\"key\": \"com.mchannel.test.t1\"}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == true)
+        return false;
 
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
 
@@ -357,7 +360,8 @@ bool RequestChannelTestSuite::_testRequestNotReadyChannel()
     key.assign("com.mchannel.test.t0");
     body.assign("{\"key\": \"com.mchannel.test.t0\"}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == true)
+        return false;
 
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(1).c_str());
 

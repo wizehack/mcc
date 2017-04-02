@@ -189,43 +189,53 @@ bool RegisterChannelTestSuite::_testRegisterCreatedChannel()
 
     body.assign("{\"key\": \"com.mchannel.test.t1\", \"channel\": 1000}");
     msg->setBody(body);
-    regChannelHandler.request(msg);
+    if(regChannelHandler.request(msg) == false)
+        return false;
 
     body.assign("{\"key\": \"com.mchannel.test.t2\", \"channel\": 1001}");
     msg->setBody(body);
-    regChannelHandler.request(msg);
+    if(regChannelHandler.request(msg) == false)
+        return false;
 
     body.assign("{\"key\": \"com.mchannel.test.t3\", \"channel\": 1002}");
     msg->setBody(body);
-    regChannelHandler.request(msg);
+    if(regChannelHandler.request(msg) == false)
+        return false;
 
     body.assign("{\"key\": \"com.mchannel.test.t4\", \"channel\": 1003}");
     msg->setBody(body);
-    regChannelHandler.request(msg);
+    if(regChannelHandler.request(msg) == false)
+        return false;
 
     body.assign("{\"key\": \"com.mchannel.test.t5\", \"channel\": 1004}");
     msg->setBody(body);
-    regChannelHandler.request(msg);
+    if(regChannelHandler.request(msg) == false)
+        return false;
 
     body.assign("{\"key\": \"com.mchannel.test.t6\", \"channel\": 1005}");
     msg->setBody(body);
-    regChannelHandler.request(msg);
+    if(regChannelHandler.request(msg) == false)
+        return false;
 
     body.assign("{\"key\": \"com.mchannel.test.t7\", \"channel\": 1006}");
     msg->setBody(body);
-    regChannelHandler.request(msg);
+    if(regChannelHandler.request(msg) == false)
+        return false;
 
     body.assign("{\"key\": \"com.mchannel.test.t8\", \"channel\": 1007}");
     msg->setBody(body);
-    regChannelHandler.request(msg);
+    if(regChannelHandler.request(msg) == false)
+        return false;
 
     body.assign("{\"key\": \"com.mchannel.test.t9\", \"channel\": 1008}");
     msg->setBody(body);
-    regChannelHandler.request(msg);
+    if(regChannelHandler.request(msg) == false)
+        return false;
 
     body.assign("{\"key\": \"com.mchannel.test.t10\", \"channel\": 1009}");
     msg->setBody(body);
-    regChannelHandler.request(msg);
+    if(regChannelHandler.request(msg) == false)
+        return false;
 
     if(mgr->isAvailable(t1) == false)
         return false;
@@ -267,11 +277,13 @@ bool RegisterChannelTestSuite::_testRegisterNOTCreatedChannel()
 
     body.assign("{\"key\": \"com.mchannel.foo.f1\", \"channel\": 2000}");
     msg->setBody(body);
-    regChannelHandler.request(msg);
+    if(regChannelHandler.request(msg) == false)
+        return false;
 
     body.assign("{\"key\": \"com.mchannel.foo.f2\", \"channel\": 2001}");
     msg->setBody(body);
-    regChannelHandler.request(msg);
+    if(regChannelHandler.request(msg) == false)
+        return false;
 
     if(mgr->isAvailable(b1))
         return false;
@@ -296,11 +308,13 @@ bool RegisterChannelTestSuite::_testRegisterDuplicatedChannel()
 
     body.assign("{\"key\": \"com.mchannel.foo.f1\", \"channel\": 2000}");
     msg->setBody(body);
-    regChannelHandler.request(msg);
+    if(regChannelHandler.request(msg) == false)
+        return false;
 
     body.assign("{\"key\": \"com.mchannel.foo.f1\", \"channel\": 4000}");
     msg->setBody(body);
-    regChannelHandler.request(msg);
+    if(regChannelHandler.request(msg) == true)
+        return true;
 
     /*
     for(int i=0; i<2; i++)
@@ -335,7 +349,8 @@ bool RegisterChannelTestSuite::_testInvalidRequestMessage()
     struct json_object* jobj = NULL;
 
     msg->setBody(body); //empty body
-    handler.request(msg);
+    if(handler.request(msg) == true)
+        return false;
 
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
 
@@ -346,7 +361,8 @@ bool RegisterChannelTestSuite::_testInvalidRequestMessage()
 
     body.assign("{\"key\": \"com.mchannel.foo.f1\" \"channel\": 2000}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == true)
+        return false;
 
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(1).c_str());
 
@@ -357,7 +373,8 @@ bool RegisterChannelTestSuite::_testInvalidRequestMessage()
 
     body.assign("{\"channel\": 2000}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == true)
+        return false;
 
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(2).c_str());
 
@@ -368,7 +385,8 @@ bool RegisterChannelTestSuite::_testInvalidRequestMessage()
 
     body.assign("{\"key\": \"com.mchannel.foo.f1\"}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == true)
+        return false;
 
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(3).c_str());
 
@@ -394,7 +412,8 @@ bool RegisterChannelTestSuite::_testInformedChennelRequest()
 
     body.assign("{\"key\": \"com.mchannel.foo.f1\", \"channel\": -1}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == true)
+        return false;
 
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
 

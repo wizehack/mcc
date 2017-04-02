@@ -242,11 +242,13 @@ bool DeleteChannelTestSuite::_testDeleteAvailableKey()
 
     body.assign("{\"key\": \"com.mchannel.foo.f1\", \"channel\": 2000}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == false)
+        return false;
 
     body.assign("{\"key\": \"com.mchannel.foo.f2\", \"channel\": 2001}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == false)
+        return false;
 
     if(mgr->isAvailable(f1))
         return false;
@@ -292,27 +294,33 @@ bool DeleteChannelTestSuite::_testDeleteReadyKey()
 
     body.assign("{\"key\": \"com.mchannel.test.t1\"}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == false)
+        return false;
 
     body.assign("{\"key\": \"com.mchannel.test.t2\"}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == false)
+        return false;
 
     body.assign("{\"key\": \"com.mchannel.foo.f1\"}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == true) //this is registered channel
+        return false;
 
     body.assign("{\"key\": \"com.mchannel.foo.f2\"}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == true)//this is registered channel
+        return false;
 
     body.assign("{\"key\": \"com.mchannel.bar.b1\"}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == false)
+        return false;
 
     body.assign("{\"key\": \"com.mchannel.bar.b2\"}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == false)
+        return false;
 
     if(mcHubd::TaskSet::getInstance()->isWaitingTask(t1))
        return false;
@@ -344,11 +352,13 @@ bool DeleteChannelTestSuite::_testDeleteEmptyChannel()
 
     body.assign("{\"key\": \"com.mchannel.foo.f1\"}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == true)
+        return false;
 
     body.assign("{\"key\": \"com.mchannel.foo.f2\"}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == true)
+        return false;
 
     if(mgr->isAvailable(f1) == false)
         return false;
@@ -376,11 +386,13 @@ bool DeleteChannelTestSuite::_testDeleteUnknownChannel()
 
     body.assign("{\"key\": \"com.mchannel.foo.f1\", \"channel\": 3000}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == true) //incorrect channel number
+        return false;
 
     body.assign("{\"key\": \"com.mchannel.foo.f2\", \"channel\": 3001}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == true) //incorrect channel number
+        return false;
 
     if(mgr->isAvailable(f1) == false)
         return false;
@@ -408,7 +420,9 @@ bool DeleteChannelTestSuite::_testInvalidRequestMessage()
     // empty key
     body.assign("{\"channel\": 3000}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == true)
+        return false;
+
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
 
     if(DeleteChannelTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
@@ -419,7 +433,8 @@ bool DeleteChannelTestSuite::_testInvalidRequestMessage()
     // NOT JSON
     body.assign("\"key\": \"com.mchannel.foo.f1\" \"channel\": 3000}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == true)
+        return false;
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(1).c_str());
 
     if(DeleteChannelTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
@@ -430,7 +445,8 @@ bool DeleteChannelTestSuite::_testInvalidRequestMessage()
     // msg 3 Empty Payload
     body.clear();
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == true)
+        return false;
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(2).c_str());
 
     if(DeleteChannelTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
@@ -450,7 +466,8 @@ bool DeleteChannelTestSuite::_testOKResponse()
     std::string body;
     body.assign("{\"key\": \"com.mchannel.foo.f1\", \"channel\": 2000}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == false)
+        return false;
 
     struct json_object* jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
     bool isPassed = DeleteChannelTestSuite::_verifyResponseOk(jobj);

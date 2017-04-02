@@ -8,10 +8,11 @@ mcHubd::RegisterChannelHandler::RegisterChannelHandler():
     m_cKey(){}
 mcHubd::RegisterChannelHandler::~RegisterChannelHandler(){}
 
-void mcHubd::RegisterChannelHandler::request(mcHubd::Message* msg)
+bool mcHubd::RegisterChannelHandler::request(mcHubd::Message* msg)
 {
     if(msg->getType() == REQ_REG_CHANNEL)
     {
+        bool ret = false;
         std::string respMsg;
         mcHubd::RESPCODE code;
         mcHubd::Mediator* mediator = NULL;
@@ -23,7 +24,7 @@ void mcHubd::RegisterChannelHandler::request(mcHubd::Message* msg)
         {
             code = MCHUBD_INVALID_MSG;
             this->_responseError(code, respMsg);
-            return;
+            return false;
         }
 
         mediator = new mcHubd::ChannelStatusMediator();
@@ -57,12 +58,12 @@ void mcHubd::RegisterChannelHandler::request(mcHubd::Message* msg)
                         json_object_put(jobj);
                         delete contract;
                         delete mediator;
-                        return;
+                        return false;
                     }
 
                     respMsg.assign(json_object_get_string(jobj));
                     this->_responseOK(respMsg);
-
+                    ret = true;
                     json_object_put(jobj);
                 }
                 else
@@ -75,11 +76,15 @@ void mcHubd::RegisterChannelHandler::request(mcHubd::Message* msg)
                 delete mediator;
             }
         }
+
+        return ret;
     }
     else
     {
         if(this->m_next)
-            this->m_next->request(msg);
+            return this->m_next->request(msg);
+        else
+            return false;
     }
 }
 

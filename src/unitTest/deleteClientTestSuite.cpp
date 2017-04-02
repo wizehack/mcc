@@ -257,28 +257,31 @@ bool DeleteClientTestSuite::_testDeleteClient()
 
     body.assign("{\"pid\": 100, \"psName\": \"test\"}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == false)
+        return false;
 
     body.assign("{\"pid\": 200, \"psName\": \"foo\"}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == false)
+        return false;
 
     body.assign("{\"pid\": 400, \"psName\": \"bar\"}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == false)
+        return false;
 
     if(mcHubd::TaskSet::getInstance()->isWaitingTask(t1))
-       return false;
+        return false;
     if(mcHubd::TaskSet::getInstance()->isWaitingTask(t2))
-       return false;
+        return false;
     if(mcHubd::TaskSet::getInstance()->isWaitingTask(f1))
-       return false;
+        return false;
     if(mcHubd::TaskSet::getInstance()->isWaitingTask(f2))
-       return false;
+        return false;
     if(mcHubd::TaskSet::getInstance()->isWaitingTask(b1))
-       return false;
+        return false;
     if(mcHubd::TaskSet::getInstance()->isWaitingTask(b2))
-       return false;
+        return false;
     if(mgr->isAvailable(t1))
         return false;
     if(mgr->isAvailable(t2))
@@ -320,7 +323,8 @@ bool DeleteClientTestSuite::_testInvalidRequestMessage()
     struct json_object* jobj = NULL;
 
     msg->setBody(body); //empty body
-    handler.request(msg);
+    if(handler.request(msg) == true)
+        return false;
 
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
 
@@ -331,7 +335,8 @@ bool DeleteClientTestSuite::_testInvalidRequestMessage()
 
     body.assign("{\"psName\": \"test\"}"); //parameter error
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == true)
+        return false;
 
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(1).c_str());
 
@@ -342,7 +347,8 @@ bool DeleteClientTestSuite::_testInvalidRequestMessage()
 
     body.assign("{\"pid\": 200}"); //parameter error
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == true)
+        return false;
 
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(2).c_str());
 
@@ -353,7 +359,8 @@ bool DeleteClientTestSuite::_testInvalidRequestMessage()
 
     body.assign("{\"pid\": 400 \"psName\": \"bar\"}"); //NOT json
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == true)
+        return false;
 
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(3).c_str());
 
@@ -378,7 +385,8 @@ bool DeleteClientTestSuite::_testInternalError()
 
     body.assign("{\"pid\": -1, \"psName\": \"bar\"}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == true)
+        return false;
 
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
 
@@ -389,7 +397,8 @@ bool DeleteClientTestSuite::_testInternalError()
 
     body.assign("{\"pid\": 0, \"psName\": \"bar\"}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == true)
+        return false;
 
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(1).c_str());
 
@@ -416,7 +425,8 @@ bool DeleteClientTestSuite::_testOKResponse()
     mcHubd::DeleteClientHandler handler;
     body.assign("{\"pid\": 100, \"psName\": \"test\"}");
     msg->setBody(body);
-    handler.request(msg);
+    if(handler.request(msg) == false)
+        return false;
 
     struct json_object* jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
     bool isPassed = DeleteClientTestSuite::_verifyResponseOk(jobj);

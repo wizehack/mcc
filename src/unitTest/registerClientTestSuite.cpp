@@ -65,7 +65,8 @@ bool RegisterClientTestSuite::_testRegisterClientWithOneKey()
     body.append("[\"com.mchannel.test.t1\"]");
     body.append("}");
     msg->setBody(body);
-    regCliHandler.request(msg);
+    if(regCliHandler.request(msg) == false)
+        return false;
 
     if(mcHubd::TaskSet::getInstance()->isWaitingTask(key) == false)
        return false;
@@ -94,7 +95,8 @@ bool RegisterClientTestSuite::_testRegisterClientWithManyKey()
     body.append("\"com.mchannel.bar.b2\" " );
     body.append("]}");
     msg->setBody(body);
-    regCliHandler.request(msg);
+    if(regCliHandler.request(msg) == false)
+        return false;
 
     if(mcHubd::TaskSet::getInstance()->isWaitingTask(foo1) == false)
        return false;
@@ -150,7 +152,8 @@ bool RegisterClientTestSuite::_testRegisterClientWithMAXKey()
     body.append("]");
     body.append("}");
     msg->setBody(body);
-    regCliHandler.request(msg);
+    if(regCliHandler.request(msg) == true)
+        return false;
 
     if(mcHubd::TaskSet::getInstance()->isWaitingTask(t1))
        return false;
@@ -214,7 +217,8 @@ bool RegisterClientTestSuite::_testRegisterClientWitUnlimitedKey()
     body.append("]");
     body.append("}");
     msg->setBody(body);
-    regCliHandler.request(msg);
+    if(regCliHandler.request(msg) == false)
+        return false;
 
     if(mcHubd::TaskSet::getInstance()->isWaitingTask(t1) == false)
        return false;
@@ -254,7 +258,8 @@ bool RegisterClientTestSuite::_testRegisterClientWitUnacceptedKey()
     body.append("]");
     body.append("}");
     msg->setBody(body);
-    regCliHandler.request(msg);
+    if(regCliHandler.request(msg) == true)
+        return false;
 
     if(mcHubd::TaskSet::getInstance()->isWaitingTask(u1))
        return false;
@@ -275,7 +280,9 @@ bool RegisterClientTestSuite::_testInvalidRequestMessage()
 
     //1. empty message
     msg->setBody(body);
-    regCliHandler.request(msg);
+    if(regCliHandler.request(msg) == true)
+        return false;
+
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
 
     if(RegisterClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
@@ -286,7 +293,9 @@ bool RegisterClientTestSuite::_testInvalidRequestMessage()
     //2. NOT json
     body.assign("{\"pid\": 1212 \"keyList\"[\"com.mchannel.test.t1\"]}");
     msg->setBody(body);
-    regCliHandler.request(msg);
+    if(regCliHandler.request(msg) == true)
+        return false;
+
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(1).c_str());
 
     if(RegisterClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
@@ -297,7 +306,9 @@ bool RegisterClientTestSuite::_testInvalidRequestMessage()
     //3. psName NOT found
     body.assign("{\"pid\": 1212, \"keyList\": [\"com.mchannel.test.t1\"]}");
     msg->setBody(body);
-    regCliHandler.request(msg);
+    if(regCliHandler.request(msg) == true)
+        return false;
+
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(2).c_str());
 
     if(RegisterClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
@@ -308,7 +319,9 @@ bool RegisterClientTestSuite::_testInvalidRequestMessage()
     //4. pid NOT found
     body.assign("{\"psName\": \"test\",\"keyList\":[\"com.mchannel.test.t1\"]}");
     msg->setBody(body);
-    regCliHandler.request(msg);
+    if(regCliHandler.request(msg) == true)
+        return false;
+
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(3).c_str());
 
     if(RegisterClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
@@ -319,7 +332,9 @@ bool RegisterClientTestSuite::_testInvalidRequestMessage()
     //5. keyList NOT Found
     body.assign("{\"pid\": 1212, \"psName\": \"test\"}");
     msg->setBody(body);
-    regCliHandler.request(msg);
+    if(regCliHandler.request(msg) == true)
+        return false;
+
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(4).c_str());
 
     if(RegisterClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
@@ -330,7 +345,9 @@ bool RegisterClientTestSuite::_testInvalidRequestMessage()
     //6. empty keyList
     body.assign("{\"pid\": 1212, \"psName\": \"test\",\"keyList\":[]}");
     msg->setBody(body);
-    regCliHandler.request(msg);
+    if(regCliHandler.request(msg) == true)
+        return false;
+
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(5).c_str());
 
     if(RegisterClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
@@ -362,7 +379,9 @@ bool RegisterClientTestSuite::_testCreateChannelError()
     //invalid pid
     body.assign("{\"pid\": -1, \"psName\": \"test\", \"keyList\": [\"com.mchannel.test.t1\"]}");
     msg->setBody(body);
-    regCliHandler.request(msg);
+    if(regCliHandler.request(msg) == true)
+        return false;
+
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
 
     if(RegisterClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
@@ -373,7 +392,9 @@ bool RegisterClientTestSuite::_testCreateChannelError()
     //invalid pid
     body.assign("{\"pid\": 0, \"psName\": \"test\", \"keyList\": [\"com.mchannel.test.t1\"]}");
     msg->setBody(body);
-    regCliHandler.request(msg);
+    if(regCliHandler.request(msg) == true)
+        return false;
+
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(1).c_str());
 
     if(RegisterClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)

@@ -11,10 +11,11 @@ mcHubd::RegisterClientHandler::RegisterClientHandler():
     m_cKeyList(){}
 mcHubd::RegisterClientHandler::~RegisterClientHandler(){}
 
-void mcHubd::RegisterClientHandler::request(mcHubd::Message* msg)
+bool mcHubd::RegisterClientHandler::request(mcHubd::Message* msg)
 {
     if(msg->getType() == REQ_REG_CLIENT)
     {
+        bool ret = false;
         mcHubd::RESPCODE code;
         mcHubd::Mediator* mediator = NULL;
         std::shared_ptr<mcHubd::ClientManager> clientMgr;
@@ -26,7 +27,7 @@ void mcHubd::RegisterClientHandler::request(mcHubd::Message* msg)
             std::string emptyMsg;
             code = MCHUBD_INVALID_MSG;
             this->_responseError(code, emptyMsg);
-            return;
+            return false;
         }
 
         if(this->m_cKeyList.size() > MAX_NUMBER_OF_CLIENT_KEY)
@@ -35,7 +36,7 @@ void mcHubd::RegisterClientHandler::request(mcHubd::Message* msg)
             msg = "DO NOT EXCEED " + std::to_string(MAX_NUMBER_OF_CLIENT_KEY);
             code = MCHUBD_EXCEEDED_MAXIMUM_CLIENT_KEY;
             this->_responseError(code, msg);
-            return;
+            return false;
         }
 
         mediator = new mcHubd::ChannelStatusMediator();
@@ -67,15 +68,20 @@ void mcHubd::RegisterClientHandler::request(mcHubd::Message* msg)
             {
                 //send response message to client
                 this->_responseOK(keyChannelMap);
+                ret = true;
             }
 
             delete mediator;
         }
+
+        return ret;
     }
     else
     {
         if(this->m_next)
-            this->m_next->request(msg);
+            return this->m_next->request(msg);
+        else
+            return false;
     }
 }
 
