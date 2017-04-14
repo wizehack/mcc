@@ -1,19 +1,16 @@
-#ifndef DELETE_CHANNEL_TEST_SUITE_H_
-#define DELETE_CHANNEL_TEST_SUITE_H_
+#ifndef DELETE_CLIENT_TEST_SUITE_H_
+#define DELETE_CLIENT_TEST_SUITE_H_
 
-#include "testSuite.h"
+#include "../testSuite.h"
 
-class DeleteChannelTestSuite : public TestSuite {
+class DeleteClientTestSuite : public TestSuite {
     public:
-        DeleteChannelTestSuite();
-        ~DeleteChannelTestSuite();
+        DeleteClientTestSuite();
+        ~DeleteClientTestSuite();
         bool request(TestOption* opt);
-
-        static bool _testDeleteAvailableKey();
-        static bool _testDeleteReadyKey();
-        static bool _testDeleteEmptyChannel();
-        static bool _testDeleteUnknownChannel();
+        static bool _testDeleteClient();
         static bool _testInvalidRequestMessage();
+        static bool _testInternalError();
         static bool _testOKResponse();
 
         static bool _verifyResponseOk(struct json_object* jobj);
@@ -31,4 +28,4 @@ class DeleteChannelTestSuite : public TestSuite {
         static std::string _testDataPath;
 
 };
-#endif /*DELETE_CHANNEL_TEST_SUITE_H_*/
+#endif /*DELETE_CLIENT_TEST_SUITE_H_*/

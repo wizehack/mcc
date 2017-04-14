@@ -1,7 +1,7 @@
 #ifndef REGISTER_CHANNEL_TEST_SUITE_H_
 #define REGISTER_CHANNEL_TEST_SUITE_H_
 
-#include "testSuite.h"
+#include "../testSuite.h"
 
 class RegisterChannelTestSuite : public TestSuite {
     public:

@@ -1,6 +1,6 @@
 #include <iostream>
 #include "tester.h"
-#include "testOption.h"
+#include "../testOption.h"
 
 int main(int argc, char **argv)
 {

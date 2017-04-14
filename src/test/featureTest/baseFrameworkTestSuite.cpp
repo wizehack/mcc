@@ -1,6 +1,6 @@
 #include <iostream>
 #include "baseFrameworkTestSuite.h"
-#include "../taskSet.h"
+#include "feature/taskSet.h"
 
 DummyManager::DummyManager(mcHubd::Mediator* mediator, std::string role) :
     Manager(mediator, role){}

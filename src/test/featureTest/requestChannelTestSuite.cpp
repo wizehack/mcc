@@ -1,16 +1,17 @@
 #include <iostream>
 #include "requestChannelTestSuite.h"
 #include "baseFrameworkTestSuite.h"
-#include "../mcHubType.h"
-#include "../connectionInfo.h"
-#include "../taskSet.h"
-#include "../message.h"
-#include "../manager.h"
-#include "../mediator.h"
-#include "../channelStatusMediator.h"
-#include "../channelManager.h"
-#include "../requestChannelHandler.h"
-#include "../testStub.h"
+
+#include "mcHubType.h"
+#include "feature/connectionInfo.h"
+#include "feature/taskSet.h"
+#include "feature/message.h"
+#include "feature/manager.h"
+#include "feature/mediator.h"
+#include "feature/channelStatusMediator.h"
+#include "feature/channelManager.h"
+#include "feature/requestChannelHandler.h"
+#include "feature/testStub.h"
 
 std::string RequestChannelTestSuite::_testDataPath("");
 std::string RequestChannelTestSuite::_configPath("");

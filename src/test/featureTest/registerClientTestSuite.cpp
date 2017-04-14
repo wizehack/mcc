@@ -1,14 +1,15 @@
 #include <iostream>
 #include "registerClientTestSuite.h"
-#include "../registerClientHandler.h"
-#include "../mcHubType.h"
-#include "../message.h"
-#include "../taskSet.h"
-#include "../manager.h"
-#include "../clientManager.h"
-#include "../mediator.h"
-#include "../channelStatusMediator.h"
-#include "../testStub.h"
+
+#include "mcHubType.h"
+#include "feature/registerClientHandler.h"
+#include "feature/message.h"
+#include "feature/taskSet.h"
+#include "feature/manager.h"
+#include "feature/clientManager.h"
+#include "feature/mediator.h"
+#include "feature/channelStatusMediator.h"
+#include "feature/testStub.h"
 
 std::string RegisterClientTestSuite::_testDataPath("");
 

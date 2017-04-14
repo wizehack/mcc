@@ -30,7 +30,6 @@
 
 /* log */
 #include <iostream>
-#include "testStub.h"
 
 namespace mcHubd {
     typedef enum mType{

@@ -1,7 +1,7 @@
 #ifndef REQUEST_CHANNEL_TEST_SUITE_H_
 #define REQUEST_CHANNEL_TEST_SUITE_H_
 
-#include "testSuite.h"
+#include "../testSuite.h"
 
 class RequestChannelTestSuite : public TestSuite {
     public:

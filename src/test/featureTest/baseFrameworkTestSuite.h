@@ -1,9 +1,9 @@
 #ifndef BASE_FRAMEWORK_TESTER_H_
 #define BASE_FRAMEWORK_TESTER_H_
 
-#include "testSuite.h"
-#include "../manager.h"
-#include "../mediator.h"
+#include "../testSuite.h"
+#include "../../feature/manager.h"
+#include "../../feature/mediator.h"
 
 class DummyManager : public mcHubd::Manager {
     public:

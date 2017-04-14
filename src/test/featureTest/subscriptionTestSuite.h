@@ -1,7 +1,7 @@
 #ifndef SUBSCRIB_TEST_SUITE_H_
 #define SUBSCRIB_TEST_sUITE_H_
 
-#include "testSuite.h"
+#include "../testSuite.h"
 
 class SubscriptionTestSuite : public TestSuite {
 

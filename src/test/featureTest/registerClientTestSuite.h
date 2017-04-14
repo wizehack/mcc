@@ -1,7 +1,7 @@
 #ifndef REGISTER_CLIENT_TEST_SUITE_H_
 #define REGISTER_CLIENT_TEST_SUITE_H_
 
-#include "testSuite.h"
+#include "../testSuite.h"
 
 class RegisterClientTestSuite : public TestSuite {
     public:

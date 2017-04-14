@@ -1,6 +1,6 @@
 echo "##################################### Static Analysis Results ##################################### ";
 # Static Test
-cppcheck --enable=all --inconclusive --std=posix ../../src/ ;
+cppcheck --enable=all --inconclusive --std=posix ../../../src/ ;
 
 echo "##################################### Dynamic Analysis Results ##################################### ";
 # Test accepted list

@@ -1,31 +1,32 @@
 #include <iostream>
-#include "deleteClientTestSuite.h"
-#include "../mcHubType.h"
-#include "../connectionInfo.h"
-#include "../taskSet.h"
-#include "../message.h"
-#include "../manager.h"
-#include "../mediator.h"
-#include "../channelStatusMediator.h"
-#include "../channelManager.h"
-#include "../deleteClientHandler.h"
-#include "../testStub.h"
+#include "deleteChannelTestSuite.h"
+#include "mcHubType.h"
+#include "feature/connectionInfo.h"
+#include "feature/taskSet.h"
+#include "feature/message.h"
+#include "feature/manager.h"
+#include "feature/mediator.h"
+#include "feature/channelStatusMediator.h"
+#include "feature/channelManager.h"
+#include "feature/deleteChannelHandler.h"
+#include "feature/testStub.h"
 
-std::string DeleteClientTestSuite::_testDataPath("");
 
-DeleteClientTestSuite::DeleteClientTestSuite() :
+std::string DeleteChannelTestSuite::_testDataPath("");
+
+DeleteChannelTestSuite::DeleteChannelTestSuite() :
     TestSuite(),
     m_testCaseID(0){}
-DeleteClientTestSuite::~DeleteClientTestSuite(){}
+DeleteChannelTestSuite::~DeleteChannelTestSuite(){}
 
-bool DeleteClientTestSuite::request(TestOption* opt)
+bool DeleteChannelTestSuite::request(TestOption* opt)
 {
     if(opt == NULL)
         return false;
 
-    if(opt->getCategory().compare("DeleteClient") == 0)
+    if(opt->getCategory().compare("DeleteChannel") == 0)
     {
-        DeleteClientTestSuite::_testDataPath = opt->getTestDataPath();
+        DeleteChannelTestSuite::_testDataPath = opt->getTestDataPath();
         this->registerTestCase();
         return this->exec(opt->getTestCaseID());
     }
@@ -39,14 +40,16 @@ bool DeleteClientTestSuite::request(TestOption* opt)
 }
 
 
-void DeleteClientTestSuite::registerTestCase()
+void DeleteChannelTestSuite::registerTestCase()
 {
-    if(DeleteClientTestSuite::_setPrecondition())
+    if(DeleteChannelTestSuite::_setPrecondition())
     {
-        this->add(1, DeleteClientTestSuite::_testDeleteClient);
-        this->add(2, DeleteClientTestSuite::_testInvalidRequestMessage);
-        this->add(3, DeleteClientTestSuite::_testInternalError);
-        this->add(4, DeleteClientTestSuite::_testOKResponse);
+        this->add(1, DeleteChannelTestSuite::_testDeleteAvailableKey);
+        this->add(2, DeleteChannelTestSuite::_testDeleteReadyKey);
+        this->add(3, DeleteChannelTestSuite::_testDeleteEmptyChannel);
+        this->add(4, DeleteChannelTestSuite::_testDeleteUnknownChannel);
+        this->add(5, DeleteChannelTestSuite::_testInvalidRequestMessage);
+        this->add(6, DeleteChannelTestSuite::_testOKResponse);
     }
     else
     {
@@ -54,29 +57,31 @@ void DeleteClientTestSuite::registerTestCase()
     }
 }
 
-bool DeleteClientTestSuite::_setPrecondition()
+bool DeleteChannelTestSuite::_setPrecondition()
 {
-    struct json_object* jobj = NULL;
-    bool isParsed;
-
-    jobj = json_object_from_file(DeleteClientTestSuite::_testDataPath.c_str());
-
-    if( (jobj == NULL) || is_error(jobj) )
+    if(DeleteChannelTestSuite::_testDataPath.empty() == false)
     {
-        std::cout << "Test Data is NOT JSON" << std::endl;
-        std::cout << DeleteClientTestSuite::_testDataPath<< std::endl;
-        return false;
+        struct json_object* jobj = NULL;
+        bool isParsed;
+        jobj = json_object_from_file(DeleteChannelTestSuite::_testDataPath.c_str());
+
+        if( (jobj == NULL) || is_error(jobj) )
+        {
+            std::cout << "Test Data is NOT JSON" << std::endl;
+            std::cout << DeleteChannelTestSuite::_testDataPath<< std::endl;
+            return false;
+        }
+
+        isParsed = DeleteChannelTestSuite::_parseProcessList(jobj) && DeleteChannelTestSuite::_parseRegisteredKeyList(jobj);
+
+        json_object_put(jobj);
+        return isParsed;
     }
 
-    isParsed = DeleteClientTestSuite::_parseProcessList(jobj);
-    isParsed = isParsed && DeleteClientTestSuite::_parseRegisteredKeyList(jobj);
-
-    json_object_put(jobj);
-
-    return isParsed;
+    return true;
 }
 
-bool DeleteClientTestSuite::_parseProcessList(struct json_object* jobj)
+bool DeleteChannelTestSuite::_parseProcessList(struct json_object* jobj)
 {
     struct json_object* psListJobj = NULL;
     struct array_list* psArrList = NULL;
@@ -163,7 +168,7 @@ bool DeleteClientTestSuite::_parseProcessList(struct json_object* jobj)
     return true;
 }
 
-bool DeleteClientTestSuite::_parseRegisteredKeyList(struct json_object* jobj)
+bool DeleteChannelTestSuite::_parseRegisteredKeyList(struct json_object* jobj)
 {
     struct json_object* regListJobj = NULL;
     struct array_list* regList = NULL;
@@ -175,7 +180,7 @@ bool DeleteClientTestSuite::_parseRegisteredKeyList(struct json_object* jobj)
 
     if(!json_object_object_get_ex(jobj, "registeredKeyList", &regListJobj))
     {
-        std::cout << "createdClientList key is NOT found" << std::endl;
+        std::cout << "createdChannelList key is NOT found" << std::endl;
         json_object_put(jobj);
         return false;
     }
@@ -223,16 +228,48 @@ bool DeleteClientTestSuite::_parseRegisteredKeyList(struct json_object* jobj)
     return true;
 }
 
-bool DeleteClientTestSuite::_testDeleteClient()
+bool DeleteChannelTestSuite::_testDeleteAvailableKey()
 {
-    std::vector<std::string> clientMap;
-    mcHubd::DeleteClientHandler handler;
+    mcHubd::DeleteChannelHandler handler;
     mcHubd::Mediator* mediator = new mcHubd::ChannelStatusMediator();
     mcHubd::Manager* mgr = new mcHubd::ChannelManager(mediator);
 
-    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CLIENT);
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CHANNEL);
     mcHubd::Message* msg = sptrMsg.get();
+    std::string body;
+    std::string f1("com.mchannel.foo.f1");
+    std::string f2("com.mchannel.foo.f2");
 
+    body.assign("{\"key\": \"com.mchannel.foo.f1\", \"channel\": 2000}");
+    msg->setBody(body);
+    if(handler.request(msg) == false)
+        return false;
+
+    body.assign("{\"key\": \"com.mchannel.foo.f2\", \"channel\": 2001}");
+    msg->setBody(body);
+    if(handler.request(msg) == false)
+        return false;
+
+    if(mgr->isAvailable(f1))
+        return false;
+    if(mgr->isAvailable(f2))
+        return false;
+    if(mcHubd::TaskSet::getInstance()->isWaitingTask(f1))
+       return false;
+    if(mcHubd::TaskSet::getInstance()->isWaitingTask(f2))
+       return false;
+
+    return true;
+}
+
+bool DeleteChannelTestSuite::_testDeleteReadyKey()
+{
+    mcHubd::DeleteChannelHandler handler;
+    mcHubd::Mediator* mediator = new mcHubd::ChannelStatusMediator();
+    mcHubd::Manager* mgr = new mcHubd::ChannelManager(mediator);
+
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CHANNEL);
+    mcHubd::Message* msg = sptrMsg.get();
     std::string body;
     std::string t1("com.mchannel.test.t1");
     std::string t2("com.mchannel.test.t2");
@@ -255,116 +292,164 @@ bool DeleteClientTestSuite::_testDeleteClient()
     if(mcHubd::TaskSet::getInstance()->isWaitingTask(b2) == false)
        return false;
 
-    body.assign("{\"pid\": 100, \"psName\": \"test\"}");
+    body.assign("{\"key\": \"com.mchannel.test.t1\"}");
     msg->setBody(body);
     if(handler.request(msg) == false)
         return false;
 
-    body.assign("{\"pid\": 200, \"psName\": \"foo\"}");
+    body.assign("{\"key\": \"com.mchannel.test.t2\"}");
     msg->setBody(body);
     if(handler.request(msg) == false)
         return false;
 
-    body.assign("{\"pid\": 400, \"psName\": \"bar\"}");
+    body.assign("{\"key\": \"com.mchannel.foo.f1\"}");
+    msg->setBody(body);
+    if(handler.request(msg) == true) //this is registered channel
+        return false;
+
+    body.assign("{\"key\": \"com.mchannel.foo.f2\"}");
+    msg->setBody(body);
+    if(handler.request(msg) == true)//this is registered channel
+        return false;
+
+    body.assign("{\"key\": \"com.mchannel.bar.b1\"}");
+    msg->setBody(body);
+    if(handler.request(msg) == false)
+        return false;
+
+    body.assign("{\"key\": \"com.mchannel.bar.b2\"}");
     msg->setBody(body);
     if(handler.request(msg) == false)
         return false;
 
     if(mcHubd::TaskSet::getInstance()->isWaitingTask(t1))
-        return false;
+       return false;
     if(mcHubd::TaskSet::getInstance()->isWaitingTask(t2))
+       return false;
+    if(mcHubd::TaskSet::getInstance()->isWaitingTask(f1))
+       return false;
+    if(mcHubd::TaskSet::getInstance()->isWaitingTask(f2))
+       return false;
+    if(mcHubd::TaskSet::getInstance()->isWaitingTask(b1))
+       return false;
+    if(mcHubd::TaskSet::getInstance()->isWaitingTask(b2))
+       return false;
+
+    return true;
+}
+
+bool DeleteChannelTestSuite::_testDeleteEmptyChannel()
+{
+    mcHubd::DeleteChannelHandler handler;
+    mcHubd::Mediator* mediator = new mcHubd::ChannelStatusMediator();
+    mcHubd::Manager* mgr = new mcHubd::ChannelManager(mediator);
+
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CHANNEL);
+    mcHubd::Message* msg = sptrMsg.get();
+    std::string body;
+    std::string f1("com.mchannel.foo.f1");
+    std::string f2("com.mchannel.foo.f2");
+
+    body.assign("{\"key\": \"com.mchannel.foo.f1\"}");
+    msg->setBody(body);
+    if(handler.request(msg) == true)
+        return false;
+
+    body.assign("{\"key\": \"com.mchannel.foo.f2\"}");
+    msg->setBody(body);
+    if(handler.request(msg) == true)
+        return false;
+
+    if(mgr->isAvailable(f1) == false)
+        return false;
+    if(mgr->isAvailable(f2) == false)
+        return false;
+    if(mcHubd::TaskSet::getInstance()->isWaitingTask(f1))
+       return false;
+    if(mcHubd::TaskSet::getInstance()->isWaitingTask(f2))
+       return false;
+
+    return true;
+}
+
+bool DeleteChannelTestSuite::_testDeleteUnknownChannel()
+{
+    mcHubd::DeleteChannelHandler handler;
+    mcHubd::Mediator* mediator = new mcHubd::ChannelStatusMediator();
+    mcHubd::Manager* mgr = new mcHubd::ChannelManager(mediator);
+
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CHANNEL);
+    mcHubd::Message* msg = sptrMsg.get();
+    std::string body;
+    std::string f1("com.mchannel.foo.f1");
+    std::string f2("com.mchannel.foo.f2");
+
+    body.assign("{\"key\": \"com.mchannel.foo.f1\", \"channel\": 3000}");
+    msg->setBody(body);
+    if(handler.request(msg) == true) //incorrect channel number
+        return false;
+
+    body.assign("{\"key\": \"com.mchannel.foo.f2\", \"channel\": 3001}");
+    msg->setBody(body);
+    if(handler.request(msg) == true) //incorrect channel number
+        return false;
+
+    if(mgr->isAvailable(f1) == false)
+        return false;
+    if(mgr->isAvailable(f2) == false)
         return false;
     if(mcHubd::TaskSet::getInstance()->isWaitingTask(f1))
         return false;
     if(mcHubd::TaskSet::getInstance()->isWaitingTask(f2))
         return false;
-    if(mcHubd::TaskSet::getInstance()->isWaitingTask(b1))
-        return false;
-    if(mcHubd::TaskSet::getInstance()->isWaitingTask(b2))
-        return false;
-    if(mgr->isAvailable(t1))
-        return false;
-    if(mgr->isAvailable(t2))
-        return false;
-    if(mgr->isAvailable(f1))
-        return false;
-    if(mgr->isAvailable(f2))
-        return false;
-    if(mgr->isAvailable(b1))
-        return false;
-    if(mgr->isAvailable(b2))
-        return false;
-
-    clientMap = mcHubd::ConnectionInfo::getInstance()->getConnectedClientKey(100);
-    if(clientMap.empty() == false)
-        return false;
-
-    clientMap = mcHubd::ConnectionInfo::getInstance()->getConnectedClientKey(200);
-    if(clientMap.empty() == false)
-        return false;
-
-    clientMap = mcHubd::ConnectionInfo::getInstance()->getConnectedClientKey(400);
-    if(clientMap.empty() == false)
-        return false;
 
     return true;
 }
 
-bool DeleteClientTestSuite::_testInvalidRequestMessage()
+bool DeleteChannelTestSuite::_testInvalidRequestMessage()
 {
-    mcHubd::DeleteClientHandler handler;
-    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CLIENT);
+    mcHubd::DeleteChannelHandler handler;
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CHANNEL);
     mcHubd::Message* msg = sptrMsg.get();
     std::string body;
-
     mcHubd::RESPCODE code = mcHubd::MCHUBD_INVALID_MSG;
     std::string respMessge("INVALID MESSAGE");
     bool isPassed = true;
     struct json_object* jobj = NULL;
 
-    msg->setBody(body); //empty body
+    // empty key
+    body.assign("{\"channel\": 3000}");
+    msg->setBody(body);
     if(handler.request(msg) == true)
         return false;
 
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
 
-    if(DeleteClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+    if(DeleteChannelTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
         isPassed = false;
 
     json_object_put(jobj);
 
-    body.assign("{\"psName\": \"test\"}"); //parameter error
+    // NOT JSON
+    body.assign("\"key\": \"com.mchannel.foo.f1\" \"channel\": 3000}");
     msg->setBody(body);
     if(handler.request(msg) == true)
         return false;
-
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(1).c_str());
 
-    if(DeleteClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+    if(DeleteChannelTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
         isPassed = false;
 
     json_object_put(jobj);
 
-    body.assign("{\"pid\": 200}"); //parameter error
+    // msg 3 Empty Payload
+    body.clear();
     msg->setBody(body);
     if(handler.request(msg) == true)
         return false;
-
     jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(2).c_str());
 
-    if(DeleteClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
-        isPassed = false;
-
-    json_object_put(jobj);
-
-    body.assign("{\"pid\": 400 \"psName\": \"bar\"}"); //NOT json
-    msg->setBody(body);
-    if(handler.request(msg) == true)
-        return false;
-
-    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(3).c_str());
-
-    if(DeleteClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+    if(DeleteChannelTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
         isPassed = false;
 
     json_object_put(jobj);
@@ -372,75 +457,32 @@ bool DeleteClientTestSuite::_testInvalidRequestMessage()
     return isPassed;
 }
 
-bool DeleteClientTestSuite::_testInternalError()
+bool DeleteChannelTestSuite::_testOKResponse()
 {
-    mcHubd::DeleteClientHandler handler;
-    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CLIENT);
-    mcHubd::Message* msg = sptrMsg.get();
-    std::string body;
-    mcHubd::RESPCODE code = mcHubd::MCHUBD_INTERNAL_ERROR;
-    std::string respMessge("INTERNAL ERROR");
-    bool isPassed = true;
-    struct json_object* jobj = NULL;
-
-    body.assign("{\"pid\": -1, \"psName\": \"bar\"}");
-    msg->setBody(body);
-    if(handler.request(msg) == true)
-        return false;
-
-    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
-
-    if(DeleteClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
-        isPassed = false;
-
-    json_object_put(jobj);
-
-    body.assign("{\"pid\": 0, \"psName\": \"bar\"}");
-    msg->setBody(body);
-    if(handler.request(msg) == true)
-        return false;
-
-    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(1).c_str());
-
-    if(DeleteClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
-        isPassed = false;
-
-    json_object_put(jobj);
-    /*
-    for(int i=0; i<2; i++)
-    {
-        std::cout << mcHubd::TestStub::getInstance()->getRespMsg(i)<< std::endl;
-    }
-    */
-
-    return isPassed;
-}
-
-bool DeleteClientTestSuite::_testOKResponse()
-{
-    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CLIENT);
+    mcHubd::DeleteChannelHandler handler;
+    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_DEL_CHANNEL);
     mcHubd::Message* msg = sptrMsg.get();
 
     std::string body;
-    mcHubd::DeleteClientHandler handler;
-    body.assign("{\"pid\": 100, \"psName\": \"test\"}");
+    body.assign("{\"key\": \"com.mchannel.foo.f1\", \"channel\": 2000}");
     msg->setBody(body);
     if(handler.request(msg) == false)
         return false;
 
     struct json_object* jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
-    bool isPassed = DeleteClientTestSuite::_verifyResponseOk(jobj);
+    bool isPassed = DeleteChannelTestSuite::_verifyResponseOk(jobj);
     json_object_put(jobj);
     return isPassed;
 }
 
-bool DeleteClientTestSuite::_verifyResponseOk(struct json_object* jobj)
+bool DeleteChannelTestSuite::_verifyResponseOk(struct json_object* jobj)
 {
     struct json_object* codeJobj = NULL;
     struct json_object* retJobj = NULL;
     struct json_object* messageJobj = NULL;
-    struct json_object* psNameJobj = NULL;
-    struct json_object* pidJobj = NULL;
+    struct json_object* keyJobj = NULL;
+    struct json_object* channelJobj = NULL;
+    struct json_object* stateJobj = NULL;
     mcHubd::RESPCODE code;
 
     if((jobj == NULL) || is_error(jobj))
@@ -477,19 +519,25 @@ bool DeleteClientTestSuite::_verifyResponseOk(struct json_object* jobj)
         return false;
     }
 
-    if(!json_object_object_get_ex(messageJobj, "psName", &psNameJobj))
+    if(!json_object_object_get_ex(messageJobj, "key", &keyJobj))
     {
         json_object_put(jobj);
         return false;
     }
 
-    if(!json_object_object_get_ex(messageJobj, "pid", &pidJobj))
+    if(!json_object_object_get_ex(messageJobj, "channel", &channelJobj))
     {
         json_object_put(jobj);
         return false;
     }
 
-    if(!psNameJobj || !pidJobj)
+    if(!json_object_object_get_ex(messageJobj, "state", &stateJobj))
+    {
+        json_object_put(jobj);
+        return false;
+    }
+
+    if(!keyJobj || !channelJobj || !stateJobj)
     {
         json_object_put(jobj);
         return false;

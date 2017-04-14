@@ -1,8 +1,8 @@
 #ifndef MESSAGE_QUEUE_TEST_SUITE_H_
 #define MESSAGE_QUEUE_TEST_SUITE_H_
 
-#include "testSuite.h"
-#include "../mcHubType.h"
+#include "../testSuite.h"
+#include "../../mcHubType.h"
 
 class MessageQueueTestSuite : public TestSuite {
     public:

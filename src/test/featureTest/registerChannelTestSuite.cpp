@@ -1,16 +1,17 @@
 #include <iostream>
 #include "registerChannelTestSuite.h"
-#include "../registerChannelHandler.h"
-#include "../registerClientHandler.h"
-#include "../mcHubType.h"
-#include "../message.h"
-#include "../taskSet.h"
-#include "../connectionInfo.h"
-#include "../manager.h"
-#include "../mediator.h"
-#include "../channelStatusMediator.h"
-#include "../channelManager.h"
-#include "../testStub.h"
+
+#include "mcHubType.h"
+#include "feature/registerChannelHandler.h"
+#include "feature/registerClientHandler.h"
+#include "feature/message.h"
+#include "feature/taskSet.h"
+#include "feature/connectionInfo.h"
+#include "feature/manager.h"
+#include "feature/mediator.h"
+#include "feature/channelStatusMediator.h"
+#include "feature/channelManager.h"
+#include "feature/testStub.h"
 
 std::string RegisterChannelTestSuite::_testDataPath("");
 

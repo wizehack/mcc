@@ -1,17 +1,18 @@
 #include <iostream>
 #include "subscriptionTestSuite.h"
-#include "../mcHubType.h"
-#include "../message.h"
-#include "../manager.h"
-#include "../clientManager.h"
-#include "../mediator.h"
-#include "../channelStatusMediator.h"
-#include "../testStub.h"
-#include "../taskSet.h"
-#include "../deleteChannelHandler.h"
-#include "../deleteClientHandler.h"
-#include "../registerChannelHandler.h"
-#include "../registerClientHandler.h"
+
+#include "mcHubType.h"
+#include "feature/message.h"
+#include "feature/manager.h"
+#include "feature/clientManager.h"
+#include "feature/mediator.h"
+#include "feature/channelStatusMediator.h"
+#include "feature/testStub.h"
+#include "feature/taskSet.h"
+#include "feature/deleteChannelHandler.h"
+#include "feature/deleteClientHandler.h"
+#include "feature/registerChannelHandler.h"
+#include "feature/registerClientHandler.h"
 
 std::string SubscriptionTestSuite::_testDataPath("");
 

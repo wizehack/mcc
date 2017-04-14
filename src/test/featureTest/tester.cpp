@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "tester.h"
-#include "testSuite.h"
+#include "../testSuite.h"
 #include "baseFrameworkTestSuite.h"
 #include "registerClientTestSuite.h"
 #include "registerChannelTestSuite.h"

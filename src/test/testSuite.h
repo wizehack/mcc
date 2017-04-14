@@ -3,7 +3,7 @@
 
 #include <string>
 #include <map>
-#include "testOption.h"
+#include "test/testOption.h"
 #include "../mcHubType.h"
 
 typedef bool (*FuncPtr)(void);

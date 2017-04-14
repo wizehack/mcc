@@ -8,14 +8,15 @@
 #include "deleteChannelTestSuite.h"
 #include "deleteClientTestSuite.h"
 #include "messageQueueTestSuite.h"
-#include "../mcHubType.h"
-#include "../message.h"
-#include "../manager.h"
-#include "../clientManager.h"
-#include "../mediator.h"
-#include "../channelStatusMediator.h"
-#include "../testStub.h"
-#include "../messageQueue.h"
+
+#include "mcHubType.h"
+#include "feature/message.h"
+#include "feature/manager.h"
+#include "feature/clientManager.h"
+#include "feature/mediator.h"
+#include "feature/channelStatusMediator.h"
+#include "feature/testStub.h"
+#include "feature/messageQueue.h"
 
 int MessageQueueTestSuite::_respIndex = 0;
 std::string MessageQueueTestSuite::_testDataPath("");
