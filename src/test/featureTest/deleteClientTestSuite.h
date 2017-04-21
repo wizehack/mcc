@@ -13,10 +13,9 @@ class DeleteClientTestSuite : public TestSuite {
         static bool _testInternalError();
         static bool _testOKResponse();
 
-        static bool _verifyResponseOk(struct json_object* jobj);
-
     protected:
         void registerTestCase();
+        static bool _verifyResponseOk(struct json_object* jobj);
 
     private:
         static bool _setPrecondition();

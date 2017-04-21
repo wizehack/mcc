@@ -18,10 +18,9 @@ class RegisterClientTestSuite : public TestSuite {
         static bool _testCreateChannelError();
         static bool _testOKResponse();
 
-        static bool _verifyResponseOk(struct json_object* jobj);
-
     protected:
         void registerTestCase();
+        static bool _verifyResponseOk(struct json_object* jobj);
 
     private:
         static std::string _testDataPath;
