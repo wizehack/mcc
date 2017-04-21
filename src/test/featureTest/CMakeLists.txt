@@ -43,7 +43,6 @@ add_executable(
     ${ROOT_DIR}/feature/clientManager.cpp
     ${ROOT_DIR}/feature/channelManager.cpp
     ${ROOT_DIR}/feature/taskSet.cpp
-    ${ROOT_DIR}/feature/messageQueue.cpp
     ${ROOT_DIR}/feature/messageTransportService.cpp
 )
 
