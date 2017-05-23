@@ -25,7 +25,6 @@ add_executable(
     ${TEST_LIB_DIR}/featureTest/registerChannelTestSuite.cpp
     ${TEST_LIB_DIR}/featureTest/deleteChannelTestSuite.cpp
     ${TEST_LIB_DIR}/featureTest/deleteClientTestSuite.cpp
-    ${TEST_LIB_DIR}/featureTest/messageQueueTestSuite.cpp
     ${TEST_LIB_DIR}/featureTest/subscriptionTestSuite.cpp
     ${TEST_LIB_DIR}/featureTest/requestChannelTestSuite.cpp
     ${ROOT_DIR}/feature/testStub.cpp

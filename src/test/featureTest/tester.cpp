@@ -7,7 +7,6 @@
 #include "registerChannelTestSuite.h"
 #include "deleteChannelTestSuite.h"
 #include "deleteClientTestSuite.h"
-#include "messageQueueTestSuite.h"
 #include "subscriptionTestSuite.h"
 #include "requestChannelTestSuite.h"
 
@@ -21,7 +20,6 @@ bool Tester::_execute(TestOption* opt)
     TestSuite* registerChannelTestSuite = new RegisterChannelTestSuite();
     TestSuite* deleteChannelTestSuite = new DeleteChannelTestSuite();
     TestSuite* deleteClientTestSuite = new DeleteClientTestSuite();
-    TestSuite* messageQueueTestSuite = new MessageQueueTestSuite();
     TestSuite* subscriptionTestSuite = new SubscriptionTestSuite();
     TestSuite* requestChannelTestSuite = new RequestChannelTestSuite();
 
@@ -29,8 +27,7 @@ bool Tester::_execute(TestOption* opt)
     registerClientTestSuite->setNext(registerChannelTestSuite);
     registerChannelTestSuite->setNext(deleteChannelTestSuite);
     deleteChannelTestSuite->setNext(deleteClientTestSuite);
-    deleteClientTestSuite->setNext(messageQueueTestSuite);
-    messageQueueTestSuite->setNext(subscriptionTestSuite);
+    deleteClientTestSuite->setNext(subscriptionTestSuite);
     subscriptionTestSuite->setNext(requestChannelTestSuite);
 
     return frameworkTestSuite->request(opt);
