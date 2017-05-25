@@ -1,0 +1,23 @@
+{
+    "acceptedList": [
+        "com.mchannel.test.t1",
+        "com.mchannel.test.t2",
+        "com.mchannel.test.t3",
+        "com.mchannel.test.t4",
+        "com.mchannel.test.t5",
+        "com.mchannel.test.t6",
+        "com.mchannel.test.t7",
+        "com.mchannel.test.t8",
+        "com.mchannel.test.t9",
+        "com.mchannel.test.t10",
+        "com.mchannel.test.t11",
+        "com.mchannel.test.t12",
+        "com.mchannel.test.t13",
+        "com.mchannel.foo.f1",
+        "com.mchannel.foo.f2",
+        "com.mchannel.bar.b1",
+        "com.mchannel.bar.b2",
+        "com.mchannel.bar.f1",
+        "com.mchannel.bar.f2"
+        ]
+}

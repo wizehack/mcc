@@ -11,10 +11,14 @@ class TestOption {
         std::string& getCategory();
         std::string& getTestDataPath();
         std::string& getConfigPath();
+        std::string& getExpectedOut();
         int getTestCaseID();
 
     private:
         TestOption();
+        TestOption(const TestOption&);
+        void operator=(const TestOption&);
+
         void parse(int argc, char **argv);
 
     private:
@@ -22,6 +26,7 @@ class TestOption {
         std::string m_testCaseID;
         std::string m_testDataPath;
         std::string m_configPath;
+        std::string m_expOut;
 };
 
 #endif /*TEST_OPTION__H*/

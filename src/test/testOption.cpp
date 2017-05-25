@@ -7,7 +7,8 @@ TestOption::TestOption(int argc, char **argv):
     m_category(),
     m_testCaseID(),
     m_testDataPath(),
-    m_configPath()
+    m_configPath(),
+    m_expOut()
 {
     this->parse(argc, argv);
 }
@@ -27,6 +28,11 @@ std::string& TestOption::getTestDataPath()
 std::string& TestOption::getConfigPath()
 {
     return this->m_configPath;
+}
+
+std::string& TestOption::getExpectedOut()
+{
+    return this->m_expOut;
 }
 
 int TestOption::getTestCaseID()
@@ -85,6 +91,10 @@ void TestOption::parse(int argc, char **argv)
             else if (strcmp(argv[i], "--config") == 0)
             {
                 this->m_configPath.assign(argv[i+1]);
+            }
+            else if (strcmp(argv[i], "--expectedOut") == 0)
+            {
+                this->m_expOut.assign(argv[i+1]);
             }
             else
             {
