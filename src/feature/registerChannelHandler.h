@@ -14,12 +14,16 @@ namespace mcHubd {
             bool request(mcHubd::Message* msg);
 
         private:
+            RegisterChannelHandler(const mcHubd::RegisterChannelHandler&);
+            RegisterChannelHandler& operator=(const mcHubd::RegisterChannelHandler& rhs);
+
             bool parse(std::string payload);
             static bool _makeResponseMessage(struct json_object** pJobj, std::string cKey, key_t channel);
 
         private:
             key_t m_channel;
             std::string m_cKey;
+            mcHubd::Message* m_msg;
     };
 }
 

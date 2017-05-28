@@ -9,7 +9,7 @@
 #include "feature/channelStatusMediator.h"
 #include "feature/channelManager.h"
 #include "feature/deleteClientHandler.h"
-#include "feature/testStub.h"
+#include "../testStub.h"
 
 std::string DeleteClientTestSuite::_testDataPath("");
 

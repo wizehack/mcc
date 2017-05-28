@@ -7,7 +7,7 @@
 #include "feature/clientManager.h"
 #include "feature/mediator.h"
 #include "feature/channelStatusMediator.h"
-#include "feature/testStub.h"
+#include "../testStub.h"
 #include "feature/taskSet.h"
 #include "feature/deleteChannelHandler.h"
 #include "feature/deleteClientHandler.h"

@@ -1,5 +1,5 @@
 #include "messageHandler.h"
-#include "testStub.h"
+#include "messageTransportService.h"
 
 mcHubd::MessageHandler::MessageHandler():m_next(NULL){}
 
@@ -13,8 +13,11 @@ void mcHubd::MessageHandler::setNext(mcHubd::MessageHandler* handler)
         std::cout << __FUNCTION__ << " [" << __LINE__ << "]: " << "handler is NULL" << std::endl;
 }
 
-void mcHubd::MessageHandler::_responseError(mcHubd::RESPCODE code, std::string extraMsg)
+void mcHubd::MessageHandler::_responseError(mcHubd::RESPCODE code, std::string extraMsg, mcHubd::Message* msg)
 {
+    mcHubd::MessageTransportService mts;
+    std::string response;
+
     struct json_object* jobj = NULL;
     struct json_object* codeJobj = NULL;
     struct json_object* msgJobj = NULL;
@@ -32,12 +35,15 @@ void mcHubd::MessageHandler::_responseError(mcHubd::RESPCODE code, std::string e
     json_object_object_add(jobj, "extraMessage", extraJobj);
     json_object_object_add(jobj, "return", returnJobj);
 
-    TestStub::getInstance()->addRespMsg(json_object_get_string(jobj)); //Test Code
+    response.assign(json_object_get_string(jobj));
+    mts.sendto(response, msg);
     json_object_put(jobj);
 }
 
-void mcHubd::MessageHandler::_responseOK(std::string respMsg)
+void mcHubd::MessageHandler::_responseOK(std::string respMsg, mcHubd::Message* msg)
 {
+    mcHubd::MessageTransportService mts;
+    std::string response;
     mcHubd::RESPCODE code = MCHUBD_OK;
     struct json_object* jobj = NULL;
     struct json_object* codeJobj = NULL;
@@ -53,7 +59,8 @@ void mcHubd::MessageHandler::_responseOK(std::string respMsg)
     json_object_object_add(jobj, "message", msgJobj);
     json_object_object_add(jobj, "return", returnJobj);
 
-    TestStub::getInstance()->addRespMsg(json_object_get_string(jobj)); //Test Code
+    response.assign(json_object_get_string(jobj));
+    mts.sendto(response, msg);
     json_object_put(jobj);
 }
 

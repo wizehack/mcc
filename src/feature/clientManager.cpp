@@ -15,7 +15,7 @@ void mcHubd::ClientManager::create(mcHubd::Contract** contract)
 
     if((*contract))
     {
-        std::string psName = (*contract)->getProcessName();
+//        std::string psName = (*contract)->getProcessName();
         pid = 0; //Not implemented
         (*contract)->setProcessId(pid);
     }
@@ -40,7 +40,7 @@ void mcHubd::ClientManager::get(mcHubd::Contract** contract)
 {
     if((*contract))
     {
-        std::string clientKey((*contract)->getProcessName());
+//        std::string clientKey((*contract)->getProcessName());
         (*contract)->setProcessId(-1); //Not implemented
     }
 }

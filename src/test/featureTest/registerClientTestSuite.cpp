@@ -9,7 +9,7 @@
 #include "feature/clientManager.h"
 #include "feature/mediator.h"
 #include "feature/channelStatusMediator.h"
-#include "feature/testStub.h"
+#include "../testStub.h"
 
 std::string RegisterClientTestSuite::_testDataPath("");
 

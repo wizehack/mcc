@@ -14,8 +14,8 @@ namespace mcHubd {
             virtual bool request(mcHubd::Message* msg) = 0;
 
         protected:
-            static void _responseError(mcHubd::RESPCODE code, std::string extraMsg);
-            static void _responseOK(std::string respMsg);
+            static void _responseError(mcHubd::RESPCODE code, std::string extraMsg, mcHubd::Message* msg);
+            static void _responseOK(std::string respMsg, mcHubd::Message* msg);
 
         private:
             MessageHandler(const mcHubd::MessageHandler&);

@@ -28,8 +28,20 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 
+/* socket */
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <wait.h>
+#include <arpa/inet.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+
 /* log */
 #include <iostream>
+
+/* TCP message buf */
+#define MAX_BUF_SIZE 1024
 
 namespace mcHubd {
     typedef enum mType{
@@ -37,7 +49,8 @@ namespace mcHubd {
         REQ_REG_CHANNEL,
         REQ_DEL_CLIENT,
         REQ_DEL_CHANNEL,
-        REQ_GET_CHANNEL
+        REQ_GET_CHANNEL,
+        UNKNOWN_MSG_TYPE
     } MSGTYPE;
 
     typedef enum reason {

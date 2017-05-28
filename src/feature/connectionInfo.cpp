@@ -6,7 +6,9 @@ std::mutex mcHubd::ConnectionInfo::_mutex;
 mcHubd::ConnectionInfo::ConnectionInfo():
     m_acceptedList(),
     m_connectedProcessMap(),
-    m_availableListMap(){}
+    m_availableListMap(),
+    m_connPool()
+{}
 mcHubd::ConnectionInfo::~ConnectionInfo(){}
 
 mcHubd::ConnectionInfo* mcHubd::ConnectionInfo::getInstance() {
@@ -116,4 +118,37 @@ std::map<std::string, pid_t> mcHubd::ConnectionInfo::getConnectedClientKeyMap() 
 {
     std::lock_guard<std::mutex> lock(_mutex);
     return this->m_connectedProcessMap;
+}
+
+void mcHubd::ConnectionInfo::openConnection(struct sockaddr_in sockAddr, int sockfd)
+{
+    std::lock_guard<std::mutex> lock(_mutex);
+    std::cout << __PRETTY_FUNCTION__ << "[" << __LINE__ << "] server " << "pid: " << getpid() << " sockfd: " << sockfd << std::endl;
+    std::shared_ptr<mcHubd::Connection> conn = std::make_shared<mcHubd::Connection>(sockAddr, sockfd);
+    this->m_connPool.insert(std::pair<int, std::shared_ptr<mcHubd::Connection>>(sockfd, conn));
+}
+
+std::map<int, std::shared_ptr<mcHubd::Connection>> mcHubd::ConnectionInfo::getConnectionPool()
+{
+    return this->m_connPool;
+}
+
+void mcHubd::ConnectionInfo::closeConnection(int sockfd)
+{
+    std::lock_guard<std::mutex> lock(_mutex);
+    std::map<int, std::shared_ptr<mcHubd::Connection>>::iterator itor;
+    itor = this->m_connPool.begin();
+
+    while(itor != this->m_connPool.end())
+    {
+        if(itor->first == sockfd)
+        {
+            this->m_connPool.erase(itor++);
+            std::cout << __PRETTY_FUNCTION__ << "[" << __LINE__ << "] sockfd " << sockfd << std::endl;
+            close(sockfd);
+            break;
+        }
+        else
+            ++itor;
+    }
 }

@@ -13,12 +13,16 @@ namespace mcHubd {
             bool request(mcHubd::Message* msg);
 
         private:
+            DeleteChannelHandler(const mcHubd::DeleteChannelHandler&);
+            DeleteChannelHandler& operator=(const mcHubd::DeleteChannelHandler& rhs);
+
             bool parse(std::string payload);
             static bool _makeResponseMessage(struct json_object** pJobj, std::string cKey, key_t channel);
 
         private:
             std::string m_cKey;
             key_t m_channel;
+            mcHubd::Message* m_msg;
     };
 }
 

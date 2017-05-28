@@ -27,7 +27,7 @@ add_executable(
     ${TEST_LIB_DIR}/featureTest/deleteClientTestSuite.cpp
     ${TEST_LIB_DIR}/featureTest/subscriptionTestSuite.cpp
     ${TEST_LIB_DIR}/featureTest/requestChannelTestSuite.cpp
-    ${ROOT_DIR}/feature/testStub.cpp
+    ${TEST_LIB_DIR}/testStub.cpp
     ${ROOT_DIR}/feature/manager.cpp
     ${ROOT_DIR}/feature/mediator.cpp
     ${ROOT_DIR}/feature/connectionInfo.cpp

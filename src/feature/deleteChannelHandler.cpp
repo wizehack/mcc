@@ -5,7 +5,8 @@
 
 mcHubd::DeleteChannelHandler::DeleteChannelHandler():
     m_cKey(),
-    m_channel(-1){}
+    m_channel(-1),
+    m_msg(NULL){}
 mcHubd::DeleteChannelHandler::~DeleteChannelHandler(){}
 
 bool mcHubd::DeleteChannelHandler::request(mcHubd::Message* msg)
@@ -22,7 +23,7 @@ bool mcHubd::DeleteChannelHandler::request(mcHubd::Message* msg)
             mcHubd::RESPCODE code;
             code = MCHUBD_INVALID_MSG;
 
-            this->_responseError(code, respMsg);
+            this->_responseError(code, respMsg, this->m_msg);
             return false;
         }
 
@@ -47,7 +48,7 @@ bool mcHubd::DeleteChannelHandler::request(mcHubd::Message* msg)
             code = contract->getRespCode();
             if(code != MCHUBD_OK)
             {
-                this->_responseError(code, respMsg);
+                this->_responseError(code, respMsg, this->m_msg);
             }
             else
             {
@@ -56,7 +57,7 @@ bool mcHubd::DeleteChannelHandler::request(mcHubd::Message* msg)
                 if(mcHubd::DeleteChannelHandler::_makeResponseMessage(&jobj, this->m_cKey, this->m_channel) == false)
                 {
                     code = MCHUBD_INTERNAL_ERROR;
-                    this->_responseError(code, this->m_cKey);
+                    this->_responseError(code, this->m_cKey, this->m_msg);
                     json_object_put(jobj);
                     delete contract;
                     delete mediator;
@@ -64,7 +65,7 @@ bool mcHubd::DeleteChannelHandler::request(mcHubd::Message* msg)
                 }
 
                 respMsg.assign(json_object_get_string(jobj));
-                this->_responseOK(respMsg);
+                this->_responseOK(respMsg, this->m_msg);
                 ret = true;
                 json_object_put(jobj);
             }
@@ -126,7 +127,6 @@ bool mcHubd::DeleteChannelHandler::_makeResponseMessage(struct json_object** pJo
 {
     struct json_object* jobj;
     struct json_object* keyJobj;
-    struct json_object* channelJobj;
     struct json_object* stateJobj;
 
     jobj = (*pJobj);
@@ -145,6 +145,7 @@ bool mcHubd::DeleteChannelHandler::_makeResponseMessage(struct json_object** pJo
 
     if(channel > 0)
     {
+        struct json_object* channelJobj;
         channelJobj = json_object_new_int(static_cast<int>(channel));
         json_object_object_add(jobj, "channel", channelJobj);
     }

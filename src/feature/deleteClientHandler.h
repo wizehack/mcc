@@ -13,12 +13,16 @@ namespace mcHubd {
             bool request(mcHubd::Message* msg);
 
         private:
+            DeleteClientHandler(const mcHubd::DeleteClientHandler&);
+            DeleteClientHandler& operator=(const mcHubd::DeleteClientHandler& rhs);
+
             bool parse(std::string payload);
             static bool _makeResponseMessage(struct json_object** pJobj, std::string psName, pid_t pid);
 
         private:
             pid_t m_pid;
             std::string m_processName;
+            mcHubd::Message* m_msg;
     };
 }
 

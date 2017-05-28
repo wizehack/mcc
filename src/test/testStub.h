@@ -6,6 +6,11 @@
 #include <string>
 #include <map>
 
+#include "../mcHubType.h"
+
+#define TEST_PORT 5001
+#define MAX_TEST_CLIENT 3
+
 namespace mcHubd {
     class TestStub {
         public:

@@ -2,6 +2,7 @@
 #define MESSAGE_TRANSPORT_SERVICE_H_
 
 #include "mcHubType.h"
+#include "message.h"
 
 namespace mcHubd {
     class MessageTransportService {
@@ -9,6 +10,7 @@ namespace mcHubd {
             MessageTransportService();
             ~MessageTransportService();
             void sendAll(std::string message);
+            void sendto(std::string message, mcHubd::Message* msg);
     };
 }
 

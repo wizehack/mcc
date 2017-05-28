@@ -2,13 +2,14 @@
 #include "clientManager.h"
 #include "channelStatusMediator.h"
 #include "channelManager.h"
-#include "testStub.h"
+#include "messageTransportService.h"
 
 mcHubd::RegisterClientHandler::RegisterClientHandler():
     m_pid(-1),
     m_processName(),
     MAX_NUMBER_OF_CLIENT_KEY(10),
-    m_cKeyList(){}
+    m_cKeyList(),
+    m_msg(NULL){}
 mcHubd::RegisterClientHandler::~RegisterClientHandler(){}
 
 bool mcHubd::RegisterClientHandler::request(mcHubd::Message* msg)
@@ -21,12 +22,14 @@ bool mcHubd::RegisterClientHandler::request(mcHubd::Message* msg)
         std::shared_ptr<mcHubd::ClientManager> clientMgr;
         std::shared_ptr<mcHubd::ChannelManager> channelMgr;
 
+        this->m_msg = msg;
+
         // parse() assigns value to member fields; m_pid, m_processNameand m_cKeyList.
         if((this->parse(msg->getBody()) == false))
         {
             std::string emptyMsg;
             code = MCHUBD_INVALID_MSG;
-            this->_responseError(code, emptyMsg);
+            this->_responseError(code, emptyMsg, this->m_msg);
             return false;
         }
 
@@ -35,7 +38,7 @@ bool mcHubd::RegisterClientHandler::request(mcHubd::Message* msg)
             std::string msg;
             msg = "DO NOT EXCEED " + std::to_string(MAX_NUMBER_OF_CLIENT_KEY);
             code = MCHUBD_EXCEEDED_MAXIMUM_CLIENT_KEY;
-            this->_responseError(code, msg);
+            this->_responseError(code, msg, this->m_msg);
             return false;
         }
 
@@ -67,7 +70,7 @@ bool mcHubd::RegisterClientHandler::request(mcHubd::Message* msg)
             else
             {
                 //send response message to client
-                this->_responseOK(keyChannelMap);
+                this->_responseOK(keyChannelMap, this->m_msg);
                 ret = true;
             }
 
@@ -200,7 +203,7 @@ std::map<std::string, key_t> mcHubd::RegisterClientHandler::makeNewChannelList(m
                     if(contract->getChannel() <= 0)
                     {
                         code = MCHUBD_CREATE_CHANNEL_ERROR;
-                        this->_responseError(code, (*itor));
+                        this->_responseError(code, (*itor), this->m_msg);
                         delete contract;
                         return keyChannelMap;;
                     }
@@ -209,7 +212,7 @@ std::map<std::string, key_t> mcHubd::RegisterClientHandler::makeNewChannelList(m
                 }
                 else
                 {
-                    this->_responseError(contract->getRespCode(), (*itor));
+                    this->_responseError(contract->getRespCode(), (*itor), this->m_msg);
                     delete contract;
                     return keyChannelMap;;
                 }
@@ -219,7 +222,7 @@ std::map<std::string, key_t> mcHubd::RegisterClientHandler::makeNewChannelList(m
             else
             {
                 code = MCHUBD_INTERNAL_ERROR;
-                this->_responseError(code, (*itor));
+                this->_responseError(code, (*itor), this->m_msg);
                 return keyChannelMap;;
             }
         }//for
@@ -228,11 +231,13 @@ std::map<std::string, key_t> mcHubd::RegisterClientHandler::makeNewChannelList(m
     return keyChannelMap;;
 }
 
-
-void mcHubd::RegisterClientHandler::_responseOK(std::map<std::string, key_t> keyChannelMap)
+void mcHubd::RegisterClientHandler::_responseOK(std::map<std::string, key_t> keyChannelMap, mcHubd::Message* msg)
 {
+    mcHubd::MessageTransportService mts;
+    std::string response;
     mcHubd::RESPCODE code = MCHUBD_OK;
     struct json_object* jobj = NULL;
+    struct json_object* msgTypeJobj = NULL;
     struct json_object* codeJobj = NULL;
     struct json_object* msgJobj = NULL;
     struct json_object* returnJobj = NULL;
@@ -240,6 +245,7 @@ void mcHubd::RegisterClientHandler::_responseOK(std::map<std::string, key_t> key
     std::map<std::string, key_t>::iterator it;
 
     jobj = json_object_new_object();
+    msgTypeJobj = json_object_new_string("RegisterClient");
     codeJobj = json_object_new_int(static_cast<int>(code));
     returnJobj = json_object_new_boolean(true);
 
@@ -256,9 +262,11 @@ void mcHubd::RegisterClientHandler::_responseOK(std::map<std::string, key_t> key
         json_object_array_add(msgJobj, keyChannelJobj);
     }
 
+    json_object_object_add(jobj, "msgType", msgTypeJobj);
     json_object_object_add(jobj, "code", codeJobj);
     json_object_object_add(jobj, "message", msgJobj);
     json_object_object_add(jobj, "return", returnJobj);
 
-    TestStub::getInstance()->addRespMsg(json_object_get_string(jobj)); //Test Code
+    response.assign(json_object_get_string(jobj));
+    mts.sendto(response, msg);
 }

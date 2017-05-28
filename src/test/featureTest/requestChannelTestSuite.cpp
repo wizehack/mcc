@@ -11,7 +11,7 @@
 #include "feature/channelStatusMediator.h"
 #include "feature/channelManager.h"
 #include "feature/requestChannelHandler.h"
-#include "feature/testStub.h"
+#include "../testStub.h"
 
 std::string RequestChannelTestSuite::_testDataPath("");
 std::string RequestChannelTestSuite::_configPath("");
