@@ -18,6 +18,8 @@ bool mcHubd::DeleteClientHandler::request(mcHubd::Message* msg)
         mcHubd::RESPCODE code;
         mcHubd::Mediator* mediator = NULL;
 
+        this->m_msg = msg;
+
         if(this->parse(msg->getBody()) == false)
         {
             mcHubd::RESPCODE code;
@@ -54,6 +56,7 @@ bool mcHubd::DeleteClientHandler::request(mcHubd::Message* msg)
             {
                 struct json_object* jobj = NULL;
                 jobj = json_object_new_object();
+
                 if(mcHubd::DeleteClientHandler::_makeResponseMessage(&jobj, this->m_processName, this->m_pid) == false)
                 {
                     code = MCHUBD_INTERNAL_ERROR;
@@ -66,6 +69,7 @@ bool mcHubd::DeleteClientHandler::request(mcHubd::Message* msg)
 
                 respMsg.assign(json_object_get_string(jobj));
                 this->_responseOK(respMsg, this->m_msg);
+                mcHubd::ConnectionInfo::getInstance()->deleteConnInfo(this->m_processName);
                 ret = true;
                 json_object_put(jobj);
             }

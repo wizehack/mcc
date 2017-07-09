@@ -4,29 +4,13 @@
 #include "mcHubType.h"
 
 namespace mcHubd {
-    class Connection {
-        public:
-            Connection(struct sockaddr_in sockAddr, int sockfd) :
-                m_sockAddr(sockAddr), m_sockfd(sockfd), m_alive(false) {}
-            ~Connection() {}
-            void setAlive(bool alive) { m_alive = alive; }
-            bool isAlive() { return m_alive; }
-            void closeSocket() { close(m_sockfd); }
-            int getSockfd() { return m_sockfd; }
-
-        private:
-            Connection();
-
-        private:
-            struct sockaddr_in m_sockAddr;
-            int m_sockfd;
-            bool m_alive;
-    };
-
+    class Socket;
     class ConnectionInfo {
         public:
             ~ConnectionInfo();
             static ConnectionInfo* getInstance();
+            void registerServer(mcHubd::Socket* server);
+            mcHubd::Socket* getServer();
             void addAcceptedKey(std::string cKey);
             void addConnectedClientKeyMap(std::string cKey, pid_t pid);
             void addAvailableKey(std::string cKey, key_t ch);
@@ -41,18 +25,21 @@ namespace mcHubd {
             std::map<std::string, pid_t> getConnectedClientKeyMap() const;
 
             /* socket connection */
-            void openConnection(struct sockaddr_in sockAddr, int sockfd);
-            std::map<int, std::shared_ptr<mcHubd::Connection>> getConnectionPool();
-            void closeConnection(int sockfd);
+            void saveConnInfo(std::string psName, struct sockaddr_in sockAddr);
+            std::map<std::string, struct sockaddr_in> getUDPConnPool() const;
+            void deleteConnInfo(std::string psName);
 
         private:
             ConnectionInfo();
+            ConnectionInfo(const ConnectionInfo&);
+            void operator=(const ConnectionInfo&);
 
         private:
             std::vector<std::string> m_acceptedList;
             std::map<std::string, pid_t> m_connectedProcessMap;
             std::map<std::string, key_t> m_availableListMap;
-            std::map<int, std::shared_ptr<mcHubd::Connection>> m_connPool;
+            std::map<std::string, struct sockaddr_in> m_connPool;
+            mcHubd::Socket* m_server;
             static std::atomic<ConnectionInfo*> _singleton;
             static std::mutex _mutex;
     };

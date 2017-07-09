@@ -30,6 +30,7 @@ void mcHubd::Manager::_setUpAcceptedList(std::string& acceptedKeyFilePath)
     {
         //error
         std::cout << "accepted key list file is NOT json" << std::endl;
+        std::cout << "file: " << acceptedKeyFilePath << std::endl;
         return;
     }
 

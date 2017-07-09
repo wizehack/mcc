@@ -76,7 +76,7 @@ void TestOption::parse(int argc, char **argv)
     {
         if(argv[i])
         {
-            if(strcmp(argv[i], "-c") == 0)
+            if((strcmp(argv[i], "-c") == 0) || (strcmp(argv[i], "--category") == 0))
             {
                 this->m_category.assign(argv[i+1]);
             }
@@ -84,7 +84,7 @@ void TestOption::parse(int argc, char **argv)
             {
                 this->m_testCaseID.assign(argv[i+1]);
             }
-            else if (strcmp(argv[i], "-d") == 0)
+            else if ((strcmp(argv[i], "-d") == 0) || (strcmp(argv[i], "--data") == 0))
             {
                 this->m_testDataPath.assign(argv[i+1]);
             }

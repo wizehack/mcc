@@ -14,10 +14,10 @@ namespace mcHubd {
             void setIPAddr(std::string ipAddr);
             void setPort(int port);
 
-            bool isInitialized();
-            std::string getAcceptedKeyPath();
-            std::string getIPAddr();
-            int getPort();
+            bool isInitialized() const;
+            std::string getAcceptedKeyPath() const;
+            std::string getIPAddr() const;
+            int getPort() const;
 
         private:
             ConfData();

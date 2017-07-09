@@ -9,8 +9,11 @@ namespace mcHubd {
         public:
             MessageTransportService();
             ~MessageTransportService();
-            void sendAll(std::string message);
-            void sendto(std::string message, mcHubd::Message* msg);
+            static void sendAll(std::string message);
+            static void sendto(std::string message, mcHubd::Message* msg);
+
+        private:
+            static bool udpsend(struct sockaddr_in targetaddr, std::string message);
     };
 }
 

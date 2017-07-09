@@ -13,7 +13,7 @@ bool mcHubd::MessageProcessor::request(mcHubd::Message* msg)
 {
     if(msg)
     {
-        bool bResult = false;
+        bool bResult;
         mcHubd::MessageHandler* regClientHandler = new mcHubd::RegisterClientHandler();
         mcHubd::MessageHandler* regChannelHandler = new mcHubd::RegisterChannelHandler();
         mcHubd::MessageHandler* delClientHandler = new mcHubd::DeleteClientHandler();

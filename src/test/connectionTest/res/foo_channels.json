@@ -1,0 +1,12 @@
+{
+    "name" : "foo",
+    "keys" : [
+        "com.mchannel.foo.f1",
+        "com.mchannel.foo.f2",
+        "com.mchannel.foo.f3",
+        "com.mchannel.foo.f4",
+        "com.mchannel.foo.f5",
+        "com.mchannel.foo.f6",
+        "com.mchannel.foo.f7"
+    ]
+}

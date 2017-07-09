@@ -70,7 +70,9 @@ bool mcHubd::RegisterClientHandler::request(mcHubd::Message* msg)
             else
             {
                 //send response message to client
+                struct sockaddr_in clientAddr = this->m_msg->getSockAddr();
                 this->_responseOK(keyChannelMap, this->m_msg);
+                mcHubd::ConnectionInfo::getInstance()->saveConnInfo(this->m_processName, clientAddr);
                 ret = true;
             }
 
@@ -200,7 +202,8 @@ std::map<std::string, key_t> mcHubd::RegisterClientHandler::makeNewChannelList(m
 
                 if(contract->getRespCode() == MCHUBD_OK)
                 {
-                    if(contract->getChannel() <= 0)
+                    key_t channel = contract->getChannel();
+                    if(channel <= 0)
                     {
                         code = MCHUBD_CREATE_CHANNEL_ERROR;
                         this->_responseError(code, (*itor), this->m_msg);
@@ -208,7 +211,7 @@ std::map<std::string, key_t> mcHubd::RegisterClientHandler::makeNewChannelList(m
                         return keyChannelMap;;
                     }
 
-                    keyChannelMap.insert(std::pair<std::string, key_t>((*itor), contract->getChannel()));
+                    keyChannelMap.insert(std::pair<std::string, key_t>((*itor), channel));
                 }
                 else
                 {
@@ -233,7 +236,6 @@ std::map<std::string, key_t> mcHubd::RegisterClientHandler::makeNewChannelList(m
 
 void mcHubd::RegisterClientHandler::_responseOK(std::map<std::string, key_t> keyChannelMap, mcHubd::Message* msg)
 {
-    mcHubd::MessageTransportService mts;
     std::string response;
     mcHubd::RESPCODE code = MCHUBD_OK;
     struct json_object* jobj = NULL;
@@ -268,5 +270,5 @@ void mcHubd::RegisterClientHandler::_responseOK(std::map<std::string, key_t> key
     json_object_object_add(jobj, "return", returnJobj);
 
     response.assign(json_object_get_string(jobj));
-    mts.sendto(response, msg);
+    mcHubd::MessageTransportService::sendto(response, msg);
 }

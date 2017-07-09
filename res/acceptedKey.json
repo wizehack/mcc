@@ -1,0 +1,20 @@
+{
+    "acceptedList": [
+        "com.mchannel.foo.f1",
+        "com.mchannel.foo.f2",
+        "com.mchannel.foo.f3",
+        "com.mchannel.foo.f4",
+        "com.mchannel.foo.f5",
+        "com.mchannel.foo.f6",
+        "com.mchannel.foo.f7",
+        "com.mchannel.bar.b1",
+        "com.mchannel.bar.b2",
+        "com.mchannel.alice.a1",
+        "com.mchannel.alice.a2",
+        "com.mchannel.alice.a3",
+        "com.mchannel.alice.a4",
+        "com.mchannel.tom.t1",
+        "com.mchannel.tom.t2",
+        "com.mchannel.tom.t3"
+        ]
+}

@@ -28,7 +28,7 @@ namespace mcHubd {
 
         private:
             mcHubd::TaskSet* m_tSet;
-            const int MAX;
+            const int MAX_CHANNEL_NUMBERS;
     };
 }
 

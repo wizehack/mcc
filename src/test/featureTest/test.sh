@@ -1,7 +1,3 @@
-echo "##################################### Static Analysis Results ##################################### ";
-# Static Test
-cppcheck --enable=all --inconclusive --std=posix ../../../src/ ;
-
 echo "##################################### Dynamic Analysis Results ##################################### ";
 # Test accepted list
 ./build/bin/test -c BaseFramework -t 1 -d ./res/acceptedKey.json;

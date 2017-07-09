@@ -10,10 +10,10 @@ namespace mcHubd {
             Configurator();
             ~Configurator();
             void initialize(std::map<std::string, std::string> optMap);
-            bool isInitialized();
-            std::string getAcceptedKeyPath();
-            std::string getIPAddr();
-            int getPort();
+            bool isInitialized() const;
+            std::string getAcceptedKeyPath() const;
+            std::string getIPAddr() const;
+            int getPort() const;
 
         private:
             Configurator(const mcHubd::Configurator&);

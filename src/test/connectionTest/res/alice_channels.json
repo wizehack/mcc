@@ -1,0 +1,9 @@
+{
+    "name" : "alice",
+    "keys" : [
+        "com.mchannel.alice.a1",
+        "com.mchannel.alice.a2",
+        "com.mchannel.alice.a3",
+        "com.mchannel.alice.a4"
+    ]
+}

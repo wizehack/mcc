@@ -17,6 +17,7 @@ bool mcHubd::DeleteChannelHandler::request(mcHubd::Message* msg)
         std::string respMsg;
         mcHubd::RESPCODE code;
         mcHubd::Mediator* mediator = NULL;
+        this->m_msg = msg;
 
         if(this->parse(msg->getBody()) == false)
         {

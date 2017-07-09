@@ -1,0 +1,7 @@
+{
+    "name" : "bar",
+    "keys" : [
+        "com.mchannel.bar.b1",
+        "com.mchannel.bar.b2"
+    ]
+}

@@ -15,7 +15,6 @@ void mcHubd::MessageHandler::setNext(mcHubd::MessageHandler* handler)
 
 void mcHubd::MessageHandler::_responseError(mcHubd::RESPCODE code, std::string extraMsg, mcHubd::Message* msg)
 {
-    mcHubd::MessageTransportService mts;
     std::string response;
 
     struct json_object* jobj = NULL;
@@ -36,13 +35,12 @@ void mcHubd::MessageHandler::_responseError(mcHubd::RESPCODE code, std::string e
     json_object_object_add(jobj, "return", returnJobj);
 
     response.assign(json_object_get_string(jobj));
-    mts.sendto(response, msg);
+    mcHubd::MessageTransportService::sendto(response, msg);
     json_object_put(jobj);
 }
 
 void mcHubd::MessageHandler::_responseOK(std::string respMsg, mcHubd::Message* msg)
 {
-    mcHubd::MessageTransportService mts;
     std::string response;
     mcHubd::RESPCODE code = MCHUBD_OK;
     struct json_object* jobj = NULL;
@@ -60,7 +58,7 @@ void mcHubd::MessageHandler::_responseOK(std::string respMsg, mcHubd::Message* m
     json_object_object_add(jobj, "return", returnJobj);
 
     response.assign(json_object_get_string(jobj));
-    mts.sendto(response, msg);
+    mcHubd::MessageTransportService::sendto(response, msg);
     json_object_put(jobj);
 }
 

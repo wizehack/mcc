@@ -6,11 +6,11 @@ mcHubd::Configurator::~Configurator(){}
 
 void mcHubd::Configurator::initialize(std::map<std::string, std::string> optMap)
 {
-    bool isInitialized = this->m_conf->isInitialized();
+    bool bInitialized = this->m_conf->isInitialized();
     std::string confFilePath;
     std::map<std::string, std::string>::iterator itor;
 
-    if(isInitialized)
+    if(bInitialized)
         return;
 
     if(optMap.empty())
@@ -30,22 +30,22 @@ void mcHubd::Configurator::initialize(std::map<std::string, std::string> optMap)
     m_conf->initialize();
 }
 
-bool mcHubd::Configurator::isInitialized()
+bool mcHubd::Configurator::isInitialized() const
 {
     return m_conf->isInitialized();
 }
 
-std::string mcHubd::Configurator::getAcceptedKeyPath()
+std::string mcHubd::Configurator::getAcceptedKeyPath() const
 {
     return m_conf->getAcceptedKeyPath();
 }
 
-std::string mcHubd::Configurator::getIPAddr()
+std::string mcHubd::Configurator::getIPAddr() const
 {
     return m_conf->getIPAddr();
 }
 
-int mcHubd::Configurator::getPort()
+int mcHubd::Configurator::getPort() const
 {
     return m_conf->getPort();
 }

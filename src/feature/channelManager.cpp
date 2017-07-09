@@ -5,7 +5,7 @@
 mcHubd::ChannelManager::ChannelManager(mcHubd::Mediator* mediator):
     Manager(mediator, "ChannelManager"),
     m_tSet(mcHubd::TaskSet::getInstance()),
-    MAX(10){}
+    MAX_CHANNEL_NUMBERS(10){}
 mcHubd::ChannelManager::~ChannelManager(){}
 
 void mcHubd::ChannelManager::create(mcHubd::Contract** contract)
@@ -141,7 +141,7 @@ key_t mcHubd::ChannelManager::createNewChannel(std::string cKey, int id)
 
     shmid = shmget(ch, 1024, IPC_CREAT | IPC_EXCL| 0666);
 
-    while((shmid == -1) && (tryCount < MAX))
+    while((shmid == -1) && (tryCount < MAX_CHANNEL_NUMBERS))
     {
         key_t originCh = ch;
 
@@ -178,7 +178,7 @@ key_t mcHubd::ChannelManager::makeChannelNumber(std::string& cKey, int id)
     std::map<std::string, pid_t>::iterator it;
     key_t ch = -1;
 
-    if(id >= MAX)
+    if(id >= MAX_CHANNEL_NUMBERS)
         return ch;
 
     conMap = this->m_cInfo->getConnectedClientKeyMap();

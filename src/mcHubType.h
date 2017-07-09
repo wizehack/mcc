@@ -1,6 +1,9 @@
 #ifndef MCHUBD_TYPE_H_
 #define MCHUBD_TYPE_H_
 
+/* gmain loop */
+#include <glib-2.0/glib.h>
+
 /* data structure */
 #include <map>
 #include <vector>
