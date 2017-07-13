@@ -9,6 +9,7 @@ echo "##################################### Dynamic Analysis Results ###########
 ./build/bin/test --category DeleteClient -t 1 --data ./res/foo_channels.json | grep -e TEST ;
 ./build/bin/test --category DeleteClient -t 1 --data ./res/bar_channels.json | grep -e TEST ;
 ./build/bin/test --category DeleteClient -t 1 --data ./res/alice_channels.json | grep -e TEST
+./build/bin/test --category RequestChannel -t 1 --data ./res/foo_bar_channels.json | grep -e TEST
 #./build/bin/test --category Subscribe --data ./res/subscriber_channels.json
 
 # quit mcc
