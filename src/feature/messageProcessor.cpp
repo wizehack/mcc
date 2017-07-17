@@ -10,7 +10,7 @@
 mcHubd::MessageProcessor::MessageProcessor(){}
 mcHubd::MessageProcessor::~MessageProcessor(){}
 
-bool mcHubd::MessageProcessor::request(mcHubd::Message* msg)
+bool mcHubd::MessageProcessor::_request(mcHubd::Message* msg)
 {
     if(msg)
     {

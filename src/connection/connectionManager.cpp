@@ -109,7 +109,7 @@ mcHubd::Message* mcHubd::ConnectionManager::_getMessageObject(std::shared_ptr<mc
 
 bool mcHubd::ConnectionManager::_processMessage(mcHubd::Message* msg)
 {
-    return mcHubd::MessageProcessor::request(msg);
+    return mcHubd::MessageProcessor::_request(msg);
 }
 
 void mcHubd::ConnectionManager::_listen()

@@ -8,7 +8,7 @@ namespace mcHubd {
         public:
             MessageProcessor();
             ~MessageProcessor();
-            static bool request(mcHubd::Message* msg);
+            static bool _request(mcHubd::Message* msg);
     };
 }
 
