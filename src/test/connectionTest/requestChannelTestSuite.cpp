@@ -1,12 +1,18 @@
 #include <iostream>
+#include "registerClientTestSuite.h"
+#include "registerChannelTestSuite.h"
 #include "requestChannelTestSuite.h"
-#include "testData.h"
+#include "requestChannelTestData.h"
 #include "reqMsgMaker.h"
 #include "udpClient.h"
 
-std::string DeleteChannelTestSuite::_testDataPath("");
-std::string DeleteChannelTestSuite::_psName("");
-std::list<std::string> DeleteChannelTestSuite::_keyList;
+int RequestChannelTestSuite::_pid = 0;
+int RequestChannelTestSuite::_tarPid = 0;
+std::string RequestChannelTestSuite::_testDataPath("");
+std::string RequestChannelTestSuite::_psName("");
+std::string RequestChannelTestSuite::_targetPsName("");
+std::list<std::string> RequestChannelTestSuite::_keyList;
+std::list<std::string> RequestChannelTestSuite::_targetKeyList;
 
 RequestChannelTestSuite::RequestChannelTestSuite() : TestSuite(){}
 RequestChannelTestSuite::~RequestChannelTestSuite(){}
@@ -45,10 +51,123 @@ void RequestChannelTestSuite::registerTestCase()
 
 bool RequestChannelTestSuite::_setPrecondition()
 {
+    if(RequestChannelTestSuite::_testDataPath.empty() == false)
+    {
+        RequestChannelTestData* td = NULL;
+
+        td = new RequestChannelTestData(RequestChannelTestSuite::_testDataPath);
+
+        if(td)
+        {
+            ReqMsgMaker rmm;
+            std::string message;
+            std::string ip("127.0.0.1");
+            int port = 6000; //default port
+
+            RequestChannelTestSuite::_pid = td->getPID();
+            RequestChannelTestSuite::_tarPid = td->getTargetPID();
+            RequestChannelTestSuite::_psName = td->getProcessName();
+            RequestChannelTestSuite::_keyList = td->getKeyList();
+            RequestChannelTestSuite::_targetPsName = td->getTargetProcessName();
+            RequestChannelTestSuite::_targetKeyList = td->getTargetKeyList();
+
+            rmm.setPid(RequestChannelTestSuite::_tarPid);
+            rmm.setProcessName(RequestChannelTestSuite::_targetPsName);
+            rmm.setChannelList(RequestChannelTestSuite::_targetKeyList);
+
+            message = rmm.makeRegisterClientMsg();
+            std::cout << __PRETTY_FUNCTION__ << "[" << __LINE__ << "] req register client: " << message << std::endl;
+
+            UDPClient* udp = new UDPClient(ip, port, MAX_BUF_SIZE);
+
+            if(udp->conn())
+            {
+                std::string regCliresp = udp->send(message);;
+                std::map<std::string, int> map = rmm.getKeyChannelMap(regCliresp);
+                std::map<std::string, int>::iterator itor;
+
+                std::cout << __PRETTY_FUNCTION__ << "[" << __LINE__ << "] res register client: " << regCliresp << std::endl;
+                for(itor = map.begin(); itor != map.end(); ++itor)
+                {
+                    message = rmm.makeRegisterChannelMsg(itor->first, itor->second);
+                    std::string reqChResp = udp->send(message);
+                    std::cout << __PRETTY_FUNCTION__ << "[" << __LINE__ << "] res register channel: " << reqChResp << std::endl;
+                }
+
+                udp->quit();
+
+                delete td;
+                delete udp;
+                return true;
+            }
+
+            delete udp;
+            delete td;
+        }
+    }
+    return false;
+}
+
+bool RequestChannelTestSuite::_test()
+{
+    ReqMsgMaker rmm;
+    std::string message;
+    std::string ip("127.0.0.1");
+    int port = 6000; //default port
+    int pid = RequestChannelTestSuite::_pid;
+
+    rmm.setPid(pid);
+    rmm.setProcessName(RequestChannelTestSuite::_psName);
+    rmm.setChannelList(RequestChannelTestSuite::_keyList);
+
+    message = rmm.makeRegisterClientMsg();
+
+    UDPClient* udp = new UDPClient(ip, port, MAX_BUF_SIZE);
+
+    if(udp->conn())
+    {
+        std::string regCliresp = udp->send(message);
+        std::string reqChResp;
+        std::map<std::string, int> map = rmm.getKeyChannelMap(regCliresp);
+        std::map<std::string, int>::iterator itor;
+
+        for(itor = map.begin(); itor != map.end(); ++itor)
+        {
+            message.clear();
+            reqChResp.clear();
+            message = rmm.makeRegisterChannelMsg(itor->first, itor->second);
+            reqChResp = udp->send(message);
+        }
+
+        std::list<std::string>::iterator tarItor;
+        tarItor = RequestChannelTestSuite::_targetKeyList.begin();
+
+        while(tarItor != RequestChannelTestSuite::_targetKeyList.end())
+        {
+            message = rmm.makeRequestChannelMsg((*tarItor));
+            reqChResp = udp->send(message);
+
+            struct json_object* respJobj = json_tokener_parse(reqChResp.c_str());
+
+            if(RequestChannelTestSuite::_verifyResponseOk(respJobj, (*tarItor), "ready") == false)
+            {
+                udp->quit();
+                return false;
+            }
+
+            json_object_put(respJobj);
+
+            ++tarItor;
+        }
+
+        udp->quit();
+    }
+
+    delete udp;
     return true;
 }
 
-bool RequestChannelTestSuite::_verifyResponseOk(struct json_object* jobj, std::string key, std::string state, int channel)
+bool RequestChannelTestSuite::_verifyResponseOk(struct json_object* jobj, std::string key, std::string state)
 {
     struct json_object* codeJobj = NULL;
     struct json_object* retJobj = NULL;
@@ -57,7 +176,6 @@ bool RequestChannelTestSuite::_verifyResponseOk(struct json_object* jobj, std::s
     struct json_object* channelJobj = NULL;
     struct json_object* stateJobj = NULL;
     mcHubd::RESPCODE code;
-    std::string state;
 
     if((jobj == NULL) || is_error(jobj))
         return false;
@@ -111,8 +229,6 @@ bool RequestChannelTestSuite::_verifyResponseOk(struct json_object* jobj, std::s
         return false;
     }
 
-    state.assign(json_object_get_string(stateJobj));
-
     if(!keyJobj || !channelJobj || !stateJobj)
     {
         json_object_put(jobj);
@@ -122,7 +238,6 @@ bool RequestChannelTestSuite::_verifyResponseOk(struct json_object* jobj, std::s
     {
         std::string resultKey(json_object_get_string(keyJobj));
         std::string resultState(json_object_get_string(stateJobj));
-        int resultChannel = json_object_get_int(channelJobj);
 
         if(key.compare(resultKey) != 0)
         {
@@ -135,93 +250,6 @@ bool RequestChannelTestSuite::_verifyResponseOk(struct json_object* jobj, std::s
             json_object_put(jobj);
             return false;
         }
-
-        if(channel != resultChannel)
-        {
-            json_object_put(jobj);
-            return false;
-        }
-    }
-
-    json_object_put(jobj);
-    return true;
-}
-
-bool RequestChannelTestSuite::_testRequestReadyChannel()
-{
-    mcHubd::RequestChannelHandler handler;
-    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_GET_CHANNEL);
-    mcHubd::Message* msg = sptrMsg.get();
-    std::string state("ready");
-    std::string body;
-    std::string key;
-    key.assign("com.mchannel.test.t3");
-    body.assign("{\"key\": \"com.mchannel.test.t3\"}");
-    msg->setBody(body);
-    if(handler.request(msg) == false)
-        return false;
-
-    struct json_object* jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
-    bool isPassed = RequestChannelTestSuite::_verifyResponseOk(jobj, key, state, 1000);
-    json_object_put(jobj);
-
-    if(isPassed == false)
-        return false;
-
-    key.assign("com.mchannel.test.t4");
-    body.assign("{\"key\": \"com.mchannel.test.t4\"}");
-    msg->setBody(body);
-    if(handler.request(msg) == false)
-        return false;
-
-    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(1).c_str());
-    isPassed = RequestChannelTestSuite::_verifyResponseOk(jobj, key, state, 1001);
-    json_object_put(jobj);
-
-    if(isPassed == false)
-        return false;
-
-    return true;
-}
-
-bool RequestChannelTestSuite::_testRequestNotReadyChannel()
-{
-    std::string respMessge("NOT AVAILABLE KEY");
-    mcHubd::RESPCODE code = mcHubd::MCHUBD_IS_NOT_AVAILABLE_KEY;
-    struct json_object* jobj = NULL;
-
-    mcHubd::RequestChannelHandler handler;
-    std::shared_ptr<mcHubd::Message> sptrMsg = std::make_shared<mcHubd::Message>(mcHubd::REQ_GET_CHANNEL);
-    mcHubd::Message* msg = sptrMsg.get();
-
-    std::string body;
-    std::string key;
-    key.assign("com.mchannel.test.t1");
-    body.assign("{\"key\": \"com.mchannel.test.t1\"}");
-    msg->setBody(body);
-    if(handler.request(msg) == true)
-        return false;
-
-    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(0).c_str());
-
-    if(RequestChannelTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
-    {
-        json_object_put(jobj);
-        return false;
-    }
-
-    key.assign("com.mchannel.test.t0");
-    body.assign("{\"key\": \"com.mchannel.test.t0\"}");
-    msg->setBody(body);
-    if(handler.request(msg) == true)
-        return false;
-
-    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(1).c_str());
-
-    if(RequestChannelTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
-    {
-        json_object_put(jobj);
-        return false;
     }
 
     json_object_put(jobj);

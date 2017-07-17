@@ -1,4 +1,4 @@
-echo "##################################### Dynamic Analysis Results ##################################### ";
+echo "##################################### Feature Test Results ##################################### ";
 # Test accepted list
 ./build/bin/test -c BaseFramework -t 1 -d ./res/acceptedKey.json;
 

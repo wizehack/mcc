@@ -7,6 +7,7 @@ class TestData {
         ~TestData();
         std::list<std::string> getKeyList() const;
         std::string getProcessName() const;
+        int getPID() const;
 
     private:
         TestData();
@@ -14,6 +15,7 @@ class TestData {
     private:
         std::string m_processName;
         std::list<std::string> m_keyList;
+        int m_pid;
 
 };
 #endif /*TEST_DATA_H_*/

@@ -4,7 +4,7 @@
 #include "reqMsgMaker.h"
 #include "udpClient.h"
 
-
+int DeleteChannelTestSuite::_pid = 0;
 std::string DeleteChannelTestSuite::_testDataPath("");
 std::string DeleteChannelTestSuite::_psName("");
 std::list<std::string> DeleteChannelTestSuite::_keyList;
@@ -49,6 +49,7 @@ bool DeleteChannelTestSuite::_setPrecondition()
     if(DeleteChannelTestSuite::_testDataPath.empty() == false)
     {
         TestData* td = new TestData(DeleteChannelTestSuite::_testDataPath);
+        DeleteChannelTestSuite::_pid = td->getPID();
         DeleteChannelTestSuite::_psName = td->getProcessName();
         DeleteChannelTestSuite::_keyList = td->getKeyList();
         delete td;
@@ -64,7 +65,7 @@ bool DeleteChannelTestSuite::_test()
     std::string message;
     std::string ip("127.0.0.1");
     int port = 6000; //default port
-    int pid = getpid();
+    int pid = DeleteChannelTestSuite::_pid;
 
     rmm.setPid(pid);
     rmm.setProcessName(DeleteChannelTestSuite::_psName);

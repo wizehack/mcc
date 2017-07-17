@@ -121,6 +121,25 @@ std::string ReqMsgMaker::makeDeleteClientMsg()
     return reqMsg;
 }
 
+std::string ReqMsgMaker::makeRequestChannelMsg(std::string destKey)
+{
+    std::string reqMsg;
+    struct json_object* jobj = json_object_new_object();
+    struct json_object* typeJobj = json_object_new_string("GetChannel");
+    struct json_object* msgJobj = json_object_new_object();
+    struct json_object* keyJobj = json_object_new_string(destKey.c_str());
+
+    json_object_object_add(msgJobj, "key", keyJobj);
+    json_object_object_add(jobj, "msgType", typeJobj);
+    json_object_object_add(jobj, "message", msgJobj);
+
+    reqMsg.assign(json_object_get_string(jobj));
+
+    json_object_put(jobj);
+
+    return reqMsg;
+}
+
 std::map<std::string, int> ReqMsgMaker::getKeyChannelMap(std::string payload)
 {
     std::map<std::string, int> map;

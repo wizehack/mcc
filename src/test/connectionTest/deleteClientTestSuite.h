@@ -18,6 +18,7 @@ class DeleteClientTestSuite : public TestSuite {
         static bool _setPrecondition();
 
     private:
+        static int _pid;
         static std::string _testDataPath;
         static std::string _psName;
         static std::list<std::string> _keyList;

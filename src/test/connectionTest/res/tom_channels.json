@@ -1,5 +1,6 @@
 {
     "name" : "tom",
+    "pid" : 7530,
     "keys" : [
         "com.mchannel.tom.t1",
         "com.mchannel.tom.t2",

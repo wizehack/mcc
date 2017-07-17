@@ -5,7 +5,9 @@ RequestChannelTestData::RequestChannelTestData(std::string dataFile):
     m_processName(),
     m_targetProcessName(),
     m_keyList(),
-    m_targetKeyList()
+    m_targetKeyList(),
+    m_targetPID(0),
+    m_PID(0)
 {
     if(dataFile.empty() == false)
     {
@@ -20,12 +22,14 @@ RequestChannelTestData::RequestChannelTestData(std::string dataFile):
             {
                 this->m_targetProcessName = this->extractProcessName(observableJobj);
                 this->m_targetKeyList = this->extractKeyList(observableJobj);
+                this->m_targetPID = this->extractPID(observableJobj);
             }
 
             if(json_object_object_get_ex(jobj, "observer", &observerJobj))
             {
                 this->m_processName = this->extractProcessName(observerJobj);
                 this->m_keyList = this->extractKeyList(observerJobj);
+                this->m_PID = this->extractPID(observerJobj);
             }
 
             json_object_put(jobj);
@@ -84,7 +88,7 @@ std::list<std::string> RequestChannelTestData::extractKeyList(struct json_object
                     if(itemJobj)
                     {
                         std::string key(json_object_get_string(itemJobj));
-                        this->m_keyList.push_back(key);
+                        keyList.push_back(key);
                     }
                 }
             }
@@ -92,6 +96,24 @@ std::list<std::string> RequestChannelTestData::extractKeyList(struct json_object
     }
 
     return keyList;
+}
+
+int RequestChannelTestData::extractPID(struct json_object* jobj)
+{
+    int pid = -1;
+
+    if(jobj && !is_error(jobj))
+    {
+        struct json_object* pidJobj = NULL;
+
+        if(json_object_object_get_ex(jobj, "pid", &pidJobj))
+        {
+            if(pidJobj)
+                pid = json_object_get_int(pidJobj);
+        }
+    }
+
+    return pid;
 }
 
 std::list<std::string> RequestChannelTestData::getKeyList() const
@@ -104,6 +126,11 @@ std::string RequestChannelTestData::getProcessName() const
     return this->m_processName;
 }
 
+int RequestChannelTestData::getPID() const
+{
+    return this->m_PID;
+}
+
 std::list<std::string> RequestChannelTestData::getTargetKeyList() const
 {
     return this->m_targetKeyList;
@@ -112,4 +139,9 @@ std::list<std::string> RequestChannelTestData::getTargetKeyList() const
 std::string RequestChannelTestData::getTargetProcessName() const
 {
     return this->m_targetProcessName;
+}
+
+int RequestChannelTestData::getTargetPID() const
+{
+    return this->m_targetPID;
 }

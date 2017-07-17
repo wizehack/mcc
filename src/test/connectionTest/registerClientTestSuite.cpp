@@ -4,6 +4,7 @@
 #include "reqMsgMaker.h"
 #include "udpClient.h"
 
+int RegisterClientTestSuite::_pid = 0;
 std::string RegisterClientTestSuite::_testDataPath("");
 std::string RegisterClientTestSuite::_psName("");
 std::list<std::string> RegisterClientTestSuite::_keyList;
@@ -48,6 +49,7 @@ bool RegisterClientTestSuite::_setPrecondition()
     if(RegisterClientTestSuite::_testDataPath.empty() == false)
     {
         TestData* td = new TestData(RegisterClientTestSuite::_testDataPath);
+        RegisterClientTestSuite::_pid = td->getPID();
         RegisterClientTestSuite::_psName = td->getProcessName();
         RegisterClientTestSuite::_keyList = td->getKeyList();
         delete td;
@@ -64,7 +66,7 @@ bool RegisterClientTestSuite::_test()
     std::string message;
     std::string ip("127.0.0.1");
     int port = 6000; //default port
-    int pid = getpid();
+    int pid = RegisterClientTestSuite::_pid;
 
     rmm.setPid(pid);
     rmm.setProcessName(RegisterClientTestSuite::_psName);

@@ -16,6 +16,7 @@ class ReqMsgMaker {
         std::string makeRegisterChannelMsg(std::string key, int channel);
         std::string makeDeleteChannelMsg(std::string key, int channel);
         std::string makeDeleteClientMsg();
+        std::string makeRequestChannelMsg(std::string destKey);
         std::map<std::string, int> getKeyChannelMap(std::string payload);
 
     private:

@@ -1,5 +1,6 @@
 {
     "name" : "alice",
+    "pid" : 6543,
     "keys" : [
         "com.mchannel.alice.a1",
         "com.mchannel.alice.a2",

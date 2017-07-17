@@ -1,5 +1,6 @@
 {
     "name" : "bar",
+    "pid" : 5530,
     "keys" : [
         "com.mchannel.bar.b1",
         "com.mchannel.bar.b2"

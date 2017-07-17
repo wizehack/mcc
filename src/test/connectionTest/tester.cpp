@@ -5,7 +5,6 @@
 #include "registerChannelTestSuite.h"
 #include "deleteChannelTestSuite.h"
 #include "deleteClientTestSuite.h"
-#include "subscriptionTestSuite.h"
 #include "requestChannelTestSuite.h"
 
 Tester::Tester(){}
@@ -17,18 +16,12 @@ bool Tester::_execute(TestOption* opt)
     TestSuite* registerChannelTestSuite = new RegisterChannelTestSuite();
     TestSuite* deleteChannelTestSuite = new DeleteChannelTestSuite();
     TestSuite* deleteClientTestSuite = new DeleteClientTestSuite();
-    /*
-    TestSuite* subscriptionTestSuite = new SubscriptionTestSuite();
     TestSuite* requestChannelTestSuite = new RequestChannelTestSuite();
-    */
 
     registerClientTestSuite->setNext(registerChannelTestSuite);
     registerChannelTestSuite->setNext(deleteChannelTestSuite);
     deleteChannelTestSuite->setNext(deleteClientTestSuite);
-    /*
-    deleteClientTestSuite->setNext(subscriptionTestSuite);
-    subscriptionTestSuite->setNext(requestChannelTestSuite);
-    */
+    deleteClientTestSuite->setNext(requestChannelTestSuite);
 
     return registerClientTestSuite->request(opt);
 }

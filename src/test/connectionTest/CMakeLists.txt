@@ -27,6 +27,7 @@ add_executable(
     ${TEST_LIB_DIR}/connectionTest/registerChannelTestSuite.cpp
     ${TEST_LIB_DIR}/connectionTest/deleteChannelTestSuite.cpp
     ${TEST_LIB_DIR}/connectionTest/deleteClientTestSuite.cpp
+    ${TEST_LIB_DIR}/connectionTest/requestChannelTestSuite.cpp
     ${TEST_LIB_DIR}/connectionTest/requestChannelTestData.cpp
 )
 

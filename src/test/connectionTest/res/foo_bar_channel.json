@@ -1,0 +1,23 @@
+{
+    "observable" : {
+        "name" : "foo",
+        "pid" : 4230,
+            "keys" : [
+            "com.mchannel.foo.f1",
+            "com.mchannel.foo.f2",
+            "com.mchannel.foo.f3",
+            "com.mchannel.foo.f4",
+            "com.mchannel.foo.f5",
+            "com.mchannel.foo.f6",
+            "com.mchannel.foo.f7"
+        ]
+    },
+    "observer" : {
+        "name" : "bar",
+        "pid" : 5530,
+        "keys" : [
+            "com.mchannel.bar.b1",
+            "com.mchannel.bar.b2"
+        ]
+    }
+}

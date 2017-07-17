@@ -3,7 +3,8 @@
 
 TestData::TestData(std::string dataFile):
     m_processName(),
-    m_keyList()
+    m_keyList(),
+    m_pid(0)
 {
     if(dataFile.empty() == false)
     {
@@ -13,10 +14,16 @@ TestData::TestData(std::string dataFile):
         {
             struct json_object* psNameJobj = NULL;
             struct json_object* keyListJobj = NULL;
+            struct json_object* pidJobj = NULL;
 
             if(json_object_object_get_ex(jobj, "name", &psNameJobj))
             {
                 this->m_processName.assign(json_object_get_string(psNameJobj));
+            }
+
+            if(json_object_object_get_ex(jobj, "pid", &pidJobj))
+            {
+                this->m_pid = json_object_get_int(pidJobj);
             }
 
             if(json_object_object_get_ex(jobj, "keys", &keyListJobj))
@@ -55,4 +62,9 @@ std::list<std::string> TestData::getKeyList() const
 std::string TestData::getProcessName() const
 {
     return this->m_processName;
+}
+
+int TestData::getPID() const
+{
+    return this->m_pid;
 }

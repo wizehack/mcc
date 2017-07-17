@@ -8,16 +8,17 @@ class RegisterChannelTestSuite : public TestSuite {
         RegisterChannelTestSuite();
         ~RegisterChannelTestSuite();
         bool request(TestOption* opt);
+        static bool _verifyResponseOk(struct json_object* jobj);
 
     protected:
         void registerTestCase();
-        static bool _verifyResponseOk(struct json_object* jobj);
 
     private:
         static bool _test();
         static bool _setPrecondition();
 
     private:
+        static int _pid;
         static std::string _testDataPath;
         static std::string _psName;
         static std::list<std::string> _keyList;
