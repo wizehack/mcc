@@ -27,6 +27,7 @@ add_executable(
     ${TEST_LIB_DIR}/featureTest/deleteClientTestSuite.cpp
     ${TEST_LIB_DIR}/featureTest/subscriptionTestSuite.cpp
     ${TEST_LIB_DIR}/featureTest/requestChannelTestSuite.cpp
+    ${TEST_LIB_DIR}/featureTest/undefinedTypeTestSuite.cpp
     ${TEST_LIB_DIR}/testStub.cpp
     ${ROOT_DIR}/feature/manager.cpp
     ${ROOT_DIR}/feature/mediator.cpp
@@ -39,6 +40,7 @@ add_executable(
     ${ROOT_DIR}/feature/deleteChannelHandler.cpp
     ${ROOT_DIR}/feature/deleteClientHandler.cpp
     ${ROOT_DIR}/feature/requestChannelHandler.cpp
+    ${ROOT_DIR}/feature/unknownMessageHandler.cpp
     ${ROOT_DIR}/feature/message.cpp
     ${ROOT_DIR}/feature/clientManager.cpp
     ${ROOT_DIR}/feature/channelManager.cpp

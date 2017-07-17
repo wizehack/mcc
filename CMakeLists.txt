@@ -33,6 +33,7 @@ add_executable(
     ${ROOT_DIR}/src/feature/deleteChannelHandler.cpp
     ${ROOT_DIR}/src/feature/deleteClientHandler.cpp
     ${ROOT_DIR}/src/feature/requestChannelHandler.cpp
+    ${ROOT_DIR}/src/feature/unknownMessageHandler.cpp
     ${ROOT_DIR}/src/feature/message.cpp
     ${ROOT_DIR}/src/feature/clientManager.cpp
     ${ROOT_DIR}/src/feature/channelManager.cpp

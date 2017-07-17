@@ -24,7 +24,7 @@ bool mcHubd::DeleteChannelHandler::request(mcHubd::Message* msg)
             mcHubd::RESPCODE code;
             code = MCHUBD_INVALID_MSG;
 
-            this->_responseError(code, respMsg, this->m_msg);
+            mcHubd::MessageHandler::_responseError(code, respMsg, this->m_msg);
             return false;
         }
 
@@ -49,7 +49,7 @@ bool mcHubd::DeleteChannelHandler::request(mcHubd::Message* msg)
             code = contract->getRespCode();
             if(code != MCHUBD_OK)
             {
-                this->_responseError(code, respMsg, this->m_msg);
+                mcHubd::MessageHandler::_responseError(code, respMsg, this->m_msg);
             }
             else
             {
@@ -58,7 +58,7 @@ bool mcHubd::DeleteChannelHandler::request(mcHubd::Message* msg)
                 if(mcHubd::DeleteChannelHandler::_makeResponseMessage(&jobj, this->m_cKey, this->m_channel) == false)
                 {
                     code = MCHUBD_INTERNAL_ERROR;
-                    this->_responseError(code, this->m_cKey, this->m_msg);
+                    mcHubd::MessageHandler::_responseError(code, this->m_cKey, this->m_msg);
                     json_object_put(jobj);
                     delete contract;
                     delete mediator;
@@ -66,7 +66,7 @@ bool mcHubd::DeleteChannelHandler::request(mcHubd::Message* msg)
                 }
 
                 respMsg.assign(json_object_get_string(jobj));
-                this->_responseOK(respMsg, this->m_msg);
+                mcHubd::MessageHandler::_responseOK(respMsg, this->m_msg);
                 ret = true;
                 json_object_put(jobj);
             }

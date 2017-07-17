@@ -89,3 +89,6 @@ echo "##################################### Feature Test Results ###############
 # Test request Channel
 ./build/bin/test -c RequestChannel -t 1 -d ./res/registeredChannelList.json --config ./res/acceptedKey.json;
 ./build/bin/test -c RequestChannel -t 2 -d ./res/registeredChannelList.json --config ./res/acceptedKey.json;
+
+# Test UndefinedType
+./build/bin/test -c UndefinedType -t 1;

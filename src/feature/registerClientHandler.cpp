@@ -29,7 +29,7 @@ bool mcHubd::RegisterClientHandler::request(mcHubd::Message* msg)
         {
             std::string emptyMsg;
             code = MCHUBD_INVALID_MSG;
-            this->_responseError(code, emptyMsg, this->m_msg);
+            mcHubd::MessageHandler::_responseError(code, emptyMsg, this->m_msg);
             return false;
         }
 
@@ -38,7 +38,7 @@ bool mcHubd::RegisterClientHandler::request(mcHubd::Message* msg)
             std::string msg;
             msg = "DO NOT EXCEED " + std::to_string(MAX_NUMBER_OF_CLIENT_KEY);
             code = MCHUBD_EXCEEDED_MAXIMUM_CLIENT_KEY;
-            this->_responseError(code, msg, this->m_msg);
+            mcHubd::MessageHandler::_responseError(code, msg, this->m_msg);
             return false;
         }
 
@@ -71,7 +71,7 @@ bool mcHubd::RegisterClientHandler::request(mcHubd::Message* msg)
             {
                 //send response message to client
                 struct sockaddr_in clientAddr = this->m_msg->getSockAddr();
-                this->_responseOK(keyChannelMap, this->m_msg);
+                mcHubd::RegisterClientHandler::_responseOK(keyChannelMap, this->m_msg);
                 mcHubd::ConnectionInfo::getInstance()->saveConnInfo(this->m_processName, clientAddr);
                 ret = true;
             }
@@ -206,7 +206,7 @@ std::map<std::string, key_t> mcHubd::RegisterClientHandler::makeNewChannelList(m
                     if(channel <= 0)
                     {
                         code = MCHUBD_CREATE_CHANNEL_ERROR;
-                        this->_responseError(code, (*itor), this->m_msg);
+                        mcHubd::MessageHandler::_responseError(code, (*itor), this->m_msg);
                         delete contract;
                         return keyChannelMap;;
                     }
@@ -215,7 +215,7 @@ std::map<std::string, key_t> mcHubd::RegisterClientHandler::makeNewChannelList(m
                 }
                 else
                 {
-                    this->_responseError(contract->getRespCode(), (*itor), this->m_msg);
+                    mcHubd::MessageHandler::_responseError(contract->getRespCode(), (*itor), this->m_msg);
                     delete contract;
                     return keyChannelMap;;
                 }
@@ -225,7 +225,7 @@ std::map<std::string, key_t> mcHubd::RegisterClientHandler::makeNewChannelList(m
             else
             {
                 code = MCHUBD_INTERNAL_ERROR;
-                this->_responseError(code, (*itor), this->m_msg);
+                mcHubd::MessageHandler::_responseError(code, (*itor), this->m_msg);
                 return keyChannelMap;;
             }
         }//for

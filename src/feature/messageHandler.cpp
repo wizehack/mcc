@@ -85,6 +85,8 @@ std::string mcHubd::MessageHandler::_getErrorMessage(mcHubd::RESPCODE code)
         message.assign("EXCEEDED MAXIMUM CLIENT KEY");
     else if (code == MCHUBD_INTERNAL_ERROR)
         message.assign("INTERNAL ERROR");
+    else if (code == MCHUBD_UNDEFINED_TYPE)
+        message.assign("UNDEFINED TYPE");
 
     return message;
 }

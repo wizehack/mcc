@@ -9,6 +9,7 @@
 #include "deleteClientTestSuite.h"
 #include "subscriptionTestSuite.h"
 #include "requestChannelTestSuite.h"
+#include "undefinedTypeTestSuite.h"
 
 Tester::Tester(){}
 Tester::~Tester(){}
@@ -22,6 +23,7 @@ bool Tester::_execute(TestOption* opt)
     TestSuite* deleteClientTestSuite = new DeleteClientTestSuite();
     TestSuite* subscriptionTestSuite = new SubscriptionTestSuite();
     TestSuite* requestChannelTestSuite = new RequestChannelTestSuite();
+    TestSuite* undefinedTypeTestSuite = new UndefinedTypeTestSuite();
 
     frameworkTestSuite->setNext(registerClientTestSuite);
     registerClientTestSuite->setNext(registerChannelTestSuite);
@@ -29,6 +31,7 @@ bool Tester::_execute(TestOption* opt)
     deleteChannelTestSuite->setNext(deleteClientTestSuite);
     deleteClientTestSuite->setNext(subscriptionTestSuite);
     subscriptionTestSuite->setNext(requestChannelTestSuite);
+    requestChannelTestSuite->setNext(undefinedTypeTestSuite);
 
     return frameworkTestSuite->request(opt);
 }

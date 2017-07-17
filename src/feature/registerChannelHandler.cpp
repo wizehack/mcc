@@ -26,7 +26,7 @@ bool mcHubd::RegisterChannelHandler::request(mcHubd::Message* msg)
         if(this->parse(msg->getBody()) == false)
         {
             code = MCHUBD_INVALID_MSG;
-            this->_responseError(code, respMsg, this->m_msg);
+            mcHubd::MessageHandler::_responseError(code, respMsg, this->m_msg);
             return false;
         }
 
@@ -57,7 +57,7 @@ bool mcHubd::RegisterChannelHandler::request(mcHubd::Message* msg)
                     if(mcHubd::RegisterChannelHandler::_makeResponseMessage(&jobj, this->m_cKey, this->m_channel) == false)
                     {
                         code = MCHUBD_INFORM_CHANNEL_ERROR;
-                        this->_responseError(code, this->m_cKey, this->m_msg);
+                        mcHubd::MessageHandler::_responseError(code, this->m_cKey, this->m_msg);
                         json_object_put(jobj);
                         delete contract;
                         delete mediator;
@@ -65,14 +65,14 @@ bool mcHubd::RegisterChannelHandler::request(mcHubd::Message* msg)
                     }
 
                     respMsg.assign(json_object_get_string(jobj));
-                    this->_responseOK(respMsg, this->m_msg);
+                    mcHubd::MessageHandler::_responseOK(respMsg, this->m_msg);
                     ret = true;
                     json_object_put(jobj);
                 }
                 else
                 {
                     respMsg.clear();
-                    this->_responseError(contract->getRespCode(), respMsg, this->m_msg);
+                    mcHubd::MessageHandler::_responseError(contract->getRespCode(), respMsg, this->m_msg);
                 }
 
                 delete contract;
