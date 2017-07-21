@@ -18,7 +18,7 @@ namespace mcHubd {
 
         private:
             void add(std::string cKey, int numId);
-            void remove(int numId);
+            bool remove(pid_t pid, std::string psName);
 
         private:
             ClientManager();

@@ -6,6 +6,7 @@ std::mutex mcHubd::ConnectionInfo::_mutex;
 mcHubd::ConnectionInfo::ConnectionInfo():
     m_acceptedList(),
     m_connectedProcessMap(),
+    m_connectedClientKeyMap(),
     m_availableListMap(),
     m_connPool(),
     m_server(NULL)
@@ -45,10 +46,16 @@ void mcHubd::ConnectionInfo::addAcceptedKey(std::string key)
     this->m_acceptedList.push_back(key);
 }
 
+void mcHubd::ConnectionInfo::addProcess(std::string psName, pid_t pid)
+{
+    std::lock_guard<std::mutex> lock(_mutex);
+    this->m_connectedProcessMap.insert(std::pair<std::string, pid_t>(psName, pid));
+}
+
 void mcHubd::ConnectionInfo::addConnectedClientKeyMap(std::string cKey, pid_t pid)
 {
     std::lock_guard<std::mutex> lock(_mutex);
-    this->m_connectedProcessMap.insert(std::pair<std::string, pid_t>(cKey, pid));
+    this->m_connectedClientKeyMap.insert(std::pair<std::string, pid_t>(cKey, pid));
 }
 
 void mcHubd::ConnectionInfo::addAvailableKey(std::string key, key_t ch)
@@ -72,7 +79,7 @@ void mcHubd::ConnectionInfo::clearAvailableKeyList()
 void mcHubd::ConnectionInfo::clearConnecteProcessMap()
 {
     std::lock_guard<std::mutex> lock(_mutex);
-    this->m_connectedProcessMap.clear();
+    this->m_connectedClientKeyMap.clear();
 }
 
 void mcHubd::ConnectionInfo::removeAvailalbeKey(std::string& key)
@@ -82,16 +89,37 @@ void mcHubd::ConnectionInfo::removeAvailalbeKey(std::string& key)
 }
 
 
-void mcHubd::ConnectionInfo::deleteConnectedProcess(pid_t pid)
+bool mcHubd::ConnectionInfo::deleteConnectedProcess(pid_t pid, std::string psName)
 {
     std::lock_guard<std::mutex> lock(_mutex);
+    bool ret = false;
     std::map<std::string, pid_t>::iterator itor;
+
     itor = this->m_connectedProcessMap.begin();
     while(itor != this->m_connectedProcessMap.end())
     {
+        if((psName.compare(itor->first) == 0) && (pid == itor->second) )
+        {
+            ret = true;
+            this->m_connectedProcessMap.erase(itor++);
+            this->deleteConnectedClientKey(pid);
+        }
+        else
+            ++itor;
+    }
+    return ret;
+}
+
+void mcHubd::ConnectionInfo::deleteConnectedClientKey(pid_t pid)
+{
+    std::map<std::string, pid_t>::iterator itor;
+    itor = this->m_connectedClientKeyMap.begin();
+
+    while(itor != this->m_connectedClientKeyMap.end())
+    {
         if(itor->second == pid)
         {
-            this->m_connectedProcessMap.erase(itor++);
+            this->m_connectedClientKeyMap.erase(itor++);
         }
         else
             ++itor;
@@ -103,8 +131,8 @@ std::vector<std::string> mcHubd::ConnectionInfo::getConnectedClientKey(pid_t pid
     std::lock_guard<std::mutex> lock(_mutex);
     std::vector<std::string> psVector;
     std::map<std::string, pid_t>::iterator itor;
-    itor = this->m_connectedProcessMap.begin();
-    while(itor != this->m_connectedProcessMap.end())
+    itor = this->m_connectedClientKeyMap.begin();
+    while(itor != this->m_connectedClientKeyMap.end())
     {
         if(itor->second == pid)
             psVector.push_back(itor->first);
@@ -130,7 +158,7 @@ std::map<std::string, key_t> mcHubd::ConnectionInfo::getAvailableList() const
 std::map<std::string, pid_t> mcHubd::ConnectionInfo::getConnectedClientKeyMap() const
 {
     std::lock_guard<std::mutex> lock(_mutex);
-    return this->m_connectedProcessMap;
+    return this->m_connectedClientKeyMap;
 }
 
 void mcHubd::ConnectionInfo::saveConnInfo(std::string psName, struct sockaddr_in sockAddr)

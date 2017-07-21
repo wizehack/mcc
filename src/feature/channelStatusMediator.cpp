@@ -75,7 +75,6 @@ void mcHubd::ChannelStatusMediator::deleteClient(mcHubd::Contract** pContract)
         }
 
         clientMgr->remove(pContract);
-        (*pContract)->setRespCode(MCHUBD_OK);
     }
 }
 

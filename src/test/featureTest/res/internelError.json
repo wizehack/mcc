@@ -1,0 +1,25 @@
+{
+    "connectedProcessList" : [
+    {"psname":"test", "pid": 100,
+        "keyList":
+        ["com.mchannel.test.t1",
+        "com.mchannel.test.t2"]},
+    {"psname":"foo", "pid": 0,
+        "keyList":
+        ["com.mchannel.foo.f1",
+        "com.mchannel.foo.f2"]},
+    {"psname":"bar", "pid": -1,
+        "keyList":
+        ["com.mchannel.bar.b1",
+        "com.mchannel.bar.b2"]},
+    ],
+
+    "registeredKeyList" : [
+    {"key" : "com.mchannel.test.t3", "channel" : 1000},
+    {"key" : "com.mchannel.test.t4", "channel" : 1001},
+    {"key" : "com.mchannel.foo.f1", "channel" : 2000},
+    {"key" : "com.mchannel.foo.f2", "channel" : 2001},
+    {"key" : "com.mchannel.bar.f1", "channel" : 4001},
+    {"key" : "com.mchannel.bar.f2", "channel" : 4002}
+    ]
+}

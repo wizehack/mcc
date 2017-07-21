@@ -30,7 +30,14 @@ void mcHubd::ClientManager::add(mcHubd::Contract** contract)
 void mcHubd::ClientManager::remove(mcHubd::Contract** contract)
 {
     if((*contract))
-        this->remove((*contract)->getProcessId());
+    {
+        pid_t pid = (*contract)->getProcessId();
+        std::string name = (*contract)->getProcessName();
+        if(this->remove(pid, name))
+            (*contract)->setRespCode(MCHUBD_OK);
+        else
+            (*contract)->setRespCode(MCHUBD_INVALID_MSG);
+    }
 }
 
 /**
@@ -56,7 +63,7 @@ void mcHubd::ClientManager::add(std::string cKey, int pid)
 /**
  * remove connected all of the client key if they have same pid
  */
-void mcHubd::ClientManager::remove(int pid)
+bool mcHubd::ClientManager::remove(pid_t pid, std::string psName)
 {
     std::map<std::string, key_t> availableListMap;
     std::map<std::string, key_t>::iterator mItor = availableListMap.begin();
@@ -81,5 +88,7 @@ void mcHubd::ClientManager::remove(int pid)
         delete contract;
     }
 
-    this->m_cInfo->deleteConnectedProcess(pid);
+    return this->m_cInfo->deleteConnectedProcess(pid, psName);
 }
+
+

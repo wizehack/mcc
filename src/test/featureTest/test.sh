@@ -66,7 +66,7 @@ echo "##################################### Feature Test Results ###############
 ./build/bin/test -c DeleteClient -t 2 -d ./res/registeredChannelList.json;
 
 # test Internal Error delete client
-./build/bin/test -c DeleteClient -t 3 -d ./res/registeredChannelList.json;
+./build/bin/test -c DeleteClient -t 3 -d ./res/internelError.json;
 
 # Test Invalid Register Channel request
 ./build/bin/test -c RegisterChannel -t 4 -d ./res/createdChannelList.json;

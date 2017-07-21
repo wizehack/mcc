@@ -71,8 +71,9 @@ bool mcHubd::RegisterClientHandler::request(mcHubd::Message* msg)
             {
                 //send response message to client
                 struct sockaddr_in clientAddr = this->m_msg->getSockAddr();
-                mcHubd::RegisterClientHandler::_responseOK(keyChannelMap, this->m_msg);
+                mcHubd::ConnectionInfo::getInstance()->addProcess(this->m_processName, this->m_pid);
                 mcHubd::ConnectionInfo::getInstance()->saveConnInfo(this->m_processName, clientAddr);
+                mcHubd::RegisterClientHandler::_responseOK(keyChannelMap, this->m_msg);
                 ret = true;
             }
 

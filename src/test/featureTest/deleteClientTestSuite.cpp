@@ -108,6 +108,7 @@ bool DeleteClientTestSuite::_parseProcessList(struct json_object* jobj)
 
     for(arrIndex = 0; arrIndex < arrSize; arrIndex++)
     {
+        std::string psName;
         int pid;
         int keyArrIndex;
         int keyArrSize;
@@ -130,7 +131,10 @@ bool DeleteClientTestSuite::_parseProcessList(struct json_object* jobj)
             return false;
         }
 
+        psName = json_object_get_string(psNameJobj);
         pid = json_object_get_int(pidJobj);
+
+        mcHubd::ConnectionInfo::getInstance()->addProcess(psName, pid);
 
         if(!json_object_object_get_ex(psArrItemJobj, "keyList", &keyListJobj))
         {
@@ -369,6 +373,17 @@ bool DeleteClientTestSuite::_testInvalidRequestMessage()
 
     json_object_put(jobj);
 
+    body.assign("{\"pid\": 200, \"psName\": \"bar\"}"); //Incorrect PID or Incorrect psName
+    msg->setBody(body);
+    if(handler.request(msg) == true)
+        return false;
+
+    jobj = json_tokener_parse(mcHubd::TestStub::getInstance()->getRespMsg(4).c_str());
+
+    if(DeleteClientTestSuite::_verifyResponseError(jobj, code, respMessge) == false)
+        isPassed = false;
+
+    json_object_put(jobj);
     return isPassed;
 }
 
@@ -395,7 +410,7 @@ bool DeleteClientTestSuite::_testInternalError()
 
     json_object_put(jobj);
 
-    body.assign("{\"pid\": 0, \"psName\": \"bar\"}");
+    body.assign("{\"pid\": 0, \"psName\": \"foo\"}");
     msg->setBody(body);
     if(handler.request(msg) == true)
         return false;
