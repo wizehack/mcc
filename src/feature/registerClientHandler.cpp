@@ -7,6 +7,7 @@
 mcHubd::RegisterClientHandler::RegisterClientHandler():
     m_pid(-1),
     m_processName(),
+    m_subscribe(false),
     MAX_NUMBER_OF_CLIENT_KEY(10),
     m_cKeyList(),
     m_msg(NULL){}
@@ -72,7 +73,10 @@ bool mcHubd::RegisterClientHandler::request(mcHubd::Message* msg)
                 //send response message to client
                 struct sockaddr_in clientAddr = this->m_msg->getSockAddr();
                 mcHubd::ConnectionInfo::getInstance()->addProcess(this->m_processName, this->m_pid);
-                mcHubd::ConnectionInfo::getInstance()->saveConnInfo(this->m_processName, clientAddr);
+
+                if(this->m_subscribe)
+                    mcHubd::ConnectionInfo::getInstance()->saveConnInfo(this->m_processName, clientAddr);
+
                 mcHubd::RegisterClientHandler::_responseOK(keyChannelMap, this->m_msg);
                 ret = true;
             }
@@ -97,6 +101,7 @@ bool mcHubd::RegisterClientHandler::parse(std::string payload)
     struct json_object* processIdJobj = NULL;
     struct json_object* processNameJobj = NULL;
     struct json_object* keyListJobj = NULL;
+    struct json_object* subscribeJobj = NULL;
     struct array_list* keyList = NULL;
 
     int arrSize = 0;
@@ -131,6 +136,13 @@ bool mcHubd::RegisterClientHandler::parse(std::string payload)
     }
 
     this->m_pid = static_cast<pid_t>(json_object_get_int(processIdJobj));
+
+    if(!json_object_object_get_ex(jobj, "subscribe", &subscribeJobj))
+    {
+        this->m_subscribe = false;
+    }
+
+    this->m_subscribe = json_object_get_boolean(subscribeJobj);
 
     if(!json_object_object_get_ex(jobj, "keyList", &keyListJobj))
     {

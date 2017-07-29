@@ -24,6 +24,7 @@ namespace mcHubd {
         private:
             pid_t m_pid;
             std::string m_processName;
+            bool m_subscribe;
             const unsigned int MAX_NUMBER_OF_CLIENT_KEY;
             std::list<std::string> m_cKeyList;
             mcHubd::Message* m_msg;

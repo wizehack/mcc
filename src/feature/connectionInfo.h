@@ -24,6 +24,7 @@ namespace mcHubd {
             std::vector<std::string> getAcceptedList() const;
             std::map<std::string, key_t> getAvailableList() const;
             std::map<std::string, pid_t> getConnectedClientKeyMap() const;
+            pid_t getPID(std::string psName);
 
             /* socket connection */
             void saveConnInfo(std::string psName, struct sockaddr_in sockAddr);

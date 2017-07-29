@@ -29,6 +29,7 @@ add_executable(
     ${TEST_LIB_DIR}/connectionTest/deleteClientTestSuite.cpp
     ${TEST_LIB_DIR}/connectionTest/requestChannelTestSuite.cpp
     ${TEST_LIB_DIR}/connectionTest/requestChannelTestData.cpp
+    ${TEST_LIB_DIR}/connectionTest/subscribeTestSuite.cpp
 )
 
 # -ljson-c -lglib-2.0

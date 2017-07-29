@@ -161,6 +161,12 @@ std::map<std::string, pid_t> mcHubd::ConnectionInfo::getConnectedClientKeyMap() 
     return this->m_connectedClientKeyMap;
 }
 
+pid_t mcHubd::ConnectionInfo::getPID(std::string psName)
+{
+    std::lock_guard<std::mutex> lock(_mutex);
+    return this->m_connectedProcessMap[psName];
+}
+
 void mcHubd::ConnectionInfo::saveConnInfo(std::string psName, struct sockaddr_in sockAddr)
 {
     std::lock_guard<std::mutex> lock(_mutex);

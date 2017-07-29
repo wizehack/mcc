@@ -13,6 +13,7 @@ class ReqMsgMaker {
         void setChannelList(std::list<std::string> keyList);
 
         std::string makeRegisterClientMsg();
+        std::string makeRegisterClientMsgWithSubscribe();
         std::string makeRegisterChannelMsg(std::string key, int channel);
         std::string makeDeleteChannelMsg(std::string key, int channel);
         std::string makeDeleteClientMsg();

@@ -19,7 +19,7 @@ namespace mcHubd {
             void deleteChannel(mcHubd::Contract** pContract);
 
             void notify(mcHubd::Contract* contract, mcHubd::CONTRACTREASON reason);
-            static std::string getChannelStatusMessage(mcHubd::Contract* contract);
+            static std::string getChannelStatusMessage(mcHubd::Contract* contract, bool bSubscribe);
             static std::string getChannelStatus(mcHubd::Contract* contract);
 
         private:

@@ -10,7 +10,7 @@ namespace mcHubd {
             MessageTransportService();
             ~MessageTransportService();
             static void sendAll(std::string message);
-            static void sendto(std::string message, mcHubd::Message* msg);
+            static bool sendto(std::string message, mcHubd::Message* msg);
 
         private:
             static bool udpsend(struct sockaddr_in targetaddr, std::string message);

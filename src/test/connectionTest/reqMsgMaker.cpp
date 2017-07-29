@@ -55,6 +55,41 @@ std::string ReqMsgMaker::makeRegisterClientMsg()
     return reqMsg;
 }
 
+std::string ReqMsgMaker::makeRegisterClientMsgWithSubscribe()
+{
+    std::string reqMsg;
+    struct json_object* jobj = json_object_new_object();
+    struct json_object* typeJobj = json_object_new_string("RegisterClient");
+    struct json_object* msgJobj = json_object_new_object();
+    struct json_object* subscribeJobj = json_object_new_boolean(true);
+    struct json_object* pidJobj = json_object_new_int(this->m_pid);
+    struct json_object* psNameJobj = json_object_new_string(this->m_psName.c_str());
+    struct json_object* keyList = json_object_new_array();
+
+    std::list<std::string>::iterator it;
+
+    for(it = this->m_keyList.begin(); it != this->m_keyList.end(); ++it)
+    {
+        std::string key = (*it);
+        struct json_object* keyJobj = json_object_new_string(key.c_str());
+        json_object_array_add(keyList, keyJobj);
+    }
+
+    json_object_object_add(msgJobj, "pid", pidJobj);
+    json_object_object_add(msgJobj, "subscribe", subscribeJobj);
+    json_object_object_add(msgJobj, "psName", psNameJobj);
+    json_object_object_add(msgJobj, "keyList", keyList);
+
+    json_object_object_add(jobj, "msgType", typeJobj);
+    json_object_object_add(jobj, "message", msgJobj);
+
+    reqMsg.assign(json_object_get_string(jobj));
+
+    json_object_put(jobj);
+
+    return reqMsg;
+}
+
 std::string ReqMsgMaker::makeRegisterChannelMsg(std::string key, int channel)
 {
     std::string reqMsg;

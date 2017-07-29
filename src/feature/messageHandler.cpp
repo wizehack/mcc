@@ -29,6 +29,7 @@ void mcHubd::MessageHandler::_responseError(mcHubd::RESPCODE code, std::string e
     extraJobj = json_object_new_string(extraMsg.c_str());
     returnJobj = json_object_new_boolean(false);
 
+    json_object_object_add(jobj, "msgType", json_object_new_string("response"));
     json_object_object_add(jobj, "errorCode", codeJobj);
     json_object_object_add(jobj, "errorMessage", msgJobj);
     json_object_object_add(jobj, "extraMessage", extraJobj);
@@ -53,6 +54,7 @@ void mcHubd::MessageHandler::_responseOK(std::string respMsg, mcHubd::Message* m
     msgJobj = json_tokener_parse(respMsg.c_str());
     returnJobj = json_object_new_boolean(true);
 
+    json_object_object_add(jobj, "msgType", json_object_new_string("response"));
     json_object_object_add(jobj, "code", codeJobj);
     json_object_object_add(jobj, "message", msgJobj);
     json_object_object_add(jobj, "return", returnJobj);

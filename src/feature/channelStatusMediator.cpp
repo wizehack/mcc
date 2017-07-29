@@ -105,11 +105,11 @@ void mcHubd::ChannelStatusMediator::notify(mcHubd::Contract* contract, mcHubd::C
         contract->setChannelStatus(CLOSE);
     }
 
-    msg = mcHubd::ChannelStatusMediator::getChannelStatusMessage(contract);
+    msg = mcHubd::ChannelStatusMediator::getChannelStatusMessage(contract, true);
     mts.sendAll(msg);
 }
 
-std::string mcHubd::ChannelStatusMediator::getChannelStatusMessage(mcHubd::Contract* contract)
+std::string mcHubd::ChannelStatusMediator::getChannelStatusMessage(mcHubd::Contract* contract, bool bSubscribe)
 {
     std::string msg;
     std::string state;
@@ -143,6 +143,11 @@ std::string mcHubd::ChannelStatusMediator::getChannelStatusMessage(mcHubd::Contr
             json_object_object_add(messageJobj, "key", keyJobj);
             json_object_object_add(messageJobj, "channel", channelJobj);
             json_object_object_add(messageJobj, "state", stateJobj);
+
+            if(bSubscribe)
+                json_object_object_add(jobj, "msgType", json_object_new_string("subscribe"));
+            else
+                json_object_object_add(jobj, "msgType", json_object_new_string("response"));
 
             json_object_object_add(jobj, "code", codeJobj);
             json_object_object_add(jobj, "message", messageJobj);

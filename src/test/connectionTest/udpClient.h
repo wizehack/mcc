@@ -9,10 +9,16 @@ class UDPClient : public SocketClient {
         ~UDPClient();
         bool conn();
         std::string send(std::string data);
+        std::string receive();
+        std::string getSubscribe();
 
     private:
         UDPClient();
-        static std::string makeAck(std::string msg);
+        ssize_t wrap_recvfrom(int sockfd, void *buf, size_t len, int flags,
+                                 struct sockaddr *src_addr, socklen_t *addrlen);
+
+        static std::string makeAck(std::string& msg);
+        static bool isSubscription(std::string& msg);
 
     private:
         struct sockaddr_in m_servaddr;
