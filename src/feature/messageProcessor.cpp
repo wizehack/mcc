@@ -12,9 +12,10 @@ mcHubd::MessageProcessor::~MessageProcessor(){}
 
 bool mcHubd::MessageProcessor::_request(mcHubd::Message* msg)
 {
+    bool bResult = false;
+
     if(msg)
     {
-        bool bResult;
         mcHubd::MessageHandler* regClientHandler = new mcHubd::RegisterClientHandler();
         mcHubd::MessageHandler* regChannelHandler = new mcHubd::RegisterChannelHandler();
         mcHubd::MessageHandler* delClientHandler = new mcHubd::DeleteClientHandler();
@@ -22,13 +23,20 @@ bool mcHubd::MessageProcessor::_request(mcHubd::Message* msg)
         mcHubd::MessageHandler* requestChannelHandler = new mcHubd::RequestChannelHandler();
         mcHubd::MessageHandler* unknownMessageHandler = new mcHubd::UnknownMessageHandler();
 
-        regClientHandler->setNext(regChannelHandler);
-        regChannelHandler->setNext(delClientHandler);
-        delClientHandler->setNext(delChannelHandler);
-        delChannelHandler->setNext(requestChannelHandler);
-        requestChannelHandler->setNext(unknownMessageHandler);
-
-        bResult = regClientHandler->request(msg);
+        if(regClientHandler &&
+                regChannelHandler &&
+                delClientHandler &&
+                delChannelHandler &&
+                requestChannelHandler &&
+                unknownMessageHandler)
+        {
+            regClientHandler->setNext(regChannelHandler);
+            regChannelHandler->setNext(delClientHandler);
+            delClientHandler->setNext(delChannelHandler);
+            delChannelHandler->setNext(requestChannelHandler);
+            requestChannelHandler->setNext(unknownMessageHandler);
+            bResult = regClientHandler->request(msg);
+        }
 
         if(regClientHandler)
             delete regClientHandler;
@@ -47,9 +55,7 @@ bool mcHubd::MessageProcessor::_request(mcHubd::Message* msg)
 
         if(unknownMessageHandler)
             delete unknownMessageHandler;
-
-        return bResult;
     }
 
-    return false;
+    return bResult;
 }

@@ -33,7 +33,6 @@ void mcHubd::MessageTransportService::sendAll(std::string message)
             std::shared_ptr<mcHubd::ClientManager> clientMgr;
             std::shared_ptr<mcHubd::ChannelManager> channelMgr;
             std::string psName = itor->first;
-            std::map<std::string, pid_t> pspidmap = mcHubd::ConnectionInfo::getInstance()->getConnectedClientKeyMap();
             pid_t pid = mcHubd::ConnectionInfo::getInstance()->getPID(psName);
             mcHubd::Mediator* mediator = new ChannelStatusMediator();
             mcHubd::Contract* contract = new mcHubd::Contract();
